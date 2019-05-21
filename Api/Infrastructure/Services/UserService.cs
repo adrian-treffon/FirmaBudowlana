@@ -26,7 +26,7 @@ namespace FirmaBudowlana.Infrastructure.Services
             _userRepository = userRepository;
         }
 
-        public async Task<SecurityToken> Login(string email, string password)
+        public async Task<string> Login(string email, string password)
         {
             var user = await _userRepository.GetAsync(email);
 
@@ -44,21 +44,21 @@ namespace FirmaBudowlana.Infrastructure.Services
             // authentication successful so generate jwt token
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                     new Claim(ClaimTypes.Name, user.Email.ToString()),
+                    new Claim(ClaimTypes.Role, user.Role),
 
                 }),
                 Expires = DateTime.UtcNow.AddHours(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
-            return (tokenHandler.CreateToken(tokenDescriptor));
-         
-    
+            return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
         }
 
        

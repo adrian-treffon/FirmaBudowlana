@@ -44,6 +44,7 @@ namespace FirmaBudowlana
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+               
             })
             .AddJwtBearer(x =>
             {
@@ -55,6 +56,7 @@ namespace FirmaBudowlana
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
                     ValidateAudience = false,
+                    
           
                 };
             });
@@ -82,7 +84,9 @@ namespace FirmaBudowlana
             }
 
             app.UseStatusCodePages();
-           
+
+        
+
             app.UseCors(x => x
                  .AllowAnyOrigin()
                  .AllowAnyMethod()
