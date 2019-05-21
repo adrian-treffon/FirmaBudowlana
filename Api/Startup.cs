@@ -8,6 +8,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using FirmaBudowlana.Infrastructure.EF;
 using FirmaBudowlana.Infrastructure.IoC;
+using Microsoft.AspNetCore.Mvc;
+using FirmaBudowlana.Infrastructure.Settings;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FirmaBudowlana
 {
@@ -26,8 +31,36 @@ namespace FirmaBudowlana
         {
            
             services.AddDbContext<DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddCors();
+           
+            // configure strongly typed settings objects
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettingsSection);
+
+            // configure jwt authentication
+            var appSettings = appSettingsSection.Get<AppSettings>();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+          
+                };
+            });
 
             services.AddMvc();
+
             var containerBuilder = new ContainerBuilder();
 
             containerBuilder.RegisterModule<RepositoryModule>();
@@ -43,8 +76,14 @@ namespace FirmaBudowlana
         {
             app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
-            app.UseStaticFiles();
-          
+           // app.UseStaticFiles();
+
+            app.UseCors(x => x
+                 .AllowAnyOrigin()
+                 .AllowAnyMethod()
+                 .AllowAnyHeader());
+
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

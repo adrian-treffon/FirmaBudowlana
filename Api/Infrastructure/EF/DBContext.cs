@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FirmaBudowlana.Core.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FirmaBudowlana.Infrastructure.EF
 {
@@ -8,7 +9,7 @@ namespace FirmaBudowlana.Infrastructure.EF
         {
         }
 
-       // public DbSet<Car> Cars { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 
 }

@@ -5,10 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Core\Models\" />
+    <Folder Include="Core\DTO\" />
     <Folder Include="Core\ViewModels\" />
     <Folder Include="Infrastructure\Repositories\" />
-    <Folder Include="Views\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
