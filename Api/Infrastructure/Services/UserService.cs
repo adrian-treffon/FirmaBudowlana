@@ -26,7 +26,7 @@ namespace FirmaBudowlana.Infrastructure.Services
             _userRepository = userRepository;
         }
 
-        public async Task<User> Login(string email, string password)
+        public async Task<SecurityToken> Login(string email, string password)
         {
             var user = await _userRepository.GetAsync(email);
 
@@ -53,10 +53,10 @@ namespace FirmaBudowlana.Infrastructure.Services
                 Expires = DateTime.UtcNow.AddHours(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            user.Token = tokenHandler.WriteToken(token);
 
-            return user;
+            return tokenHandler.CreateToken(tokenDescriptor);
+         
+    
         }
 
        
@@ -74,7 +74,7 @@ namespace FirmaBudowlana.Infrastructure.Services
 
             user = new User
              { UserId = Guid.NewGuid(), Address = address, Email = email, FirstName = firstName, LastName = lastName, Password = hash, Role = role
-            , Salt = salt, CreatedAt = DateTime.UtcNow, Token = "" };
+            , Salt = salt, CreatedAt = DateTime.UtcNow };
             
             await _userRepository.AddAsync(user);
         }

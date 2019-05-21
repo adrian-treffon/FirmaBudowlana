@@ -24,6 +24,7 @@ namespace FirmaBudowlana.Core.Repositories
 
         public async Task<IEnumerable<User>> GetAllAsync()
             => await _context.Users.ToListAsync();
+
         public async Task AddAsync(User user)
         {
             await _context.Users.AddAsync(user);

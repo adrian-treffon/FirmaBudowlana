@@ -5,9 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Core\DTO\" />
-    <Folder Include="Core\ViewModels\" />
-    <Folder Include="Infrastructure\Repositories\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

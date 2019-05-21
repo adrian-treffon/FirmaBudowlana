@@ -1,4 +1,4 @@
-﻿using FirmaBudowlana.Core.Models;
+﻿using FirmaBudowlana.Core.DTO;
 using FirmaBudowlana.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,46 +8,46 @@ namespace FirmaBudowlana.Controllers
 {
 
     [Authorize]
-    public class HomeController : Controller
+    public class AccountController : Controller
     {
         private IUserService _userService;
 
-        public HomeController(IUserService userService)
+        public AccountController(IUserService userService)
         {
             _userService = userService;
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Index([FromBody]User userParam)
+        public async Task<IActionResult> Login([FromBody]UserLoginDTO userParam)
         {
-            var user = await _userService.Login(userParam.Email, userParam.Password);
+            var token = await _userService.Login(userParam.Email, userParam.Password);
 
-            if (user == null)
+            if (string.IsNullOrEmpty(token.ToString()))
                 return BadRequest(new { message = "Username or password is incorrect" });
 
-            return Ok(user.Token);
+            return Ok(token);
         }
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Index()
+        public IActionResult Login()
         {
             return Ok();
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody]User userParam)
+        public async Task<IActionResult> Register([FromBody]UserRegisterDTO userParam)
         {
             await _userService.Register(userParam.FirstName, userParam.LastName, userParam.Address, userParam.Email, userParam.Password);
 
-            var user = await _userService.Login(userParam.Email, userParam.Password);
+            var token = await _userService.Login(userParam.Email, userParam.Password);
 
-            if (user == null)
+            if (string.IsNullOrEmpty(token.ToString()))
                 return BadRequest(new { message = "Username or password is incorrect" });
 
-            return Ok(user.Token);
+            return Ok(token);
         }
 
         [HttpGet]
