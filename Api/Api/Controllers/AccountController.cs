@@ -23,7 +23,7 @@ namespace FirmaBudowlana.Controllers
         {
             var token = await _userService.Login(userParam.Email, userParam.Password);
 
-            if (string.IsNullOrEmpty(token.ToString()))
+            if (token == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
 
             return Ok(token);

@@ -74,10 +74,15 @@ namespace FirmaBudowlana
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseDeveloperExceptionPage();
-            app.UseStatusCodePages();
-           // app.UseStaticFiles();
 
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseHttpMethodOverride();
+            }
+
+            app.UseStatusCodePages();
+           
             app.UseCors(x => x
                  .AllowAnyOrigin()
                  .AllowAnyMethod()
@@ -85,11 +90,12 @@ namespace FirmaBudowlana
 
             app.UseAuthentication();
 
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute
                 (name: "default",
-                template: "{controller=Home}/{action=Index}/{id?}"
+                template: "{controller=Account}/{action=Login}/{id?}"
                 );
 
             });

@@ -48,13 +48,15 @@ namespace FirmaBudowlana.Infrastructure.Services
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.UserId.ToString())
+                    new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                    new Claim(ClaimTypes.Name, user.Email.ToString()),
+
                 }),
                 Expires = DateTime.UtcNow.AddHours(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
-            return tokenHandler.CreateToken(tokenDescriptor);
+            return (tokenHandler.CreateToken(tokenDescriptor));
          
     
         }
