@@ -13,6 +13,7 @@ using FirmaBudowlana.Infrastructure.Settings;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using AutoMapper;
 
 namespace FirmaBudowlana
 {
@@ -32,7 +33,8 @@ namespace FirmaBudowlana
            
             services.AddDbContext<DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddCors();
-           
+            services.AddAutoMapper();
+
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);

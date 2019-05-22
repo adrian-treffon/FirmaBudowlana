@@ -7,8 +7,9 @@ namespace FirmaBudowlana.Core.Models
     {
         public Guid TeamID { get; set; }
         public string Description { get; set; }
-        public IEnumerable<WorkerTeam> WorkersTeams { get; set; }
-        public IEnumerable<OrderTeam> OrdersTeams { get; set; }
+
+        public List<WorkerTeam> WorkersTeams { get; set; }
+        public List<OrderTeam> OrdersTeams { get; set; }
     } 
         
 }
