@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace FirmaBudowlana.Controllers
 {
 
-    [Authorize]
+    [AllowAnonymous]
     public class AccountController : Controller
     {
         private IUserService _userService;
@@ -17,26 +17,26 @@ namespace FirmaBudowlana.Controllers
             _userService = userService;
         }
 
-        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult Login()
+         => Ok();
+
+        [HttpGet]
+        public IActionResult Register()
+         => Ok();
+
         [HttpPost]
         public async Task<IActionResult> Login([FromBody]UserLoginDTO userParam)
         {
             var token = await _userService.Login(userParam.Email, userParam.Password);
 
             if (token == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
+                return BadRequest(new { message = " or password is incorrect" });
 
             return Ok(token);
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult Login()
-        {
-            return Ok();
-        }
-
-        [AllowAnonymous]
+      
         [HttpPost]
         public async Task<IActionResult> Register([FromBody]UserRegisterDTO userParam)
         {
@@ -45,18 +45,10 @@ namespace FirmaBudowlana.Controllers
             var token = await _userService.Login(userParam.Email, userParam.Password);
 
             if (string.IsNullOrEmpty(token.ToString()))
-                return BadRequest(new { message = "Username or password is incorrect" });
+                return BadRequest(new { message = "Email or password is incorrect" });
 
             return Ok(token);
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult Register()
-        {
-            return Ok();
-        }
-
-     
     }
 }

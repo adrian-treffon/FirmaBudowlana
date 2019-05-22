@@ -17,7 +17,7 @@ namespace FirmaBudowlana.Core.Repositories
         }
 
         public async Task<User> GetAsync(Guid id)
-            => await _context.Users.SingleOrDefaultAsync(x => x.UserId == id);
+            => await _context.Users.SingleOrDefaultAsync(x => x.UserID == id);
 
         public async Task<User> GetAsync(string email)
             => await _context.Users.SingleOrDefaultAsync(x => x.Email == email);

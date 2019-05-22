@@ -49,7 +49,7 @@ namespace FirmaBudowlana.Infrastructure.Services
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
                     new Claim(ClaimTypes.Name, user.Email.ToString()),
                     new Claim(ClaimTypes.Role, user.Role),
 
@@ -75,7 +75,7 @@ namespace FirmaBudowlana.Infrastructure.Services
             var hash = _encrypter.GetHash(password, salt);
 
             user = new User
-             { UserId = Guid.NewGuid(), Address = address, Email = email, FirstName = firstName, LastName = lastName, Password = hash, Role = role
+             { UserID = Guid.NewGuid(), Address = address, Email = email, FirstName = firstName, LastName = lastName, Password = hash, Role = role
             , Salt = salt, CreatedAt = DateTime.UtcNow };
             
             await _userRepository.AddAsync(user);

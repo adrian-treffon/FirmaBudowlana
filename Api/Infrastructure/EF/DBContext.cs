@@ -7,9 +7,26 @@ namespace FirmaBudowlana.Infrastructure.EF
     {
         public DBContext(DbContextOptions<DBContext> options) : base(options)
         {
+           
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<WorkerTeam>()
+                .HasKey(t => new { t.WorkerID, t.TeamID});
+
+            modelBuilder.Entity<OrderTeam>()
+             .HasKey(t => new { t.OrderID, t.TeamID });
+        }
+
+
         public DbSet<User> Users { get; set; }
+        public DbSet<Team> Teams { get; set; }
+        public DbSet<Worker> Workers { get; set; }
+        public DbSet<Payment> Payments { get; set; }
+        public DbSet<Order> Orders { get; set; }
+
+
     }
 
 }
