@@ -43,7 +43,7 @@ namespace FirmaBudowlana.Api.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Validate(Guid orderID)
+        public async Task<IActionResult> Validate([FromBody]Guid orderID)
         {
             var order = await _orderRepository.GetAsync(orderID);
             var teams = await _teamRepository.GetAllAsync();
@@ -51,7 +51,7 @@ namespace FirmaBudowlana.Api.Controllers
             var dto = _mapper.Map<AdminOrderDTO>(order);
             dto.Teams = teams;
 
-            return Ok(dto);
+            return new JsonResult(dto);
         }
 
 

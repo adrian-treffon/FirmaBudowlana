@@ -17,14 +17,6 @@ namespace FirmaBudowlana.Controllers
             _userService = userService;
         }
 
-        [HttpGet]
-        public IActionResult Login()
-         => Ok();
-
-        [HttpGet]
-        public IActionResult Register()
-         => Ok();
-
         [HttpPost]
         public async Task<IActionResult> Login([FromBody]UserLoginDTO userParam)
         {
@@ -33,7 +25,7 @@ namespace FirmaBudowlana.Controllers
             if (token == null)
                 return BadRequest(new { message = " or password is incorrect" });
 
-            return Ok(token);
+            return Content(token);
         }
 
       
@@ -47,7 +39,7 @@ namespace FirmaBudowlana.Controllers
             if (string.IsNullOrEmpty(token.ToString()))
                 return BadRequest(new { message = "Email or password is incorrect" });
 
-            return Ok(token);
+            return Content(token);
         }
 
     }

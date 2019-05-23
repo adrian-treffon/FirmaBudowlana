@@ -28,6 +28,8 @@ namespace FirmaBudowlana.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Worker([FromBody]WorkerDTO workerDTO)
         {
+           if(workerDTO == null) return BadRequest(new { message = "ERROR" });
+
            var worker =_mapper.Map<Worker>(workerDTO);
            worker.WorkerID = Guid.NewGuid();
            await _workerRepository.AddAsync(worker);
@@ -37,14 +39,22 @@ namespace FirmaBudowlana.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Team()
         {
-           var teams = await _teamRepository.GetAllAsync();
+            var workers = await _workerRepository.GetAllAsync();
+            var team = new TeamDTO()
+            {
+                Workers = workers,
+                Description = ""
+            };
 
-            return Ok(teams);
+            return new JsonResult(team);
         }
 
         [HttpPost]
         public async Task<IActionResult> Team([FromBody] TeamDTO teamDTO)
         {
+
+            if (teamDTO == null) return BadRequest(new { message = "ERROR" });
+
             var team = _mapper.Map<Team>(teamDTO);
             team.WorkersTeams = new List<WorkerTeam>();
             team.TeamID = Guid.NewGuid();
