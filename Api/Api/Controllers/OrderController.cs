@@ -16,18 +16,14 @@ namespace FirmaBudowlana.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IOrderRepository _orderRepository;
         private readonly IWorkerRepository _workerRepository;
+        private readonly ITeamRepository _teamRepository;
 
-        public OrderController(IMapper mapper, IOrderRepository orderRepository,IWorkerRepository workerRepository)
+        public OrderController(IMapper mapper, IOrderRepository orderRepository,IWorkerRepository workerRepository, ITeamRepository teamRepository)
         {
             _mapper = mapper;
             _orderRepository = orderRepository;
             _workerRepository = workerRepository;
-        }
-
-        [HttpGet]
-        public IActionResult AddByClient()
-        {
-            return Ok();
+            _teamRepository = teamRepository;
         }
 
         [HttpPost]
@@ -41,7 +37,7 @@ namespace FirmaBudowlana.Api.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> ShowUnvalidated()
+        public async Task<IActionResult> ShowInvalidated()
         => Ok(await _orderRepository.GetAllInvalidatedAsync());
 
 
@@ -50,10 +46,10 @@ namespace FirmaBudowlana.Api.Controllers
         public async Task<IActionResult> Validate(Guid orderID)
         {
             var order = await _orderRepository.GetAsync(orderID);
-            var workers = await _workerRepository.GetAllAsync();
+            var teams = await _teamRepository.GetAllAsync();
 
             var dto = _mapper.Map<AdminOrderDTO>(order);
-            dto.Workers = workers;
+            dto.Teams = teams;
 
             return Ok(dto);
         }
@@ -63,33 +59,28 @@ namespace FirmaBudowlana.Api.Controllers
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Validate([FromBody]AdminOrderDTO adminOrder)
         {
+            var _order = await _orderRepository.GetAsync(adminOrder.OrderID);
+            if (_order == null) return NotFound(new { message = "Order not found" });
+
             var order = _mapper.Map<Order>(adminOrder);
+            order.Validated = true;
 
-            var team = new Team()
-            {
-                Description = adminOrder.Description,
-                TeamID = Guid.NewGuid()
-            };
 
-            foreach (var worker in adminOrder.Workers)
+            order.OrdersTeams = new List<OrderTeam>();
+
+            foreach (var team in adminOrder.Teams)
             {
-                team.WorkersTeams.Add(new WorkerTeam
-                {
-                    Team = team,
-                    Worker = worker
-                });
+                order.OrdersTeams.Add( 
+                    new OrderTeam
+                    {
+                        Order = order,
+                        OrderID = order.OrderID,
+                        Team= team,
+                        TeamID = team.TeamID
+                    }
+                    );
             }
            
-            
-            order.Validated = true;
-            order.OrdersTeams = new List<OrderTeam>
-            {
-              new OrderTeam {
-               Order = order,
-               Team = team
-              }
-            };
-
             await _orderRepository.UpdateAsync(order);
             return Ok();
         }

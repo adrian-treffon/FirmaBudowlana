@@ -12,6 +12,6 @@ namespace FirmaBudowlana.Core.Models
        public string Description { get; set; }
        public bool Validated { get; set; }
        public Guid UserID { get; set; }
-       public IEnumerable<OrderTeam> OrdersTeams { get; set; }
+       public List<OrderTeam> OrdersTeams { get; set; }
     }
 }

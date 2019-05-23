@@ -10,6 +10,8 @@ namespace FirmaBudowlana.Infrastructure.Mapper
         {
             CreateMap<ClientOrderDTO, Order>().ReverseMap();
             CreateMap<AdminOrderDTO, Order>().ReverseMap();
+            CreateMap<WorkerDTO, Worker>().ReverseMap();
+            CreateMap<TeamDTO, Team>().ReverseMap();
         }
     }
 }

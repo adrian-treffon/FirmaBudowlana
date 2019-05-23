@@ -12,7 +12,6 @@ namespace FirmaBudowlana.Core.DTO
         public DateTime EndDate { get; set; }
         public decimal Cost { get; set; }
         public string Description { get; set; }
-        public string TeamDescription { get; set; }
-        public IEnumerable<Worker> Workers { get; set; }
+        public IEnumerable<Team> Teams { get; set; }
     }
 }
