@@ -11,6 +11,7 @@ namespace FirmaBudowlana.Core.Models
        public decimal? Cost { get; set; }
        public string Description { get; set; }
        public bool Validated { get; set; }
+       public bool Paid { get; set; }
        public Guid UserID { get; set; }
        public List<OrderTeam> OrdersTeams { get; set; }
     }

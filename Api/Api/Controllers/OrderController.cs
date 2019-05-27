@@ -15,14 +15,12 @@ namespace FirmaBudowlana.Api.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IOrderRepository _orderRepository;
-        private readonly IWorkerRepository _workerRepository;
         private readonly ITeamRepository _teamRepository;
 
-        public OrderController(IMapper mapper, IOrderRepository orderRepository,IWorkerRepository workerRepository, ITeamRepository teamRepository)
+        public OrderController(IMapper mapper, IOrderRepository orderRepository, ITeamRepository teamRepository)
         {
             _mapper = mapper;
             _orderRepository = orderRepository;
-            _workerRepository = workerRepository;
             _teamRepository = teamRepository;
         }
 
@@ -84,7 +82,5 @@ namespace FirmaBudowlana.Api.Controllers
             await _orderRepository.UpdateAsync(order);
             return Ok();
         }
-
-
     }
 }

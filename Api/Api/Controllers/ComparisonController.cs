@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using FirmaBudowlana.Core.Repositories;
@@ -9,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FirmaBudowlana.Api.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Administrator")]
     public class ComparisonController : Controller
     {
         private readonly IMapper _mapper;
@@ -36,7 +34,7 @@ namespace FirmaBudowlana.Api.Controllers
             return new JsonResult(workers);
         }
 
-        [HttpGet]
+        [HttpGet("Workers/{id}")]
         public async Task<IActionResult> Workers([FromBody]Guid id)
         {
             var worker = await _workerRepository.GetAsync(id);
@@ -50,7 +48,7 @@ namespace FirmaBudowlana.Api.Controllers
             return new JsonResult(team);
         }
 
-        [HttpGet]
+        [HttpGet("Teams/{id}")]
         public async Task<IActionResult> Teams([FromBody]Guid id)
         {
             var team = await _teamRepository.GetAsync(id);
@@ -64,7 +62,7 @@ namespace FirmaBudowlana.Api.Controllers
             return new JsonResult(order);
         }
 
-        [HttpGet]
+        [HttpGet("Orders/{id}")]
         public async Task<IActionResult> Orders([FromBody]Guid id)
         {
             var order = await _orderRepository.GetAsync(id);
@@ -78,7 +76,7 @@ namespace FirmaBudowlana.Api.Controllers
             return new JsonResult(payment);
         }
 
-        [HttpGet]
+        [HttpGet("Payments/{id}")]
         public async Task<IActionResult> Payments([FromBody]Guid id)
         {
             var payment = await _paymentRepository.GetAsync(id);

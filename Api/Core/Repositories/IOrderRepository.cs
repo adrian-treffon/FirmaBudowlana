@@ -10,6 +10,7 @@ namespace FirmaBudowlana.Core.Repositories
         Task<Order> GetAsync(Guid id);
         Task<IEnumerable<Order>> GetAllInvalidatedAsync();
         Task<IEnumerable<Order>> GetAllValidatedAsync();
+        Task<IEnumerable<Order>> GetAllUnpaidAsync();
         Task AddAsync(Order order);
         Task UpdateAsync(Order order);
         Task RemoveAsync(Guid id);
