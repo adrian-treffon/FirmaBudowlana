@@ -1,0 +1,20 @@
+<nav class="navbar navbar-expand-md navbar-light bg-light">
+  <a class="navbar-brand" href="#">Budowex-Pol</a>
+
+  <ul class="navbar-nav mr-auto">
+    <li class="nav-item">
+      <a class="nav-link" href="#">Zamów</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Moje zlecenia</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" href="#">Zarządzaj</a>
+    </li>  
+  </ul>
+  <form class="form-inline my-2 my-lg-0" #loginForm="ngForm" (ngSubmit)="login()">
+    <input class="form-control mr-sm-2" required type="text" name="email" placeholder="E-mail" [(ngModel)]="model.email" aria-label="e-mail">
+    <input class="form-control mr-sm-2" required type="password" name="password" placeholder="Hasło" [(ngModel)]="model.password" aria-label="hasło">
+    <button [disabled]="!loginForm.valid" class="btn btn-secondary my-2 my-sm-0" type="login">Zaloguj</button>
+  </form>
+</nav>
