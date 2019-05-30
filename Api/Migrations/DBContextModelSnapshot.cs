@@ -3,7 +3,6 @@ using System;
 using FirmaBudowlana.Infrastructure.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FirmaBudowlana.Migrations
@@ -15,20 +14,20 @@ namespace FirmaBudowlana.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099");
 
             modelBuilder.Entity("FirmaBudowlana.Core.Models.Order", b =>
                 {
                     b.Property<Guid>("OrderID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<decimal>("Cost");
+                    b.Property<decimal?>("Cost");
 
                     b.Property<string>("Description");
 
-                    b.Property<DateTime>("EndDate");
+                    b.Property<DateTime?>("EndDate");
+
+                    b.Property<bool>("Paid");
 
                     b.Property<DateTime>("StartDate");
 
@@ -60,6 +59,8 @@ namespace FirmaBudowlana.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<decimal>("Amount");
+
+                    b.Property<Guid>("OrderID");
 
                     b.Property<DateTime>("PaymentDate");
 

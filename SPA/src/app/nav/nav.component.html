@@ -2,17 +2,29 @@
   <a class="navbar-brand" href="#">Budowex-Pol</a>
 
   <ul class="navbar-nav mr-auto">
-    <li class="nav-item">
-      <a class="nav-link" href="#">Zamów</a>
+    <li class="nav-item" *ngIf="loggedIn()">
+      <a class="nav-link" href="#">Zamów usługę</a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">Moje zlecenia</a>
-    </li>
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="loggedIn() && isAdmin()">
       <a class="nav-link active" href="#">Zarządzaj</a>
     </li>  
   </ul>
-  <form class="form-inline my-2 my-lg-0" #loginForm="ngForm" (ngSubmit)="login()">
+
+  <div *ngIf="loggedIn()" style="cursor: pointer;" class="btn-group mr-4" dropdown>
+      <button id="button-basic" dropdownToggle type="button" class="btn btn-outline-dark dropdown-toggle"
+              aria-controls="dropdown-basic">
+              Moje konto<span class="caret"></span>
+      </button>
+      <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu"
+          role="menu" aria-labelledby="button-basic">
+        <li role="menuitem"><a class="dropdown-item" [routerLink]="['/orders']"><i class="fa fa-user"></i>Moje zlecenia</a></li>
+        <li class="divider dropdown-divider"></li>
+        <li role="menuitem"><a class="dropdown-item" (click)="logout()"><i class="fa fa-sign-out"></i> Wyloguj</a>
+        </li>
+      </ul>
+    </div>
+
+  <form *ngIf="!loggedIn()" class="form-inline my-2 my-lg-0" #loginForm="ngForm" (ngSubmit)="login()">
     <input class="form-control mr-sm-2" required type="text" name="email" placeholder="E-mail" [(ngModel)]="model.email" aria-label="e-mail">
     <input class="form-control mr-sm-2" required type="password" name="password" placeholder="Hasło" [(ngModel)]="model.password" aria-label="hasło">
     <button [disabled]="!loginForm.valid" class="btn btn-secondary my-2 my-sm-0" type="login">Zaloguj</button>

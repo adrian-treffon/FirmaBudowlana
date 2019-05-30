@@ -25,7 +25,10 @@ namespace FirmaBudowlana.Controllers
             if (token == null)
                 return BadRequest(new { message = " or password is incorrect" });
 
-            return Content(token);
+            return Ok(new 
+            {
+                token = token
+            });
         }
 
       
@@ -34,12 +37,12 @@ namespace FirmaBudowlana.Controllers
         {
             await _userService.Register(userParam.FirstName, userParam.LastName, userParam.Address, userParam.Email, userParam.Password);
 
-            var token = await _userService.Login(userParam.Email, userParam.Password);
+            //var token = await _userService.Login(userParam.Email, userParam.Password);
 
-            if (string.IsNullOrEmpty(token.ToString()))
-                return BadRequest(new { message = "Email or password is incorrect" });
+            //if (string.IsNullOrEmpty(token.ToString()))
+            //    return BadRequest(new { message = "Email or password is incorrect" });
 
-            return Content(token);
+            return NoContent();
         }
 
     }
