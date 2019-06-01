@@ -62,7 +62,7 @@ namespace FirmaBudowlana.Infrastructure.Services
         }
 
        
-        public async Task Register( string firstName, string lastName, string address, string email, string password, string role="User")
+        public async Task Register(string firstName, string lastName, string address, string email, string password, string role="User")
         {
             var user = await _userRepository.GetAsync(email);
 

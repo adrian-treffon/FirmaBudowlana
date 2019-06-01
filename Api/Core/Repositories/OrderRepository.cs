@@ -23,6 +23,9 @@ namespace FirmaBudowlana.Core.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<Order>> GetAllAsync()
+            => await _context.Orders.ToListAsync();
+            
         public async Task<IEnumerable<Order>> GetAllInvalidatedAsync()
          => await _context.Orders.Where(x => x.Validated == false).ToListAsync();
 
