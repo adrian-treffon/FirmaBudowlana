@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
 import { RouterModule } from '@angular/router';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
@@ -18,6 +19,7 @@ import { AuthService } from './_services/auth.service';
 import { AlertifyService } from './_services/alertify.service';
 
 import { appRoutes } from './routes';
+import { NewOrderComponent } from './newOrder/newOrder.component';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -29,7 +31,8 @@ export function tokenGetter() {
       NavComponent,
       HomeComponent,
       RegisterComponent,
-      OrdersComponent
+      OrdersComponent,
+      NewOrderComponent
    ],
    imports: [
       BrowserModule,
@@ -39,12 +42,13 @@ export function tokenGetter() {
       ReactiveFormsModule,
       JwtModule.forRoot({
          config: {
-            tokenGetter: tokenGetter,
+            tokenGetter,
             whitelistedDomains: ['localhost:5000'],
             blacklistedRoutes: ['localhost:5000/account']
          }
       }),
-      RouterModule.forRoot(appRoutes)
+      RouterModule.forRoot(appRoutes),
+      BsDatepickerModule.forRoot()
    ],
    providers: [
       AuthService,

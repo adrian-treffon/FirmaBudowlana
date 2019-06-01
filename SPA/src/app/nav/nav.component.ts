@@ -23,7 +23,7 @@ export class NavComponent implements OnInit {
       this.alertify.error('Nie udało się zalogować' + error);
       console.log(error);
     }, () => {
-      this.router.navigate(['/orders']);
+      this.router.navigate(['/newOrder']);
     });
   }
 
