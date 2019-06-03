@@ -3,11 +3,16 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper.Configuration;
 using FirmaBudowlana.Core.Models;
 using FirmaBudowlana.Core.Repositories;
 using FirmaBudowlana.Infrastructure.Settings;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using AutoMapper;
+
 
 
 namespace FirmaBudowlana.Infrastructure.Services
@@ -16,12 +21,15 @@ namespace FirmaBudowlana.Infrastructure.Services
     {
         private readonly AppSettings _appSettings;
         private readonly IEncrypter _encrypter;
+        private readonly Microsoft.Extensions.Configuration.IConfiguration _config;
+
         private readonly IUserRepository _userRepository;
 
        
-        public UserService(IOptions<AppSettings> appSettings, IEncrypter encrypter, IUserRepository userRepository)
+        public UserService(IOptions<AppSettings> appSettings, IEncrypter encrypter, Microsoft.Extensions.Configuration.IConfiguration config, IUserRepository userRepository)
         {
             _appSettings = appSettings.Value;
+            _config = config;
             _encrypter = encrypter;
             _userRepository = userRepository;
         }
@@ -43,7 +51,8 @@ namespace FirmaBudowlana.Infrastructure.Services
 
             // authentication successful so generate jwt token
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
+            SigningCredentials creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -55,14 +64,14 @@ namespace FirmaBudowlana.Infrastructure.Services
 
                 }),
                 Expires = DateTime.UtcNow.AddHours(2),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = creds
             };
 
             return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
         }
 
        
-        public async Task Register( string firstName, string lastName, string address, string email, string password, string role="User")
+        public async Task Register(string firstName, string lastName, string address, string email, string password, string role="User")
         {
             var user = await _userRepository.GetAsync(email);
 

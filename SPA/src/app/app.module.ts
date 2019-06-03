@@ -12,14 +12,18 @@ import { NavComponent } from './nav/nav.component';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { OrdersComponent } from './orders/orders.component';
+import { AdminMenuComponent } from './admin-menu/admin-menu.component';
+import { WorkerListComponent } from './worker-list/worker-list.component';
+import { NewOrderComponent } from './newOrder/newOrder.component';
 
 import { AuthGuard } from './_guards/auth.guard';
 
 import { AuthService } from './_services/auth.service';
 import { AlertifyService } from './_services/alertify.service';
+import { AdminService } from './_services/admin.service';
 
 import { appRoutes } from './routes';
-import { NewOrderComponent } from './newOrder/newOrder.component';
+
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -32,7 +36,9 @@ export function tokenGetter() {
       HomeComponent,
       RegisterComponent,
       OrdersComponent,
-      NewOrderComponent
+      NewOrderComponent,
+      AdminMenuComponent,
+      WorkerListComponent
    ],
    imports: [
       BrowserModule,
@@ -53,6 +59,7 @@ export function tokenGetter() {
    providers: [
       AuthService,
       AlertifyService,
+      AdminService,
       AuthGuard
    ],
    bootstrap: [

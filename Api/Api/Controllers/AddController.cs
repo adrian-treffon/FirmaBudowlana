@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FirmaBudowlana.Api.Controllers
 {
-    [Authorize(Roles = "Administrator")]
+    //[Authorize(Roles = "Administrator")]
     public class AddController : Controller
     {
 

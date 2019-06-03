@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FirmaBudowlana.Api.Controllers
 {
-    [Authorize(Roles = "Administrator")]
+    [Authorize]
     public class ComparisonController : Controller
     {
         private readonly IMapper _mapper;

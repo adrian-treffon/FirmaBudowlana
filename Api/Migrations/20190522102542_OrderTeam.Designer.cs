@@ -4,14 +4,16 @@ using FirmaBudowlana.Infrastructure.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FirmaBudowlana.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20190522102542_OrderTeam")]
+    partial class OrderTeam
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,13 +26,11 @@ namespace FirmaBudowlana.Migrations
                     b.Property<Guid>("OrderID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<decimal?>("Cost");
+                    b.Property<decimal>("Cost");
 
                     b.Property<string>("Description");
 
-                    b.Property<DateTime?>("EndDate");
-
-                    b.Property<bool>("Paid");
+                    b.Property<DateTime>("EndDate");
 
                     b.Property<DateTime>("StartDate");
 
@@ -62,8 +62,6 @@ namespace FirmaBudowlana.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<decimal>("Amount");
-
-                    b.Property<Guid>("OrderID");
 
                     b.Property<DateTime>("PaymentDate");
 
