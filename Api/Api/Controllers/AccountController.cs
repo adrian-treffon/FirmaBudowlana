@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace FirmaBudowlana.Controllers
@@ -59,8 +60,12 @@ namespace FirmaBudowlana.Controllers
 
         [Authorize(Roles = "User")]
         [HttpGet]
-        public async Task<IActionResult> Orders([FromBody]Guid userID)
+        public async Task<IActionResult> Orders([FromHeader]Guid userID)
         {
+            var accesToken = Request.Headers["Authorization"];
+
+            if (Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) != userID) return Unauthorized();
+
             var result = (await _orderRepository.GetAllAsync()).Where(x => x.UserID == userID);
 
             if (result == null)
@@ -73,15 +78,19 @@ namespace FirmaBudowlana.Controllers
 
         [Authorize(Roles = "User")]
         [HttpGet]
-        public async Task<IActionResult> Orders([FromBody]Guid userID, [FromBody]Guid orderid)
+        public async Task<IActionResult> Orders([FromHeader]Guid userID, [FromHeader]Guid orderid)
         {
+            var accesToken = Request.Headers["Authorization"];
+
+            if (Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) != userID) return Unauthorized();
+
             var result = (await _orderRepository.GetAllAsync()).Where(x => x.UserID == userID).Single(x => x.OrderID == orderid);
 
             if (result == null)
                 return BadRequest(new { message = "Incorrect id" });
 
             var dto = _mapper.Map<AdminOrderDTO>(result);
-             // dto.Teams = null;
+            // dto.Teams = null;
                 
             return new JsonResult(dto);
         }

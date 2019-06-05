@@ -63,7 +63,10 @@ namespace FirmaBudowlana
                 };
             });
 
-            services.AddMvc();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+           
+           
 
             var containerBuilder = new ContainerBuilder();
 

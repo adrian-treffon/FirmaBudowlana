@@ -9,6 +9,6 @@ namespace FirmaBudowlana.Core.DTO
     {
         public Guid OrderID { get; set; }
         public string Description { get; set; }
-        public IEnumerable<Team> Teams { get; set; }
+        public IEnumerable<Guid> TeamsID { get; set; }
     }
 }

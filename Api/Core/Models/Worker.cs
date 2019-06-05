@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 
@@ -11,6 +12,8 @@ namespace FirmaBudowlana.Core.Models
         public string LastName { get; set; }
         public string Specialization { get; set; }
         public decimal ManHour { get; set; }
+
+        [JsonIgnore]
         public IEnumerable<WorkerTeam> WorkersTeams { get; set; }
     }
 }

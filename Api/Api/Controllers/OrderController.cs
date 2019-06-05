@@ -4,6 +4,7 @@ using FirmaBudowlana.Core.Models;
 using FirmaBudowlana.Core.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -35,15 +36,22 @@ namespace FirmaBudowlana.Api.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Administrator")]
+        //działa
         public async Task<IActionResult> ShowInvalidated()
         => Ok(await _orderRepository.GetAllInvalidatedAsync());
 
 
         [HttpGet]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Validate([FromBody]Guid orderID)
+        //działa ID w headerze!
+        public async Task<IActionResult> Validate([FromHeader] Guid orderID)
         {
-            var order = await _orderRepository.GetAsync(orderID);
+            if(orderID == Guid.Empty)
+            return BadRequest(new { message = "Incorrect ID format" });
+           
+            var order = await _orderRepository.GetAsync((Guid)orderID);
+            if (order == null) return NotFound(new { message = "Order not found" });
+
             var teams = await _teamRepository.GetAllAsync();
 
             var dto = _mapper.Map<AdminOrderDTO>(order);
@@ -62,8 +70,6 @@ namespace FirmaBudowlana.Api.Controllers
 
             var order = _mapper.Map<Order>(adminOrder);
             order.Validated = true;
-
-
             order.OrdersTeams = new List<OrderTeam>();
 
             foreach (var team in adminOrder.Teams)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace FirmaBudowlana.Core.Models
@@ -13,6 +14,8 @@ namespace FirmaBudowlana.Core.Models
        public bool Validated { get; set; }
        public bool Paid { get; set; }
        public Guid UserID { get; set; }
+
+       [JsonIgnore]
        public List<OrderTeam> OrdersTeams { get; set; }
     }
 }

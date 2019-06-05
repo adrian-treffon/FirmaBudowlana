@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,8 +7,10 @@ using AutoMapper;
 using FirmaBudowlana.Core.DTO;
 using FirmaBudowlana.Core.Models;
 using FirmaBudowlana.Core.Repositories;
+using FirmaBudowlana.Infrastructure.EF;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FirmaBudowlana.Api.Controllers
 {
@@ -20,18 +23,22 @@ namespace FirmaBudowlana.Api.Controllers
         private readonly ITeamRepository _teamRepository;
         private readonly IOrderRepository _orderRepository;
         private readonly IPaymentRepository _paymentRepository;
+        private readonly DBContext _context;
 
         public AddController(IMapper mapper, IWorkerRepository workerRepository,
-            ITeamRepository teamRepository, IOrderRepository orderRepository, IPaymentRepository paymentRepository)
+            ITeamRepository teamRepository, IOrderRepository orderRepository, IPaymentRepository paymentRepository,
+            DBContext context)
         {
             _mapper = mapper;
             _workerRepository = workerRepository;
             _teamRepository = teamRepository;
             _orderRepository = orderRepository;
             _paymentRepository = paymentRepository;
+            _context = context;
         }
 
         [HttpPost]
+        //działa
         public async Task<IActionResult> Worker([FromBody]WorkerDTO workerDTO)
         {
            if(workerDTO == null) return BadRequest(new { message = "ERROR" });
@@ -43,6 +50,7 @@ namespace FirmaBudowlana.Api.Controllers
         }
 
         [HttpGet]
+        //działa
         public async Task<IActionResult> Team()
         {
             var workers = await _workerRepository.GetAllAsync();
@@ -55,10 +63,9 @@ namespace FirmaBudowlana.Api.Controllers
             return new JsonResult(team);
         }
 
-        [HttpPost]
+        [HttpPost]//sprawdzić
         public async Task<IActionResult> Team([FromBody] TeamDTO teamDTO)
         {
-
             if (teamDTO == null) return BadRequest(new { message = "ERROR" });
 
             var team = _mapper.Map<Team>(teamDTO);
@@ -84,6 +91,7 @@ namespace FirmaBudowlana.Api.Controllers
         }
 
         [HttpPost]
+        //sprawdzić
         public async Task<IActionResult> Payment([FromBody]OrderToPaidDTO orderToPaidDTO)
         {
             if (orderToPaidDTO == null) return BadRequest(new { message = "ERROR" });
@@ -92,13 +100,13 @@ namespace FirmaBudowlana.Api.Controllers
             payment.PaymentDate = DateTime.UtcNow;
             var order = await _orderRepository.GetAsync(orderToPaidDTO.OrderID);
 
-            foreach (var team in orderToPaidDTO.Teams)
+            foreach (var teamID in orderToPaidDTO.TeamsID)
             {
-                var workersID = team.WorkersTeams.Where(x => x.TeamID == team.TeamID).Select(x => x.WorkerID);
+                var team = await _teamRepository.GetAsync(teamID);
 
-                foreach (var workerID in workersID)
+                foreach (var ele in team.WorkersTeams)
                 {
-                    var worker = await _workerRepository.GetAsync(workerID);
+                    var worker = await _workerRepository.GetAsync(ele.WorkerID);
                     var days = payment.PaymentDate.DayOfYear - order.StartDate.DayOfYear;
                     payment.PaymentID = Guid.NewGuid();
                     payment.Amount = worker.ManHour * 8 * days;
@@ -112,19 +120,20 @@ namespace FirmaBudowlana.Api.Controllers
         }
 
         [HttpGet]
+        //działa
         public async Task<IActionResult> Payment()
         {
             IEnumerable<Order> unPaidOrders = await _orderRepository.GetAllUnpaidAsync();
-            
-            var ordersToPaidDTO = _mapper.Map<IEnumerable<OrderToPaidDTO>>(unPaidOrders);
+            if (unPaidOrders == null) return NotFound(new { message = "Cannot find any orders in DB" });
 
-            foreach (var unPaidOrderDTO in ordersToPaidDTO)
+            var ordersToPaidDTO = _mapper.Map<IEnumerable<OrderToPaidDTO>>(unPaidOrders);
+            var orderTeams = await _context.OrderTeam.ToListAsync();
+            var workerTeams = await _context.WorkerTeam.ToListAsync();
+
+            foreach (var order in ordersToPaidDTO)
             {
-                foreach (var order in unPaidOrders)
-                {
-                    unPaidOrderDTO.Teams.Append(await _teamRepository.GetAsync(order.OrdersTeams.Where(x => x.OrderID == order.OrderID).Select(x => x.TeamID).SingleOrDefault()));
-                }
-                
+                order.TeamsID = new List<Guid>();
+                order.TeamsID = orderTeams.Where(x => x.OrderID == order.OrderID).Select(x => x.TeamID);
             }
 
             return new JsonResult(ordersToPaidDTO);
