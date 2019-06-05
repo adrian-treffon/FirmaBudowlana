@@ -54,11 +54,12 @@ namespace FirmaBudowlana.Api.Controllers
         //usuwamy niepotrzebnych pracwonikow i oddajemy mi team 
         public async Task<IActionResult> Team()
         {
-            var workers = await _workerRepository.GetAllAsync();
+            var workers = (await _workerRepository.GetAllAsync()).ToList();
             var team = new TeamDTO()
             {
                 Workers = workers,
-                Description = ""
+                Description = "",
+                TeamID = Guid.NewGuid()
             };
 
             return new JsonResult(team);
@@ -71,12 +72,11 @@ namespace FirmaBudowlana.Api.Controllers
             if (teamDTO == null) return BadRequest(new { message = "ERROR" });
 
             var team = _mapper.Map<Team>(teamDTO);
-            team.WorkersTeams = new List<WorkerTeam>();
-            team.TeamID = Guid.NewGuid();
-
+            team.WorkerTeam = new List<WorkerTeam>();
+           
             foreach (var worker in teamDTO.Workers)
             {
-                team.WorkersTeams.Add(
+                team.WorkerTeam.Add(
                     new WorkerTeam()
                     {
                         Team = team,
@@ -106,7 +106,7 @@ namespace FirmaBudowlana.Api.Controllers
             {
                 var team = await _teamRepository.GetAsync(teamID);
 
-                foreach (var ele in team.WorkersTeams)
+                foreach (var ele in team.WorkerTeam)
                 {
                     var worker = await _workerRepository.GetAsync(ele.WorkerID);
                     var days = payment.PaymentDate.DayOfYear - order.StartDate.DayOfYear;

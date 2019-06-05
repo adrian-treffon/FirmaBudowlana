@@ -1,9 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using FirmaBudowlana.Core.DTO;
+using FirmaBudowlana.Core.Models;
 using FirmaBudowlana.Core.Repositories;
+using FirmaBudowlana.Infrastructure.EF;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FirmaBudowlana.Api.Controllers
 {
@@ -15,15 +21,17 @@ namespace FirmaBudowlana.Api.Controllers
         private readonly IWorkerRepository _workerRepository;
         private readonly ITeamRepository _teamRepository;
         private readonly IPaymentRepository _paymentRepository;
+        private readonly DBContext _context;
 
         public ComparisonController(IMapper mapper, IOrderRepository orderRepository, IWorkerRepository workerRepository, 
-            ITeamRepository teamRepository, IPaymentRepository paymentRepository)
+            ITeamRepository teamRepository, IPaymentRepository paymentRepository, DBContext context)
         {
             _mapper = mapper;
             _orderRepository = orderRepository;
             _workerRepository = workerRepository;
             _teamRepository = teamRepository;
             _paymentRepository = paymentRepository;
+            _context = context;
         }
 
 
@@ -67,6 +75,35 @@ namespace FirmaBudowlana.Api.Controllers
         {
             var order = await _orderRepository.GetAsync(id);
             return new JsonResult(order);
+        }
+
+        [HttpGet("Comparison/FullOrders/{id}")] 
+        public async Task<IActionResult> FullOrders(Guid id)
+        {
+            var order = await _orderRepository.GetAsync(id);
+            var fullOrder = _mapper.Map<ComparisonOrderDTO>(order);
+            var payment = (await _paymentRepository.GetAllAsync()).Where(x=> x.OrderID == fullOrder.OrderID).SingleOrDefault();
+            fullOrder.Payment = payment;
+            fullOrder.Teams = new List<TeamDTO>();
+            var teams = (await _context.OrderTeam.ToListAsync()).Where(x => x.OrderID == id).ToList();
+
+            foreach (var teamID in teams)
+            {
+                var team = _mapper.Map<TeamDTO >(await _teamRepository.GetAsync(teamID.TeamID));
+                var workers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.TeamID == team.TeamID).ToList();
+                team.Workers = new List<Worker>();
+
+                foreach (var workerID in workers)
+                {
+                    var worker = await _workerRepository.GetAsync(workerID.WorkerID);
+                    team.Workers.Add(worker);
+                }
+
+                fullOrder.Teams.Add(team);
+            }
+
+           
+            return new JsonResult(fullOrder);
         }
 
         [HttpGet]

@@ -6,5 +6,6 @@ namespace FirmaBudowlana.Core.DTO
     {
         public Guid WorkerID { get; set; }
         public Guid OrderID { get; set; }
+        public decimal Amount { get; set; }
     }
 }

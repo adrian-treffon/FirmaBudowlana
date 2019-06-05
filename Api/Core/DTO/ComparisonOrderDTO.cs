@@ -15,7 +15,7 @@ namespace FirmaBudowlana.Core.DTO
         public decimal Cost { get; set; }
         public string Description { get; set; }
 
-        public IEnumerable<TeamDTO> Teams { get; set; }
-        public PaymentDTO Payment { get; set; } 
+        public List<TeamDTO> Teams { get; set; }
+        public Payment Payment { get; set; } 
     }
 }

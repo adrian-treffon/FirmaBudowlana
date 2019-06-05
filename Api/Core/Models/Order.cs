@@ -16,6 +16,6 @@ namespace FirmaBudowlana.Core.Models
        public Guid UserID { get; set; }
 
        [JsonIgnore]
-       public List<OrderTeam> OrdersTeams { get; set; }
+       public List<OrderTeam> OrderTeam { get; set; }
     }
 }

@@ -14,6 +14,6 @@ namespace FirmaBudowlana.Core.Models
         public decimal ManHour { get; set; }
 
         [JsonIgnore]
-        public IEnumerable<WorkerTeam> WorkersTeams { get; set; }
+        public IEnumerable<WorkerTeam> WorkerTeam { get; set; }
     }
 }

@@ -10,9 +10,9 @@ namespace FirmaBudowlana.Core.Models
         public string Description { get; set; }
 
         [JsonIgnore]
-        public List<WorkerTeam> WorkersTeams { get; set; }
+        public List<WorkerTeam> WorkerTeam { get; set; }
         [JsonIgnore]
-        public List<OrderTeam> OrdersTeams { get; set; }
+        public List<OrderTeam> OrderTeam { get; set; }
     } 
         
 }
