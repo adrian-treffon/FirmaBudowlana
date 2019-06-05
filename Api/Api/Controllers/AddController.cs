@@ -38,7 +38,7 @@ namespace FirmaBudowlana.Api.Controllers
         }
 
         [HttpPost]
-        //działa
+        //dodaje nowego pracownika
         public async Task<IActionResult> Worker([FromBody]WorkerDTO workerDTO)
         {
            if(workerDTO == null) return BadRequest(new { message = "ERROR" });
@@ -50,7 +50,8 @@ namespace FirmaBudowlana.Api.Controllers
         }
 
         [HttpGet]
-        //działa
+        //zwraca gotwy team z wszystkimi pracownikami
+        //usuwamy niepotrzebnych pracwonikow i oddajemy mi team 
         public async Task<IActionResult> Team()
         {
             var workers = await _workerRepository.GetAllAsync();
@@ -63,7 +64,8 @@ namespace FirmaBudowlana.Api.Controllers
             return new JsonResult(team);
         }
 
-        [HttpPost]//sprawdzić
+        [HttpPost]
+        //z teamDTO tworze prawdzimy team i wsadzam do bazy
         public async Task<IActionResult> Team([FromBody] TeamDTO teamDTO)
         {
             if (teamDTO == null) return BadRequest(new { message = "ERROR" });
@@ -91,7 +93,7 @@ namespace FirmaBudowlana.Api.Controllers
         }
 
         [HttpPost]
-        //sprawdzić
+        //płacę za zlecenie
         public async Task<IActionResult> Payment([FromBody]OrderToPaidDTO orderToPaidDTO)
         {
             if (orderToPaidDTO == null) return BadRequest(new { message = "ERROR" });
@@ -120,7 +122,8 @@ namespace FirmaBudowlana.Api.Controllers
         }
 
         [HttpGet]
-        //działa
+        //lista wszystich niezaplaconych zlecen
+        //zawiera id wszystkich teamow z danego zlecenia
         public async Task<IActionResult> Payment()
         {
             IEnumerable<Order> unPaidOrders = await _orderRepository.GetAllUnpaidAsync();

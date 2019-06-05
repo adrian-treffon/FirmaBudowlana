@@ -34,8 +34,8 @@ namespace FirmaBudowlana.Api.Controllers
             return new JsonResult(workers);
         }
 
-        [HttpGet("Workers/{id}")]
-        public async Task<IActionResult> Workers([FromHeader]Guid id)
+        [HttpGet("Comparison/Workers/{id}")]
+        public async Task<IActionResult> Workers(Guid id)
         {
             var worker = await _workerRepository.GetAsync(id);
             return new JsonResult(worker);
@@ -48,8 +48,8 @@ namespace FirmaBudowlana.Api.Controllers
             return new JsonResult(team);
         }
 
-        [HttpGet("Teams/{id}")]
-        public async Task<IActionResult> Teams([FromHeader]Guid id)
+        [HttpGet("Comparison/Teams/{id}")]
+        public async Task<IActionResult> Teams(Guid id)
         {
             var team = await _teamRepository.GetAsync(id);
             return new JsonResult(team);
@@ -62,8 +62,8 @@ namespace FirmaBudowlana.Api.Controllers
             return new JsonResult(order);
         }
 
-        [HttpGet("Orders/{id}")]
-        public async Task<IActionResult> Orders([FromHeader]Guid id)
+        [HttpGet("Comparison/Orders/{id}")]
+        public async Task<IActionResult> Orders(Guid id)
         {
             var order = await _orderRepository.GetAsync(id);
             return new JsonResult(order);
@@ -76,8 +76,8 @@ namespace FirmaBudowlana.Api.Controllers
             return new JsonResult(payment);
         }
 
-        [HttpGet("Payments/{id}")]
-        public async Task<IActionResult> Payments([FromHeader]Guid id)
+        [HttpGet("Comparison/Payments/{id}")]
+        public async Task<IActionResult> Payments(Guid id)
         {
             var payment = await _paymentRepository.GetAsync(id);
             return new JsonResult(payment);

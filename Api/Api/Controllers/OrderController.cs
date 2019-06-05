@@ -4,7 +4,6 @@ using FirmaBudowlana.Core.Models;
 using FirmaBudowlana.Core.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -36,20 +35,19 @@ namespace FirmaBudowlana.Api.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Administrator")]
-        //działa
         public async Task<IActionResult> ShowInvalidated()
         => Ok(await _orderRepository.GetAllInvalidatedAsync());
 
 
-        [HttpGet]
+       
         [Authorize(Roles = "Administrator")]
-        //działa ID w headerze!
-        public async Task<IActionResult> Validate([FromHeader] Guid orderID)
+        [HttpGet]
+        public async Task<IActionResult> Validate(Guid id)
         {
-            if(orderID == Guid.Empty)
+            if(id == Guid.Empty)
             return BadRequest(new { message = "Incorrect ID format" });
            
-            var order = await _orderRepository.GetAsync((Guid)orderID);
+            var order = await _orderRepository.GetAsync(id);
             if (order == null) return NotFound(new { message = "Order not found" });
 
             var teams = await _teamRepository.GetAllAsync();
