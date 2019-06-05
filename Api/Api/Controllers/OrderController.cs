@@ -68,8 +68,7 @@ namespace FirmaBudowlana.Api.Controllers
 
             var order = _mapper.Map<Order>(adminOrder);
             order.Validated = true;
-            order.OrderTeam = new List<OrderTeam>();
-
+          
             foreach (var team in adminOrder.Teams)
             {
                 order.OrderTeam.Add( 

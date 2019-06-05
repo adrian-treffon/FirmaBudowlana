@@ -16,6 +16,11 @@ namespace FirmaBudowlana.Core.DTO
         public string Description { get; set; }
 
         public List<TeamDTO> Teams { get; set; }
-        public Payment Payment { get; set; } 
+        public Payment Payment { get; set; }
+
+        public ComparisonOrderDTO()
+        {
+            Teams = new List<TeamDTO>();
+        }
     }
 }

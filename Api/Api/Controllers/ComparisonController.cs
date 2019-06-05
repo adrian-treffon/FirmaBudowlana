@@ -54,11 +54,7 @@ namespace FirmaBudowlana.Api.Controllers
         {
             var teams = _mapper.Map<IEnumerable<TeamDTO>>(await _teamRepository.GetAllAsync());
 
-            foreach(var team in teams)
-            {
-                team.Workers = new List<Worker>();
-            }
-
+          
             foreach (var team in teams)
             {
                 var workers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.TeamID == team.TeamID).ToList();
@@ -76,7 +72,6 @@ namespace FirmaBudowlana.Api.Controllers
         public async Task<IActionResult> Teams(Guid id)
         {
             var team = _mapper.Map<TeamDTO>(await _teamRepository.GetAsync(id));
-            team.Workers = new List<Worker>();
             var workers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.TeamID == team.TeamID).ToList();
             foreach (var workerID in workers)
             {
@@ -90,14 +85,14 @@ namespace FirmaBudowlana.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Orders()
         {
-            var orders = _mapper.Map<IEnumerable<ComparisonOrderDTO>>(await _orderRepository.GetAllValidatedAsync());
-            List<ComparisonOrderDTO> result = new List<ComparisonOrderDTO>();
-            foreach (var order in orders)
+            var orders = _mapper.Map<IEnumerable<ComparisonOrderDTO>>(await _orderRepository.GetAllValidatedAsync()).ToList();
+            
+            for (int i = 0; i <orders.Count(); i++)
             {
-                result.Add(await MakeUpAnOrder(order));
+                orders[i] = await MakeUpAnOrder(orders[i]);
             }
 
-            return new JsonResult(result);
+            return new JsonResult(orders);
         }
 
       
@@ -130,15 +125,13 @@ namespace FirmaBudowlana.Api.Controllers
         {
             var payment = (await _paymentRepository.GetAllAsync()).Where(x => x.OrderID == order.OrderID).SingleOrDefault();
             order.Payment = payment;
-            order.Teams = new List<TeamDTO>();
             var teams = (await _context.OrderTeam.ToListAsync()).Where(x => x.OrderID == order.OrderID).ToList();
 
             foreach (var teamID in teams)
             {
                 var team = _mapper.Map<TeamDTO>(await _teamRepository.GetAsync(teamID.TeamID));
                 var workers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.TeamID == team.TeamID).ToList();
-                team.Workers = new List<Worker>();
-
+              
                 foreach (var workerID in workers)
                 {
                     var worker = await _workerRepository.GetAsync(workerID.WorkerID);

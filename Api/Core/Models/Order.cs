@@ -17,5 +17,10 @@ namespace FirmaBudowlana.Core.Models
 
        [JsonIgnore]
        public List<OrderTeam> OrderTeam { get; set; }
+
+        public Order()
+        {
+            OrderTeam = new List<OrderTeam>();
+        }
     }
 }

@@ -13,6 +13,12 @@ namespace FirmaBudowlana.Core.Models
         public List<WorkerTeam> WorkerTeam { get; set; }
         [JsonIgnore]
         public List<OrderTeam> OrderTeam { get; set; }
+
+        public Team()
+        {
+            WorkerTeam = new List<WorkerTeam>();
+            OrderTeam = new List<OrderTeam>();
+        }
     } 
         
 }

@@ -9,6 +9,15 @@ namespace FirmaBudowlana.Core.DTO
     {
         public Guid OrderID { get; set; }
         public string Description { get; set; }
-        public IEnumerable<Guid> TeamsID { get; set; }
+        public List<TeamDTO> Teams { get; set; }
+        public decimal PaymentCost { get; set; }
+
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+
+        public OrderToPaidDTO()
+        {
+            Teams = new List<TeamDTO>();
+        }
     }
 }

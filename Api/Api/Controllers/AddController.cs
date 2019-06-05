@@ -50,7 +50,7 @@ namespace FirmaBudowlana.Api.Controllers
         }
 
         [HttpGet]
-        //zwraca gotwy team z wszystkimi pracownikami
+        //zwraca gotowy team z wszystkimi pracownikami
         //usuwamy niepotrzebnych pracwonikow i oddajemy mi team 
         public async Task<IActionResult> Team()
         {
@@ -72,8 +72,7 @@ namespace FirmaBudowlana.Api.Controllers
             if (teamDTO == null) return BadRequest(new { message = "ERROR" });
 
             var team = _mapper.Map<Team>(teamDTO);
-            team.WorkerTeam = new List<WorkerTeam>();
-           
+          
             foreach (var worker in teamDTO.Workers)
             {
                 team.WorkerTeam.Add(
@@ -102,14 +101,14 @@ namespace FirmaBudowlana.Api.Controllers
             payment.PaymentDate = DateTime.UtcNow;
             var order = await _orderRepository.GetAsync(orderToPaidDTO.OrderID);
 
-            foreach (var teamID in orderToPaidDTO.TeamsID)
+            foreach (var teamID in orderToPaidDTO.Teams)
             {
-                var team = await _teamRepository.GetAsync(teamID);
+                var team = await _teamRepository.GetAsync(teamID.TeamID);
 
                 foreach (var ele in team.WorkerTeam)
                 {
                     var worker = await _workerRepository.GetAsync(ele.WorkerID);
-                    var days = payment.PaymentDate.DayOfYear - order.StartDate.DayOfYear;
+                    var days = order.EndDate.Value.DayOfYear - order.StartDate.DayOfYear;
                     payment.PaymentID = Guid.NewGuid();
                     payment.Amount = worker.ManHour * 8 * days;
                     await _paymentRepository.AddAsync(payment);
@@ -123,23 +122,48 @@ namespace FirmaBudowlana.Api.Controllers
 
         [HttpGet]
         //lista wszystich niezaplaconych zlecen
-        //zawiera id wszystkich teamow z danego zlecenia
+        //zawiera wszytskie zespoły wraz z pracownikami i kosztem wszystkich wypłat
         public async Task<IActionResult> Payment()
         {
-            IEnumerable<Order> unPaidOrders = await _orderRepository.GetAllUnpaidAsync();
+            var unPaidOrders = (await _orderRepository.GetAllUnpaidAsync()).ToList();
             if (unPaidOrders == null) return NotFound(new { message = "Cannot find any orders in DB" });
 
-            var ordersToPaidDTO = _mapper.Map<IEnumerable<OrderToPaidDTO>>(unPaidOrders);
-            var orderTeams = await _context.OrderTeam.ToListAsync();
-            var workerTeams = await _context.WorkerTeam.ToListAsync();
+            var ordersDTO = _mapper.Map<IEnumerable<OrderToPaidDTO>>(unPaidOrders);
 
-            foreach (var order in ordersToPaidDTO)
+            foreach (var order in ordersDTO)
             {
-                order.TeamsID = new List<Guid>();
-                order.TeamsID = orderTeams.Where(x => x.OrderID == order.OrderID).Select(x => x.TeamID);
+                var teams = (await _context.OrderTeam.ToListAsync()).Where(x => x.OrderID == order.OrderID).ToList();
+                var days = order.EndDate.DayOfYear - order.StartDate.DayOfYear;
+
+                var startDate = order.StartDate;
+
+                
+                while (startDate.Date != order.EndDate.Date)
+                {
+                    if (startDate.DayOfWeek == DayOfWeek.Saturday || startDate.DayOfWeek == DayOfWeek.Sunday) days--;
+                    startDate = startDate.AddDays(1);
+                }
+
+
+                foreach (var teamID in teams)
+                {
+                    var team = _mapper.Map<TeamDTO>(await _teamRepository.GetAsync(teamID.TeamID));
+                    var workers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.TeamID == team.TeamID).ToList();
+
+                    foreach (var workerID in workers)
+                    {
+                        var worker = await _workerRepository.GetAsync(workerID.WorkerID);
+                        team.Workers.Add(worker);
+                        order.PaymentCost += worker.ManHour * 8 * days;
+                    }
+
+                    order.Teams.Add(team);
+                }
+              
             }
 
-            return new JsonResult(ordersToPaidDTO);
+            return new JsonResult(ordersDTO);
         }
+
     }
 }

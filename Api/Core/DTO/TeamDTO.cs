@@ -11,5 +11,10 @@ namespace FirmaBudowlana.Core.DTO
         public Guid TeamID { get; set; }
         public string Description { get; set; }
         public List<Worker> Workers { get; set; }
+
+        public TeamDTO()
+        {
+            Workers = new List<Worker>();
+        }
     }
 }
