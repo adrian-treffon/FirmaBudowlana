@@ -25,6 +25,7 @@
     "core-js": "^2.5.4",
     "font-awesome": "^4.7.0",
     "moment": "^2.24.0",
+    "ng-multiselect-dropdown": "^0.2.3",
     "ngx-bootstrap": "^4.2.0",
     "ngx-moment": "^3.4.0",
     "rxjs": "~6.3.3",

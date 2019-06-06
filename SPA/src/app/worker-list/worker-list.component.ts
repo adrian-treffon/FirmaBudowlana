@@ -11,6 +11,8 @@ import { Worker } from '../_models/worker';
 })
 export class WorkerListComponent implements OnInit {
   workers: Worker[];
+  // selectedId: string;
+  // isDetailMode = false;
 
 
   constructor(private adminService: AdminService, private alertify: AlertifyService) { }
@@ -22,9 +24,15 @@ export class WorkerListComponent implements OnInit {
   loadWorkers() {
     this.adminService.getWorkers().subscribe((workersTemp: Worker[]) => {
       this.workers = workersTemp;
+      console.log(this.workers);
     }, error => {
-      this.alertify.error(error);
+      this.alertify.error('Nie udało się załadować listy pracowników: ' + error);
     });
   }
 
+  // setSelectedId(inputId: string) {
+  //   this.selectedId = inputId;
+  //   console.log(this.selectedId);
+  //   this.isDetailMode = true;
+  // }
 }

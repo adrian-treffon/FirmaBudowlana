@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace FirmaBudowlana.Controllers
@@ -59,9 +60,21 @@ namespace FirmaBudowlana.Controllers
 
         [Authorize(Roles = "User")]
         [HttpGet]
-        public async Task<IActionResult> Orders([FromBody]Guid userID)
+        public async Task<IActionResult> UserOrders(Guid id)
         {
-            var result = (await _orderRepository.GetAllAsync()).Where(x => x.UserID == userID);
+            var accesToken = Request.Headers["Authorization"];
+
+            try
+            {
+                if (Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) != id) return Unauthorized();
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { message = "Incorrect token" });
+            }
+           
+
+            var result = (await _orderRepository.GetAllAsync()).Where(x => x.UserID == id);
 
             if (result == null)
                 return BadRequest(new { message = "Incorrect id" });
@@ -72,17 +85,27 @@ namespace FirmaBudowlana.Controllers
         }
 
         [Authorize(Roles = "User")]
-        [HttpGet]
-        public async Task<IActionResult> Orders([FromBody]Guid userID, [FromBody]Guid orderid)
+        [HttpGet("Account/OrderDetails/{idUser}/{idOrder}")]
+        public async Task<IActionResult> OrderDetails(Guid idUser, Guid idOrder)
         {
-            var result = (await _orderRepository.GetAllAsync()).Where(x => x.UserID == userID).Single(x => x.OrderID == orderid);
+            var accesToken = Request.Headers["Authorization"];
+
+            try
+            {
+                if (Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) != idUser) return Unauthorized();
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { message = "Incorrect token" });
+            }
+
+            var result = (await _orderRepository.GetAllAsync()).Where(x => x.UserID == idUser).SingleOrDefault(x => x.OrderID == idOrder);
 
             if (result == null)
                 return BadRequest(new { message = "Incorrect id" });
 
             var dto = _mapper.Map<AdminOrderDTO>(result);
-             // dto.Teams = null;
-                
+            
             return new JsonResult(dto);
         }
          

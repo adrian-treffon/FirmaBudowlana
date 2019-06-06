@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FirmaBudowlana.Migrations
 {
-    public partial class Sqlite : Migration
+    public partial class sqliteSecondTempDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

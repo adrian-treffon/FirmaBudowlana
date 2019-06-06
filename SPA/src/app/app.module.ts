@@ -6,6 +6,7 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { RouterModule } from '@angular/router';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
@@ -23,6 +24,13 @@ import { AlertifyService } from './_services/alertify.service';
 import { AdminService } from './_services/admin.service';
 
 import { appRoutes } from './routes';
+import { NewWorkerComponent } from './new-worker/new-worker.component';
+import { TeamListComponent } from './team-list/team-list.component';
+import { OrderListComponent } from './order-list/order-list.component';
+import { NewTeamComponent } from './new-team/new-team.component';
+import { NewTeamResolver } from './resolvers/new-team.resolver';
+import { ValidateOrderComponent } from './validate-order/validate-order.component';
+import { ValidateOrderResolver } from './resolvers/validate-order.resolver';
 
 
 export function tokenGetter() {
@@ -38,7 +46,12 @@ export function tokenGetter() {
       OrdersComponent,
       NewOrderComponent,
       AdminMenuComponent,
-      WorkerListComponent
+      WorkerListComponent,
+      NewWorkerComponent,
+      TeamListComponent,
+      OrderListComponent,
+      NewTeamComponent,
+      ValidateOrderComponent
    ],
    imports: [
       BrowserModule,
@@ -54,13 +67,16 @@ export function tokenGetter() {
          }
       }),
       RouterModule.forRoot(appRoutes),
-      BsDatepickerModule.forRoot()
+      BsDatepickerModule.forRoot(),
+      NgMultiSelectDropDownModule.forRoot()
    ],
    providers: [
       AuthService,
       AlertifyService,
       AdminService,
-      AuthGuard
+      AuthGuard,
+      NewTeamResolver,
+      ValidateOrderResolver
    ],
    bootstrap: [
       AppComponent

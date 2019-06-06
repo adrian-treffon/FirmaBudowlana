@@ -1,3 +1,41 @@
-<p *ngFor="let worker of workers">
-  {{worker.firstName}} {{worker.lastName}}, Specjalizacja: {{worker.specialization}}, {{worker.manHour}} roboczogodzin
-</p>
+<div class="container">
+
+  <br>
+  <div class="col-sm-12">
+      <h1 class="d-inline-block text-secondary">Lista pracowników:</h1>
+      <button type="button" [routerLink]="['/new-worker']" class="btn pull-right btn-info btn-lg text-center">Dodaj nowego pracownika</button>
+  </div>
+  
+  <br><br>
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Imię:</th>
+        <th scope="col">Nazwisko:</th>
+        <th scope="col">Specjalizacja:</th>
+        <th scope="col">zł/roboczogodzina:</th>
+        <th scope="col">Zespoły TEMP:</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let worker of workers">
+        <td>{{worker.firstName}}</td>
+        <td>{{worker.lastName}}</td>
+        <td>{{worker.specialization}}</td>
+        <td>{{worker.manHour}}</td>
+        <td> <div style="cursor: pointer;" class="btn-group mr-4" dropdown>
+            <button id="button-basic" dropdownToggle type="button" class="btn btn-outline-dark dropdown-toggle"
+                    aria-controls="dropdown-basic">
+                    Zespoły<span class="caret"></span>
+            </button>
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu"
+                role="menu" aria-labelledby="button-basic">
+              <li role="menuitem"><a class="dropdown-item">Zespół 1</a></li>
+              <li role="menuitem"><a class="dropdown-item">Zespół 2</a></li>
+            </ul>
+          </div></td>
+      </tr>
+    </tbody>
+  </table>
+  
+</div>

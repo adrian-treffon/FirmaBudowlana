@@ -14,14 +14,14 @@
       "environmentVariables": {
         "ASPNETCORE_My_Environment": "1",
         "ASPNETCORE_DETAILEDERRORS": "1",
-        "ASPNETCORE_ENVIRONMENT": "Production"
+        "ASPNETCORE_ENVIRONMENT": "Staging"
       }
     },
     "EnvironmentsSample": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Developement"
+        "ASPNETCORE_ENVIRONMENT": "Staging"
       },
       "applicationUrl": "http://localhost:54340/"
     },
@@ -31,7 +31,7 @@
       "environmentVariables": {
         "ASPNETCORE_My_Environment": "1",
         "ASPNETCORE_DETAILEDERRORS": "1",
-        "ASPNETCORE_ENVIRONMENT": "Developement"
+        "ASPNETCORE_ENVIRONMENT": "Staging"
       },
       "applicationUrl": "http://localhost:51997/"
     }

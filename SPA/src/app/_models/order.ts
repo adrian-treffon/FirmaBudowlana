@@ -1,8 +1,10 @@
 export interface Order {
-    orderId: string;
-    userId: string;
+    orderID: string;
     startDate: Date;
     endDate: Date;
     cost: number;
     description: string;
+    validated: boolean;
+    paid: boolean;
+    userId: string;
 }

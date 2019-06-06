@@ -25,6 +25,8 @@ namespace FirmaBudowlana.Infrastructure.EF
         public DbSet<Worker> Workers { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderTeam> OrderTeam { get; set; }
+        public DbSet<WorkerTeam> WorkerTeam { get; set; }
 
 
     }

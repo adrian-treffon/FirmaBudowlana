@@ -34,16 +34,22 @@ namespace FirmaBudowlana.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrator")]
+        [Authorize]
         public async Task<IActionResult> ShowInvalidated()
         => Ok(await _orderRepository.GetAllInvalidatedAsync());
 
 
+       
+        [Authorize]
         [HttpGet]
-        [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Validate([FromBody]Guid orderID)
+        public async Task<IActionResult> Validate(Guid id)
         {
-            var order = await _orderRepository.GetAsync(orderID);
+            if(id == Guid.Empty)
+            return BadRequest(new { message = "Incorrect ID format" });
+           
+            var order = await _orderRepository.GetAsync(id);
+            if (order == null) return NotFound(new { message = "Order not found" });
+
             var teams = await _teamRepository.GetAllAsync();
 
             var dto = _mapper.Map<AdminOrderDTO>(order);
@@ -54,7 +60,7 @@ namespace FirmaBudowlana.Api.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Administrator")]
+        [Authorize]
         public async Task<IActionResult> Validate([FromBody]AdminOrderDTO adminOrder)
         {
             var _order = await _orderRepository.GetAsync(adminOrder.OrderID);
@@ -62,13 +68,10 @@ namespace FirmaBudowlana.Api.Controllers
 
             var order = _mapper.Map<Order>(adminOrder);
             order.Validated = true;
-
-
-            order.OrdersTeams = new List<OrderTeam>();
-
+          
             foreach (var team in adminOrder.Teams)
             {
-                order.OrdersTeams.Add( 
+                order.OrderTeam.Add( 
                     new OrderTeam
                     {
                         Order = order,

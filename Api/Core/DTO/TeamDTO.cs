@@ -8,7 +8,13 @@ namespace FirmaBudowlana.Core.DTO
 {
     public class TeamDTO
     {
+        public Guid TeamID { get; set; }
         public string Description { get; set; }
-        public IEnumerable<Worker> Workers { get; set; }
+        public List<Worker> Workers { get; set; }
+
+        public TeamDTO()
+        {
+            Workers = new List<Worker>();
+        }
     }
 }

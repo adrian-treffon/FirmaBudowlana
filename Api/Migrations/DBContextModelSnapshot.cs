@@ -3,7 +3,6 @@ using System;
 using FirmaBudowlana.Infrastructure.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FirmaBudowlana.Migrations
@@ -15,9 +14,7 @@ namespace FirmaBudowlana.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099");
 
             modelBuilder.Entity("FirmaBudowlana.Core.Models.Order", b =>
                 {
@@ -146,12 +143,12 @@ namespace FirmaBudowlana.Migrations
             modelBuilder.Entity("FirmaBudowlana.Core.Models.OrderTeam", b =>
                 {
                     b.HasOne("FirmaBudowlana.Core.Models.Order", "Order")
-                        .WithMany("OrdersTeams")
+                        .WithMany("OrderTeam")
                         .HasForeignKey("OrderID")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("FirmaBudowlana.Core.Models.Team", "Team")
-                        .WithMany("OrdersTeams")
+                        .WithMany("OrderTeam")
                         .HasForeignKey("TeamID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -159,12 +156,12 @@ namespace FirmaBudowlana.Migrations
             modelBuilder.Entity("FirmaBudowlana.Core.Models.WorkerTeam", b =>
                 {
                     b.HasOne("FirmaBudowlana.Core.Models.Team", "Team")
-                        .WithMany("WorkersTeams")
+                        .WithMany("WorkerTeam")
                         .HasForeignKey("TeamID")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("FirmaBudowlana.Core.Models.Worker", "Worker")
-                        .WithMany("WorkersTeams")
+                        .WithMany("WorkerTeam")
                         .HasForeignKey("WorkerID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

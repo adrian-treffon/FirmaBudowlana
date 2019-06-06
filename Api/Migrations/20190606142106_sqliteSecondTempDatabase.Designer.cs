@@ -3,23 +3,57 @@ using System;
 using FirmaBudowlana.Infrastructure.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FirmaBudowlana.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20190522102213_Payment")]
-    partial class Payment
+    [Migration("20190606142106_sqliteSecondTempDatabase")]
+    partial class sqliteSecondTempDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099");
+
+            modelBuilder.Entity("FirmaBudowlana.Core.Models.Order", b =>
+                {
+                    b.Property<Guid>("OrderID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<decimal?>("Cost");
+
+                    b.Property<string>("Description");
+
+                    b.Property<DateTime?>("EndDate");
+
+                    b.Property<bool>("Paid");
+
+                    b.Property<DateTime>("StartDate");
+
+                    b.Property<Guid>("UserID");
+
+                    b.Property<bool>("Validated");
+
+                    b.HasKey("OrderID");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("FirmaBudowlana.Core.Models.OrderTeam", b =>
+                {
+                    b.Property<Guid>("OrderID");
+
+                    b.Property<Guid>("TeamID");
+
+                    b.HasKey("OrderID", "TeamID");
+
+                    b.HasIndex("TeamID");
+
+                    b.ToTable("OrderTeam");
+                });
 
             modelBuilder.Entity("FirmaBudowlana.Core.Models.Payment", b =>
                 {
@@ -27,6 +61,8 @@ namespace FirmaBudowlana.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<decimal>("Amount");
+
+                    b.Property<Guid>("OrderID");
 
                     b.Property<DateTime>("PaymentDate");
 
@@ -106,15 +142,28 @@ namespace FirmaBudowlana.Migrations
                     b.ToTable("WorkerTeam");
                 });
 
+            modelBuilder.Entity("FirmaBudowlana.Core.Models.OrderTeam", b =>
+                {
+                    b.HasOne("FirmaBudowlana.Core.Models.Order", "Order")
+                        .WithMany("OrderTeam")
+                        .HasForeignKey("OrderID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FirmaBudowlana.Core.Models.Team", "Team")
+                        .WithMany("OrderTeam")
+                        .HasForeignKey("TeamID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("FirmaBudowlana.Core.Models.WorkerTeam", b =>
                 {
                     b.HasOne("FirmaBudowlana.Core.Models.Team", "Team")
-                        .WithMany("WorkersTeams")
+                        .WithMany("WorkerTeam")
                         .HasForeignKey("TeamID")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("FirmaBudowlana.Core.Models.Worker", "Worker")
-                        .WithMany("WorkersTeams")
+                        .WithMany("WorkerTeam")
                         .HasForeignKey("WorkerID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

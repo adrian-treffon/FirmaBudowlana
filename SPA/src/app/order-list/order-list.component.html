@@ -1,0 +1,27 @@
+<div class="container" *ngIf="!editMode">
+
+  <br>
+  <div class="col-sm-12">
+      <h1 class="d-inline-block text-secondary">Lista niezatwierdzonych zleceń:</h1>
+  </div>
+  
+  <br><br>
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">ID:</th>
+        <th scope="col">Data rozpoczęcia:</th>
+        <th scope="col">Opis:</th>
+        <th scope="col">Zatwierdź zlecenie:</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of orderList">
+        <td>{{order.orderID}}</td>
+        <td>{{order.startDate | date:'dd/MM/yyyy'}}</td>
+        <td>{{order.description}}</td>
+        <td><button type="button" class="btn btn-secondary ml-4" [routerLink]="['/validate-order', order]">Zatwierdź</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
