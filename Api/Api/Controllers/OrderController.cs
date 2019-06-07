@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace FirmaBudowlana.Api.Controllers
@@ -29,18 +30,19 @@ namespace FirmaBudowlana.Api.Controllers
         {
             var order = _mapper.Map<Order>(clOrder);
             order.OrderID = Guid.NewGuid();
+            order.UserID = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             await _orderRepository.AddAsync(order);
             return Ok();
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ShowInvalidated()
         => Ok(await _orderRepository.GetAllInvalidatedAsync());
 
 
        
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Validate(Guid id)
         {
@@ -60,7 +62,7 @@ namespace FirmaBudowlana.Api.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Validate([FromBody]AdminOrderDTO adminOrder)
         {
             var _order = await _orderRepository.GetAsync(adminOrder.OrderID);

@@ -14,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FirmaBudowlana.Api.Controllers
 {
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = "Admin")]
     public class AddController : Controller
     {
 
@@ -49,22 +49,6 @@ namespace FirmaBudowlana.Api.Controllers
            return Ok();
         }
 
-        [HttpGet]
-        //zwraca gotowy team z wszystkimi pracownikami
-        //usuwamy niepotrzebnych pracwonikow i oddajemy mi team 
-        public async Task<IActionResult> Team()
-        {
-            var workers = (await _workerRepository.GetAllAsync()).ToList();
-            var team = new TeamDTO()
-            {
-                Workers = workers,
-                Description = "",
-                TeamID = Guid.NewGuid()
-            };
-
-            return new JsonResult(team);
-        }
-
         [HttpPost]
         //z teamDTO tworze prawdzimy team i wsadzam do bazy
         public async Task<IActionResult> Team([FromBody] TeamDTO teamDTO)
@@ -72,6 +56,7 @@ namespace FirmaBudowlana.Api.Controllers
             if (teamDTO == null) return BadRequest(new { message = "ERROR" });
 
             var team = _mapper.Map<Team>(teamDTO);
+            team.TeamID = Guid.NewGuid();
           
             foreach (var worker in teamDTO.Workers)
             {
