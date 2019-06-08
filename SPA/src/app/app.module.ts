@@ -31,7 +31,10 @@ import { NewTeamComponent } from './new-team/new-team.component';
 import { NewTeamResolver } from './resolvers/new-team.resolver';
 import { ValidateOrderComponent } from './validate-order/validate-order.component';
 import { ValidateOrderResolver } from './resolvers/validate-order.resolver';
-
+import { NavResolver } from './resolvers/nav.resolver';
+import { OrderDetailsComponent } from './order-details/order-details.component';
+import { OrderDetailsResolver } from './resolvers/order-details.resolver';
+import { DatePipe } from '@angular/common';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -51,7 +54,8 @@ export function tokenGetter() {
       TeamListComponent,
       OrderListComponent,
       NewTeamComponent,
-      ValidateOrderComponent
+      ValidateOrderComponent,
+      OrderDetailsComponent
    ],
    imports: [
       BrowserModule,
@@ -76,7 +80,10 @@ export function tokenGetter() {
       AdminService,
       AuthGuard,
       NewTeamResolver,
-      ValidateOrderResolver
+      ValidateOrderResolver,
+      NavResolver,
+      OrderDetailsResolver,
+      DatePipe
    ],
    bootstrap: [
       AppComponent

@@ -9,9 +9,28 @@ import { AuthService } from '../_services/auth.service';
   styleUrls: ['./orders.component.css']
 })
 export class OrdersComponent implements OnInit {
+  userOrderList: Order[];
 
-  constructor(private authService: AuthService, private alertify: AlertifyService) { }
+  constructor(public authService: AuthService, private alertify: AlertifyService) { }
 
   ngOnInit() {
+    this.loadUserOrderList();
   }
-}
+
+  loadUserOrderList() {
+    this.authService.getUserOrderList().subscribe((ordersTemp: Order[]) => {
+      this.userOrderList = ordersTemp;
+  }, error => {
+    this.alertify.error('Nie udało się załadować listy zleceń: ' + error);
+  });
+  }
+
+  isPaidText(isPaidBool: boolean) {
+    if (isPaidBool === true) {
+      return 'Tak';
+    } else {
+        return 'Nie';
+      }
+    }
+  }
+

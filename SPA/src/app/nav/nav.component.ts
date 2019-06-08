@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../_services/auth.service';
 import { AlertifyService } from '../_services/alertify.service';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-nav',
@@ -10,10 +11,20 @@ import { Router } from '@angular/router';
 })
 export class NavComponent implements OnInit {
   model: any = {};
+  subscription: Subscription;
+  roleLocal: string;
 
-  constructor(public authService: AuthService, private alertify: AlertifyService, private router: Router) { }
+  constructor(public authService: AuthService, private alertify: AlertifyService, private router: Router) {
+  }
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  goHome() {
+    if (this.authService.isAdmin) {
+      this.router.navigate(['admin-menu']);
+    } else {
+      this.router.navigate(['order-list']);
+    }
   }
 
   login() {
@@ -23,12 +34,21 @@ export class NavComponent implements OnInit {
       this.alertify.error('Nie udało się zalogować' + error);
       console.log(error);
     }, () => {
-      this.router.navigate(['/newOrder']);
+     this.navigate();
     });
   }
 
   loggedIn() {
     return this.authService.loggedIn();
+  }
+
+  navigate() {
+    if (this.authService.isAdmin) {
+      this.router.navigate(['/admin-menu']);
+    }
+    if (this.authService.isUser) {
+      this.router.navigate(['/newOrder']);
+    }
   }
 
   logout() {
@@ -37,15 +57,16 @@ export class NavComponent implements OnInit {
     this.authService.decodedToken = null;
     this.authService.currentUser = null;
     this.alertify.message('Wylogowano');
+    this.roleLocal = 'User';
     this.router.navigate(['/home']);
   }
 
-  isAdmin() {
-    const role = this.authService.role;
-    if (role === 'Admin') {
-      return true;
-    } else {
-      return false;
-    }
-  }
+  // isAdmin() {
+  //  if (this.authService.isAdmin()) {
+  //    return true;
+  //  }
+  //  if (!this.authService.isAdmin()) {
+  //    return false;
+  //  }
+  // }
 }

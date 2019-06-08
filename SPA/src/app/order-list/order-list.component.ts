@@ -23,7 +23,6 @@ export class OrderListComponent implements OnInit {
   loadOrders() {
     this.adminService.getUnvalidatedOrders().subscribe((ordersTemp: Order[]) => {
         this.orderList = ordersTemp;
-        console.log(this.orderList);
     }, error => {
       this.alertify.error('Nie udało się załadować listy zleceń: ' + error);
     });

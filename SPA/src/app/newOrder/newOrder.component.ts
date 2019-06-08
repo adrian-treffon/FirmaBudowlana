@@ -41,7 +41,6 @@ export class NewOrderComponent implements OnInit {
         }, error => {
           this.alertify.error('Nie udało się złożyć zamówienia' + error);
         });
-      console.log(this.order);
       this.isSubmited = true;
     }
   }

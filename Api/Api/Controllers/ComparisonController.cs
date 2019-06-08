@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FirmaBudowlana.Api.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class ComparisonController : Controller
     {
         private readonly IMapper _mapper;

@@ -12,9 +12,14 @@ import { NewTeamComponent } from './new-team/new-team.component';
 import { NewTeamResolver } from './resolvers/new-team.resolver';
 import { ValidateOrderComponent } from './validate-order/validate-order.component';
 import { ValidateOrderResolver } from './resolvers/validate-order.resolver';
+import { NavComponent } from './nav/nav.component';
+import { NavResolver } from './resolvers/nav.resolver';
+import { OrderDetailsComponent } from './order-details/order-details.component';
+import { OrderDetailsResolver } from './resolvers/order-details.resolver';
 
 export const appRoutes: Routes = [
     { path: '', component: HomeComponent},
+    { path: 'nav', component: NavComponent, resolve: {token: NavResolver}},
     {
         path: '',
         runGuardsAndResolvers: 'always',
@@ -28,7 +33,8 @@ export const appRoutes: Routes = [
             { path: 'team-list', component: TeamListComponent },
             { path: 'order-list', component: OrderListComponent},
             { path: 'new-team', component: NewTeamComponent, resolve: {workers: NewTeamResolver}},
-            { path: 'validate-order', component: ValidateOrderComponent, resolve: {teams: ValidateOrderResolver}}
+            { path: 'validate-order/:id', component: ValidateOrderComponent, pathMatch: 'full', resolve: {teams: ValidateOrderResolver}},
+            { path: 'order-details/:id', component: OrderDetailsComponent, pathMatch: 'full', resolve: {order: OrderDetailsResolver}}
         ]
     },
     { path: '**', redirectTo: '', pathMatch: 'full'}

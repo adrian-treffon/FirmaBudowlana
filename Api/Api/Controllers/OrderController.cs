@@ -2,10 +2,12 @@
 using FirmaBudowlana.Core.DTO;
 using FirmaBudowlana.Core.Models;
 using FirmaBudowlana.Core.Repositories;
+using FirmaBudowlana.Infrastructure.EF;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace FirmaBudowlana.Api.Controllers
@@ -16,12 +18,14 @@ namespace FirmaBudowlana.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IOrderRepository _orderRepository;
         private readonly ITeamRepository _teamRepository;
+        private readonly DBContext _context;
 
-        public OrderController(IMapper mapper, IOrderRepository orderRepository, ITeamRepository teamRepository)
+        public OrderController(IMapper mapper, IOrderRepository orderRepository, ITeamRepository teamRepository, DBContext context)
         {
             _mapper = mapper;
             _orderRepository = orderRepository;
             _teamRepository = teamRepository;
+            _context = context;
         }
 
         [HttpPost]
@@ -29,18 +33,19 @@ namespace FirmaBudowlana.Api.Controllers
         {
             var order = _mapper.Map<Order>(clOrder);
             order.OrderID = Guid.NewGuid();
+            order.UserID = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             await _orderRepository.AddAsync(order);
             return Ok();
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ShowInvalidated()
         => Ok(await _orderRepository.GetAllInvalidatedAsync());
 
 
        
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Validate(Guid id)
         {
@@ -60,7 +65,7 @@ namespace FirmaBudowlana.Api.Controllers
 
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Validate([FromBody]AdminOrderDTO adminOrder)
         {
             var _order = await _orderRepository.GetAsync(adminOrder.OrderID);
@@ -81,7 +86,8 @@ namespace FirmaBudowlana.Api.Controllers
                     }
                     );
             }
-           
+
+            await _context.OrderTeam.AddRangeAsync(order.OrderTeam);
             await _orderRepository.UpdateAsync(order);
             return Ok();
         }

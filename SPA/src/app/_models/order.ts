@@ -1,3 +1,5 @@
+import { Team } from './team';
+
 export interface Order {
     orderID: string;
     startDate: Date;
@@ -7,4 +9,5 @@ export interface Order {
     validated: boolean;
     paid: boolean;
     userId: string;
+    teams: Team[];
 }

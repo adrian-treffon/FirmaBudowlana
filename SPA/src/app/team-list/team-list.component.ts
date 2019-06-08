@@ -20,7 +20,6 @@ export class TeamListComponent implements OnInit {
   loadTeams() {
     this.adminService.getTeams().subscribe((teamsTemp: Team[]) => {
         this.teamList = teamsTemp;
-        console.log(this.teamList);
     }, error => {
       this.alertify.error('Nie udało się załadować listy zespołów: ' + error);
     });

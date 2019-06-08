@@ -79,7 +79,6 @@ export class NewTeamComponent implements OnInit {
     if (this.newTeamForm.valid) {
       this.team = Object.assign({}, this.newTeamForm.value);
       this.team.workers = this.workersToSendList;
-      console.log(this.team);
       this.adminService.addNewTeam(this.team).subscribe(() => {
       this.alertify.success('Dodano nowy zespół');
       }, error => {

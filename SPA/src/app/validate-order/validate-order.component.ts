@@ -14,7 +14,8 @@ import { Order } from '../_models/order';
 })
 export class ValidateOrderComponent implements OnInit {
   teams: Team[] = new Array();
-  orderFromList: Order = null;
+  orderId: string = null;
+  order: Order = null;
   bsConfig: Partial<BsDatepickerConfig>;
   validateOrderForm: FormGroup;
   allTeamsList: Team[];
@@ -32,11 +33,14 @@ export class ValidateOrderComponent implements OnInit {
       this.teams = data.teams;
     });
     this.route.params.subscribe(params => {
-      console.log(params);
-      this.orderFromList = params.order;
+      this.orderId = params.id;
+      this.adminService.getOrder(this.orderId).subscribe((orderTemp: Order) => {
+        this.order = orderTemp;
+      }, error => {
+        this.alertify.error('Nie udało się załadować zamówienia do edycji: ' + error);
+      });
     });
 
-    console.log(this.teams);
     this.createValidateOrderForm();
     this.dropdownList = [
       {item_id: 1, item_text: 'Test bo nie ma zespołów XD'}
@@ -79,7 +83,20 @@ export class ValidateOrderComponent implements OnInit {
   }
 
   validateOrder() {
+    if (this.validateOrderForm.valid) {
+      const tempOrderPart = Object.assign({}, this.validateOrderForm.value);
+      this.order = Object.assign(this.order, tempOrderPart);
+      this.order.teams = this.teamsToAllocate;
+      console.log(this.order);
 
+      this.adminService.validateOrder(this.order).subscribe(()  => {
+        this.alertify.success('Zatwierdzono zamówienie');
+      }, error => {
+        this.alertify.error('Błąd podczas zatwierdzania zamówienia: ' + error);
+      }, () => {
+        this.router.navigate(['/order-list']);
+      });
+    }
   }
 
   cancel() {

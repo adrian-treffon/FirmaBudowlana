@@ -1,3 +1,27 @@
-<p>
-  orders works!
-</p>
+<div class="container">
+
+  <br>
+  <div class="col-sm-12">
+      <h1 class="d-inline-block text-secondary">Twoje zlecenia:</h1>
+  </div>
+  
+  <br><br>
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">ID:</th>
+        <th scope="col">Opis:</th>
+        <th scope="col">Zatwierdzone:</th>
+        <th scope="col">Szczegóły:</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of userOrderList">
+        <td>{{order.orderID}}</td>
+        <td>{{order.description}}</td>
+        <td>{{this.isPaidText(order.paid)}}</td>
+        <td><button type="button" class="btn btn-secondary" [routerLink]="['/order-details', order.orderID]">Szczegóły</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

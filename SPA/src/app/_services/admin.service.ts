@@ -28,11 +28,19 @@ export class AdminService {
     return this.httpClient.post(this.baseUrl + 'add/team', team);
   }
 
+  validateOrder(order: Order) {
+    return this.httpClient.post(this.baseUrl + 'order/validate', order);
+  }
+
   getTeams(): Observable<Team[]> {
     return this.httpClient.get<Team[]>(this.baseUrl + 'comparison/teams');
   }
 
   getUnvalidatedOrders(): Observable<Order[]> {
     return this.httpClient.get<Order[]>(this.baseUrl + 'order/showInvalidated');
+  }
+
+  getOrder(id: string): Observable<Order> {
+    return this.httpClient.get<Order>(this.baseUrl + 'order/validate/' + id);
   }
 }
