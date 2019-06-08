@@ -2,6 +2,7 @@
 using FirmaBudowlana.Core.DTO;
 using FirmaBudowlana.Core.Models;
 using FirmaBudowlana.Core.Repositories;
+using FirmaBudowlana.Infrastructure.EF;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -17,12 +18,14 @@ namespace FirmaBudowlana.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IOrderRepository _orderRepository;
         private readonly ITeamRepository _teamRepository;
+        private readonly DBContext _context;
 
-        public OrderController(IMapper mapper, IOrderRepository orderRepository, ITeamRepository teamRepository)
+        public OrderController(IMapper mapper, IOrderRepository orderRepository, ITeamRepository teamRepository, DBContext context)
         {
             _mapper = mapper;
             _orderRepository = orderRepository;
             _teamRepository = teamRepository;
+            _context = context;
         }
 
         [HttpPost]
@@ -83,7 +86,8 @@ namespace FirmaBudowlana.Api.Controllers
                     }
                     );
             }
-           
+
+            await _context.OrderTeam.AddRangeAsync(order.OrderTeam);
             await _orderRepository.UpdateAsync(order);
             return Ok();
         }

@@ -37,7 +37,7 @@ namespace FirmaBudowlana.Core.Repositories
         => await _context.Orders.Where(x => x.Validated == true).ToListAsync();
 
         public async Task<Order> GetAsync(Guid id)
-        => await _context.Orders.SingleOrDefaultAsync(x => x.OrderID == id);
+        => await _context.Orders.AsNoTracking().SingleOrDefaultAsync(x => x.OrderID == id);
 
         public async Task RemoveAsync(Guid id)
         {
