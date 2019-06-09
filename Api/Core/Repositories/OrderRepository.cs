@@ -30,7 +30,7 @@ namespace FirmaBudowlana.Core.Repositories
          => await _context.Orders.Where(x => x.Validated == false).ToListAsync();
 
         public async Task<IEnumerable<Order>> GetAllUnpaidAsync()
-             => await _context.Orders.Where(x => x.Paid== false).ToListAsync();
+             => await _context.Orders.Where(x => x.Paid== false && x.Validated == true).ToListAsync();
 
 
         public async Task<IEnumerable<Order>> GetAllValidatedAsync()

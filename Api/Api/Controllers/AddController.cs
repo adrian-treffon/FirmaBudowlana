@@ -122,6 +122,11 @@ namespace FirmaBudowlana.Api.Controllers
 
                 var startDate = order.StartDate;
 
+                if (days < 0)
+                {
+                   return BadRequest(new { message = "ERROE" });
+                }
+
                 
                 while (startDate.Date != order.EndDate.Date)
                 {
