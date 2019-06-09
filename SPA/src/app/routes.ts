@@ -16,6 +16,11 @@ import { NavComponent } from './nav/nav.component';
 import { NavResolver } from './resolvers/nav.resolver';
 import { OrderDetailsComponent } from './order-details/order-details.component';
 import { OrderDetailsResolver } from './resolvers/order-details.resolver';
+import { OrdersAllListComponent } from './orders-all-list/orders-all-list.component';
+import { OrdersAllResolver } from './resolvers/orders-all-list.resolver';
+import { NewPaymentComponent } from './new-payment/new-payment.component';
+import { PaymentPaidListComponent } from './payment-paid-list/payment-paid-list.component';
+import { PaymentUnpaidListComponent } from './payment-unpaid-list/payment-unpaid-list.component';
 
 export const appRoutes: Routes = [
     { path: '', component: HomeComponent},
@@ -32,6 +37,10 @@ export const appRoutes: Routes = [
             { path: 'new-worker', component: NewWorkerComponent },
             { path: 'team-list', component: TeamListComponent },
             { path: 'order-list', component: OrderListComponent},
+            { path: 'new-payment', component: NewPaymentComponent},
+            { path: 'payment-paid-list', component: PaymentPaidListComponent},
+            { path: 'payment-unpaid-list', component: PaymentUnpaidListComponent},
+            { path: 'order-all-list', component: OrdersAllListComponent, resolve: {orders: OrdersAllResolver}},
             { path: 'new-team', component: NewTeamComponent, resolve: {workers: NewTeamResolver}},
             { path: 'validate-order/:id', component: ValidateOrderComponent, pathMatch: 'full', resolve: {teams: ValidateOrderResolver}},
             { path: 'order-details/:id', component: OrderDetailsComponent, pathMatch: 'full', resolve: {order: OrderDetailsResolver}}

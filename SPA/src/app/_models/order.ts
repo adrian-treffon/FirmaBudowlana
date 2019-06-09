@@ -5,9 +5,10 @@ export interface Order {
     startDate: Date;
     endDate: Date;
     cost: number;
+    paymentCost: number;
     description: string;
     validated: boolean;
     paid: boolean;
-    userId: string;
+    userID: string;
     teams: Team[];
 }

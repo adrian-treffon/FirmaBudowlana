@@ -35,6 +35,11 @@ import { NavResolver } from './resolvers/nav.resolver';
 import { OrderDetailsComponent } from './order-details/order-details.component';
 import { OrderDetailsResolver } from './resolvers/order-details.resolver';
 import { DatePipe } from '@angular/common';
+import { OrdersAllListComponent } from './orders-all-list/orders-all-list.component';
+import { OrdersAllResolver } from './resolvers/orders-all-list.resolver';
+import { NewPaymentComponent } from './new-payment/new-payment.component';
+import { PaymentPaidListComponent } from './payment-paid-list/payment-paid-list.component';
+import { PaymentUnpaidListComponent } from './payment-unpaid-list/payment-unpaid-list.component';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -55,7 +60,11 @@ export function tokenGetter() {
       OrderListComponent,
       NewTeamComponent,
       ValidateOrderComponent,
-      OrderDetailsComponent
+      OrderDetailsComponent,
+      OrdersAllListComponent,
+      NewPaymentComponent,
+      PaymentPaidListComponent,
+      PaymentUnpaidListComponent
    ],
    imports: [
       BrowserModule,
@@ -83,6 +92,7 @@ export function tokenGetter() {
       ValidateOrderResolver,
       NavResolver,
       OrderDetailsResolver,
+      OrdersAllResolver,
       DatePipe
    ],
    bootstrap: [

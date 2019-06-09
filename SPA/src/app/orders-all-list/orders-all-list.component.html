@@ -1,0 +1,36 @@
+<div class="container">
+  <br>
+  <div class="col-sm-12">
+      <h1 class="d-inline-block text-secondary">Zatwierdzone zlecenia:</h1>
+  </div>
+  
+  <br><br>
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">ID zamówienia:</th>
+        <th scope="col">Data rozpoczęcia:</th>
+        <th scope="col">Data zakończenia:</th>
+        <th scope="col">Koszt:</th>
+        <th scope="col">Opis:</th>
+        <th scope="col">Opłacone:</th>
+        <th scope="col">ID użytkownika:</th>
+        <th scope="col">Zespoły:</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of orderList; let i = index">
+        <td>{{order.orderID}}</td>
+        <td>{{order.startDate | date:'dd/MM/yyyy'}}</td>
+        <td>{{this.getEndDate(i)}}</td>
+        <td>{{this.getCost(i)}}</td>
+        <td>{{order.description}}</td>
+        <td>{{this.getPaid(i)}}</td>
+        <td>{{order.userID}}</td>
+        <td>
+            <span *ngFor="let team of order.teams; let j = index">{{team.description}}, </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Worker } from '../_models/worker';
 import { Team } from '../_models/team';
 import { Order } from '../_models/order';
+import { Payment } from '../_models/payment';
 
 
 
@@ -18,6 +19,18 @@ export class AdminService {
 
   getWorkers(): Observable<Worker[]> {
     return this.httpClient.get<Worker[]>(this.baseUrl + 'comparison/workers');
+  }
+
+  getUnpaidPayments(): Observable<Order[]> {
+    return this.httpClient.get<Order[]>(this.baseUrl + 'add/payment')
+  }
+
+  getPaidPayments(): Observable<Payment[]> {
+    return this.httpClient.get<Payment[]>(this.baseUrl + 'comparison/payments');
+  }
+
+  addPayment(order: Order) {
+    return this.httpClient.post(this.baseUrl + 'add/payment', order);
   }
 
   addNewWorker(worker: Worker) {
@@ -38,6 +51,10 @@ export class AdminService {
 
   getUnvalidatedOrders(): Observable<Order[]> {
     return this.httpClient.get<Order[]>(this.baseUrl + 'order/showInvalidated');
+  }
+
+  getAllOrders(): Observable<Order[]> {
+    return this.httpClient.get<Order[]>(this.baseUrl + 'comparison/orders');
   }
 
   getOrder(id: string): Observable<Order> {

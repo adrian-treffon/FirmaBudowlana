@@ -21,6 +21,7 @@ export class WorkerListComponent implements OnInit {
   loadWorkers() {
     this.adminService.getWorkers().subscribe((workersTemp: Worker[]) => {
       this.workers = workersTemp;
+      console.log(this.workers);
     }, error => {
       this.alertify.error('Nie udało się załadować listy pracowników: ' + error);
     });
