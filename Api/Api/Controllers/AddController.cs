@@ -112,7 +112,6 @@ namespace FirmaBudowlana.Api.Controllers
         {
             var unPaidOrders = (await _orderRepository.GetAllUnpaidAsync()).ToList();
             if (unPaidOrders == null) return NotFound(new { message = "Cannot find any orders in DB" });
-
             var ordersDTO = _mapper.Map<IEnumerable<OrderToPaidDTO>>(unPaidOrders);
 
             foreach (var order in ordersDTO)
@@ -121,6 +120,11 @@ namespace FirmaBudowlana.Api.Controllers
                 var days = order.EndDate.DayOfYear - order.StartDate.DayOfYear;
 
                 var startDate = order.StartDate;
+
+                if (days < 0)
+                {
+                   return BadRequest(new { message = "At least one EndDate is earlier than StartDate" });
+                }
 
                 
                 while (startDate.Date != order.EndDate.Date)

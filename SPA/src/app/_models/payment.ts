@@ -1,10 +1,7 @@
-import { Team } from './team';
-
 export interface Payment {
+    paymentID: string;
+    workerID: string;
     orderID: string;
-    description: string;
-    teams: Team[];
-    paymentCost: number;
-    startDate: Date;
-    endDate: Date;
+    paymentDate: Date;
+    amount: number;
 }

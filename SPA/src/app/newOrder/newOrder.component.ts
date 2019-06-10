@@ -35,7 +35,7 @@ export class NewOrderComponent implements OnInit {
   submitOrder() {
     if (this.newOrderForm.valid) {
       this.order = Object.assign({}, this.newOrderForm.value);
-      this.order.userId = this.authServide.id;
+      this.order.userID = this.authServide.id;
       this.authServide.newOrder(this.order).subscribe(() => {
         this.alertify.success('Złożono zamówienie!');
         }, error => {
