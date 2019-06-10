@@ -1,5 +1,7 @@
 ﻿
+using FirmaBudowlana.Core.Models;
 using System;
+using System.Collections.Generic;
 
 namespace FirmaBudowlana.Core.DTO
 {
@@ -10,5 +12,12 @@ namespace FirmaBudowlana.Core.DTO
         public string LastName { get; set; }
         public string Specialization { get; set; }
         public decimal ManHour { get; set; }
+
+        public List<Team> Teams { get; set; }
+
+        public WorkerDTO()
+        {
+            Teams = new List<Team>();
+        }
     }
 }

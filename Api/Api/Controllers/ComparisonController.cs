@@ -39,6 +39,18 @@ namespace FirmaBudowlana.Api.Controllers
         public async Task<IActionResult> Workers()
         {
             var workers = _mapper.Map<IEnumerable<WorkerDTO>>(await _workerRepository.GetAllAsync());
+
+            foreach (var worker in workers)
+            {
+                var teamworkers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.WorkerID == worker.WorkerID);
+
+                foreach (var teamworker in teamworkers)
+                {
+                    var team = await _teamRepository.GetAsync(teamworker.TeamID);
+                    worker.Teams.Add(team);
+                }
+
+            }
             return new JsonResult(workers);
         }
 
