@@ -135,8 +135,15 @@ namespace FirmaBudowlana.Api.Controllers
 
         private async Task<ComparisonOrderDTO> MakeUpAnOrder(ComparisonOrderDTO order)
         {
-            var payment = (await _paymentRepository.GetAllAsync()).Where(x => x.OrderID == order.OrderID).SingleOrDefault();
-            order.Payment = payment;
+            try
+            {
+                order.Payment = (await _paymentRepository.GetAllAsync()).Where(x => x.OrderID == order.OrderID).SingleOrDefault();
+            }
+            catch(InvalidOperationException exception)
+            {
+                order.Payment = null;
+            }
+
             var teams = (await _context.OrderTeam.ToListAsync()).Where(x => x.OrderID == order.OrderID).ToList();
 
             foreach (var teamID in teams)
