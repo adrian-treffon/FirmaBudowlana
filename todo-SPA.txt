@@ -1,2 +1,0 @@
-- W worker-list api nie wysyła Teams, wyświetlanie niby powinno działać, ale jak DZIAŁ BACKEND to poprawi sprawdzić czy jest ok
-- Komponenty do płatności

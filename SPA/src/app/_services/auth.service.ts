@@ -67,7 +67,14 @@ export class AuthService {
 
     isAdmin() {
         const token = localStorage.getItem('token');
+        if (token === null || typeof token === 'undefined') {
+            return false;
+        }
         const tempToken = this.jwtHelper.decodeToken(token);
+        if (tempToken === null || typeof tempToken === 'undefined') {
+            return false;
+        }
+
         if (tempToken.role === 'Admin') {
             return true;
         } else {
@@ -83,7 +90,14 @@ export class AuthService {
 
     isUser() {
         const token = localStorage.getItem('token');
+        if (token === null || typeof token === 'undefined') {
+            return false;
+        }
         const tempToken = this.jwtHelper.decodeToken(token);
+
+        if (tempToken === null || typeof tempToken === 'undefined') {
+            return false;
+        }
         if (tempToken.role === 'User') {
             return true;
         } else {

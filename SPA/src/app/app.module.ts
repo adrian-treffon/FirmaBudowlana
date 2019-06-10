@@ -37,7 +37,6 @@ import { OrderDetailsResolver } from './resolvers/order-details.resolver';
 import { DatePipe } from '@angular/common';
 import { OrdersAllListComponent } from './orders-all-list/orders-all-list.component';
 import { OrdersAllResolver } from './resolvers/orders-all-list.resolver';
-import { NewPaymentComponent } from './new-payment/new-payment.component';
 import { PaymentPaidListComponent } from './payment-paid-list/payment-paid-list.component';
 import { PaymentUnpaidListComponent } from './payment-unpaid-list/payment-unpaid-list.component';
 
@@ -62,7 +61,6 @@ export function tokenGetter() {
       ValidateOrderComponent,
       OrderDetailsComponent,
       OrdersAllListComponent,
-      NewPaymentComponent,
       PaymentPaidListComponent,
       PaymentUnpaidListComponent
    ],

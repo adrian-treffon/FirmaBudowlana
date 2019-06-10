@@ -38,4 +38,14 @@ export class PaymentUnpaidListComponent implements OnInit {
       return this.datePipe.transform(this.orderList[i].endDate, 'dd-MM-yyyy');
     }
   }
+
+  pay(i: number) {
+    this.adminService.addPayment(this.orderList[i]).subscribe(() => {
+      this.alertify.success('Opłacono pracowników za podane zlecenie!');
+      }, error => {
+        this.alertify.error('Błąd podczas opłacania pracowników' + error);
+      }, () => {
+          this.ngOnInit();
+      });
+  }
 }

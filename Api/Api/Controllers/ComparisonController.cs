@@ -39,6 +39,18 @@ namespace FirmaBudowlana.Api.Controllers
         public async Task<IActionResult> Workers()
         {
             var workers = _mapper.Map<IEnumerable<WorkerDTO>>(await _workerRepository.GetAllAsync());
+
+            foreach (var worker in workers)
+            {
+                var teamworkers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.WorkerID == worker.WorkerID);
+
+                foreach (var teamworker in teamworkers)
+                {
+                    var team = await _teamRepository.GetAsync(teamworker.TeamID);
+                    worker.Teams.Add(team);
+                }
+
+            }
             return new JsonResult(workers);
         }
 
@@ -123,8 +135,15 @@ namespace FirmaBudowlana.Api.Controllers
 
         private async Task<ComparisonOrderDTO> MakeUpAnOrder(ComparisonOrderDTO order)
         {
-            var payment = (await _paymentRepository.GetAllAsync()).Where(x => x.OrderID == order.OrderID).SingleOrDefault();
-            order.Payment = payment;
+            try
+            {
+                order.Payment = (await _paymentRepository.GetAllAsync()).Where(x => x.OrderID == order.OrderID).SingleOrDefault();
+            }
+            catch(InvalidOperationException exception)
+            {
+                order.Payment = null;
+            }
+
             var teams = (await _context.OrderTeam.ToListAsync()).Where(x => x.OrderID == order.OrderID).ToList();
 
             foreach (var teamID in teams)

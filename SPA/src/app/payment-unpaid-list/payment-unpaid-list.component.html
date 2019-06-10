@@ -2,7 +2,7 @@
 
   <br>
   <div class="col-sm-12">
-      <h1 class="d-inline-block text-secondary">Lista nieopłaconych zamówień:</h1>
+      <h1 class="d-inline-block text-secondary">Nieopłacone zamówienia:</h1>
   </div>
   
   <br><br>
@@ -39,10 +39,10 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let team of order.teams">
+                <tr *ngFor="let team of order.teams; let i = index">
                   <td>{{team.description}}</td>
                   <td>
-                    <span *ngFor="let team of order.teams; let i = index">{{team.workers[i].firstName}} {{team.workers[i].lastName}},
+                    <span *ngFor="let worker of team.workers">{{worker.firstName}} {{worker.lastName}},
                     </span>
                   </td>
                 </tr>
@@ -51,7 +51,7 @@
           </ul>
         </div></td>
         <td>{{order.paymentCost}} zł</td>
-        <td><button type="button" class="btn btn-dark" [routerLink]="['/new-payment', order]">Opłać</button></td>
+        <td><button type="button" class="btn btn-dark" (click)="pay(i)">Zapłać pracownikom</button></td>
       </tr>
     </tbody>
   </table>

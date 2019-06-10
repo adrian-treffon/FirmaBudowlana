@@ -19,7 +19,7 @@
       <tr *ngFor="let team of teamList">
         <td>{{team.description}}</td>
         <td>
-          <span *ngFor="let team of teamList; let i = index">{{team.workers[i].firstName}} {{team.workers[i].lastName}},
+          <span *ngFor="let worker of team.workers">{{worker.firstName}} {{worker.lastName}},
           </span>
         </td>
       </tr>

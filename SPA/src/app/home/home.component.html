@@ -1,20 +1,29 @@
-<div class="container mt-5">
-    <div *ngIf="!registerMode" class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column text-center">
-        <main role="main" class="inner cover">
-          <h1 class="cover-heading">Może nie najtaniej, ale jako tako.</h1>
-          <p class="lead">Usługi remontowo-budowlane. Dojazd do klienta. Gwarantowana dyskrecja. 
-            Jeszcze nie wiesz jak bardzo nas potrzebujesz.</p>
-          <p class="lead">
-            <a (click)="activateRegisterMode()" href="#" class="btn btn-lg btn-outline-dark">Załóż konto</a>
-          </p>
-        </main>
-      </div>
+<div *ngIf="authService.isAdmin()">
+  <app-admin-menu></app-admin-menu>
+</div>
 
-      <div *ngIf="registerMode" class="container">
-          <div class="row justify-content-center">
-            <div class="col-4">
-              <app-register (cancelRegister)="cancelRegisterMode($event)" ></app-register>
-            </div>
-          </div>
-        </div>
+<div *ngIf="authService.isUser()">
+  <app-orders></app-orders>
+</div>
+
+
+<div class="container mt-5" *ngIf="!authService.isUser() && !authService.isAdmin()">
+  <div *ngIf="!registerMode" class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column text-center">
+    <main role="main" class="inner cover">
+      <h1 class="cover-heading">Może nie najtaniej, ale jako tako.</h1>
+      <p class="lead">Usługi remontowo-budowlane. Dojazd do klienta. Gwarantowana dyskrecja.
+        Jeszcze nie wiesz jak bardzo nas potrzebujesz.</p>
+      <p class="lead">
+        <a (click)="activateRegisterMode()" href="#" class="btn btn-lg btn-outline-dark">Załóż konto</a>
+      </p>
+    </main>
+  </div>
+
+  <div *ngIf="registerMode" class="container">
+    <div class="row justify-content-center">
+      <div class="col-4">
+        <app-register (cancelRegister)="cancelRegisterMode($event)"></app-register>
+      </div>
+    </div>
+  </div>
 </div>

@@ -3,6 +3,8 @@ import { AdminService } from '../_services/admin.service';
 import { AlertifyService } from '../_services/alertify.service';
 
 import { Worker } from '../_models/worker';
+import { Team } from '../_models/team';
+
 
 @Component({
   selector: 'app-worker-list',
@@ -11,6 +13,7 @@ import { Worker } from '../_models/worker';
 })
 export class WorkerListComponent implements OnInit {
   workers: Worker[];
+  teams: Team[];
 
   constructor(private adminService: AdminService, private alertify: AlertifyService) { }
 
@@ -21,7 +24,6 @@ export class WorkerListComponent implements OnInit {
   loadWorkers() {
     this.adminService.getWorkers().subscribe((workersTemp: Worker[]) => {
       this.workers = workersTemp;
-      console.log(this.workers);
     }, error => {
       this.alertify.error('Nie udało się załadować listy pracowników: ' + error);
     });

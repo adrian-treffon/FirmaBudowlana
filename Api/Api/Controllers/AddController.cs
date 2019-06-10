@@ -41,7 +41,7 @@ namespace FirmaBudowlana.Api.Controllers
         //dodaje nowego pracownika
         public async Task<IActionResult> Worker([FromBody]WorkerDTO workerDTO)
         {
-           if(workerDTO == null) return BadRequest(new { message = "ERROR" });
+           if(workerDTO == null) return BadRequest(new { message = "Cannot find the worker in DB" });
 
            var worker =_mapper.Map<Worker>(workerDTO);
            worker.WorkerID = Guid.NewGuid();
@@ -53,7 +53,7 @@ namespace FirmaBudowlana.Api.Controllers
         //z teamDTO tworze prawdzimy team i wsadzam do bazy
         public async Task<IActionResult> Team([FromBody] TeamDTO teamDTO)
         {
-            if (teamDTO == null) return BadRequest(new { message = "ERROR" });
+            if (teamDTO == null) return BadRequest(new { message = "Cannot find the team in DB" });
 
             var team = _mapper.Map<Team>(teamDTO);
             team.TeamID = Guid.NewGuid();
@@ -80,22 +80,30 @@ namespace FirmaBudowlana.Api.Controllers
         //płacę za zlecenie
         public async Task<IActionResult> Payment([FromBody]OrderToPaidDTO orderToPaidDTO)
         {
-            if (orderToPaidDTO == null) return BadRequest(new { message = "ERROR" });
+            if (orderToPaidDTO == null) return BadRequest(new { message = "Cannot find the order in DB" });
 
-            var payment = _mapper.Map<Payment>(orderToPaidDTO);
-            payment.PaymentDate = DateTime.UtcNow;
             var order = await _orderRepository.GetAsync(orderToPaidDTO.OrderID);
 
             foreach (var teamID in orderToPaidDTO.Teams)
             {
                 var team = await _teamRepository.GetAsync(teamID.TeamID);
 
-                foreach (var ele in team.WorkerTeam)
+                var workers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.TeamID == team.TeamID).ToList();
+
+                foreach (var ele in workers)
                 {
                     var worker = await _workerRepository.GetAsync(ele.WorkerID);
                     var days = order.EndDate.Value.DayOfYear - order.StartDate.DayOfYear;
-                    payment.PaymentID = Guid.NewGuid();
-                    payment.Amount = worker.ManHour * 8 * days;
+                   
+                    var payment = new Payment
+                    {
+                        OrderID = orderToPaidDTO.OrderID,
+                        WorkerID = worker.WorkerID,
+                        Amount = worker.ManHour * 8 * days,
+                        PaymentDate = DateTime.UtcNow,
+                        PaymentID = Guid.NewGuid()
+                    };
+
                     await _paymentRepository.AddAsync(payment);
                 }
             }
@@ -112,6 +120,7 @@ namespace FirmaBudowlana.Api.Controllers
         {
             var unPaidOrders = (await _orderRepository.GetAllUnpaidAsync()).ToList();
             if (unPaidOrders == null) return NotFound(new { message = "Cannot find any orders in DB" });
+
             var ordersDTO = _mapper.Map<IEnumerable<OrderToPaidDTO>>(unPaidOrders);
 
             foreach (var order in ordersDTO)
@@ -123,8 +132,9 @@ namespace FirmaBudowlana.Api.Controllers
 
                 if (days < 0)
                 {
-                   return BadRequest(new { message = "At least one EndDate is earlier than StartDate" });
+                    return BadRequest(new { message = "StartDate cannot be later than EndDate" });
                 }
+                else if (days == 0) days = 1;
 
                 
                 while (startDate.Date != order.EndDate.Date)

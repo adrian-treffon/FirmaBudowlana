@@ -1,5 +1,5 @@
 <body>
-  <div class="album py-5 bg-light">
+  <div class="album py-5">
     <div class="container">
       <div class="row">
         <div class="col-md-3">
@@ -60,13 +60,13 @@
             <img class="card-img-top p-4" alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;"
               src="../../assets/payment.png" data-holder-rendered="true">
             <div class="card-body">
-              <h3 class="text-center">Płatności</h3>
+              <h3 class="text-center">Wypłaty:</h3>
               <div class="justify-content-between align-items-center text-center">
                 <div class="btn-group mt-3">
                   <button type="button" [routerLink]="['/payment-unpaid-list']"
                     class="btn btn-sm btn-outline-secondary">Nieopłacone</button>
                   <button type="button" [routerLink]="['/payment-paid-list']"
-                    class="btn btn-sm btn-outline-secondary">Opłacone</button>
+                    class="btn btn-sm btn-outline-secondary">Lista wypłat</button>
                 </div>
               </div>
             </div>

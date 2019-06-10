@@ -24,7 +24,7 @@
         <td>{{worker.specialization}}</td>
         <td>{{worker.manHour}}</td>
         <td>
-            <span *ngFor="let team of worker.workerTeams; let j = index">{{team.description}}, </span>
+            <span *ngFor="let team of worker.teams">{{team.description}}, </span>
         </td>
       </tr>
     </tbody>
