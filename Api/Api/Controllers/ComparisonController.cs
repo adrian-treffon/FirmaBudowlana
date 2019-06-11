@@ -60,7 +60,7 @@ namespace FirmaBudowlana.Api.Controllers
         {
             var worker = _mapper.Map<WorkerDTO>(await _workerRepository.GetAsync(id));
 
-            if (worker == null) return BadRequest(new { message = $"Cannot find the worker {worker.WorkerID} in DB" });
+            if (worker == null) return BadRequest(new { message = $"Cannot find the worker {id} in DB" });
 
             return new JsonResult(worker);
         }
@@ -87,7 +87,8 @@ namespace FirmaBudowlana.Api.Controllers
         public async Task<IActionResult> Teams(Guid id)
         {
             var team = _mapper.Map<TeamDTO>(await _teamRepository.GetAsync(id));
-            if (team == null) return BadRequest(new { message = $"Cannot find the team {team.TeamID} in DB" });
+
+            if (team == null) return BadRequest(new { message = $"Cannot find the team {id} in DB" });
 
             var workers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.TeamID == team.TeamID).ToList();
             foreach (var workerID in workers)
@@ -118,7 +119,7 @@ namespace FirmaBudowlana.Api.Controllers
         {
             var order = await _orderRepository.GetAsync(id);
 
-            if (order == null) return BadRequest(new { message = $"Cannot find the order {order.OrderID} in DB" });
+            if (order == null) return BadRequest(new { message = $"Cannot find the order {id} in DB" });
 
             var fullOrder = _mapper.Map<ComparisonOrderDTO>(order);
 
@@ -138,7 +139,7 @@ namespace FirmaBudowlana.Api.Controllers
         public async Task<IActionResult> Payments(Guid id)
         {
             var payment = await _paymentRepository.GetAsync(id);
-            if (payment == null) return BadRequest(new { message = $"Cannot find the payment {payment.PaymentID} in DB" });
+            if (payment == null) return BadRequest(new { message = $"Cannot find the payment {id} in DB" });
             return new JsonResult(payment);
         }
 

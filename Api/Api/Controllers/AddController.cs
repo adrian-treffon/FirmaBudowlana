@@ -83,7 +83,7 @@ namespace FirmaBudowlana.Api.Controllers
 
             var order = await _orderRepository.GetAsync(orderToPaidDTO.OrderID);
 
-            if (order == null) return BadRequest(new { message = $"Cannot find the order {order.OrderID} in DB" });
+            if (order == null) return BadRequest(new { message = $"Cannot find the order {orderToPaidDTO.OrderID} in DB" });
 
             foreach (var teamID in orderToPaidDTO.Teams)
             {

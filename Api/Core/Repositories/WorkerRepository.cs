@@ -29,9 +29,8 @@ namespace FirmaBudowlana.Core.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task RemoveAsync(Guid id)
+        public async Task RemoveAsync(Worker worker)
         {
-            var worker = await GetAsync(id);
             _context.Workers.Remove(worker);
             await _context.SaveChangesAsync();
         }

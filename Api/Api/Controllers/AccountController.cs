@@ -80,9 +80,6 @@ namespace FirmaBudowlana.Controllers
 
             var orders = (await _orderRepository.GetAllAsync()).Where(x => x.UserID == id);
 
-            if (orders == null)
-                return BadRequest(new { message = $"Cannot find user's orders in DB" });
-
             var ordersDTO = _mapper.Map<IEnumerable<AdminOrderDTO>>(orders);
 
             return new JsonResult(ordersDTO);
@@ -106,7 +103,7 @@ namespace FirmaBudowlana.Controllers
             var order = (await _orderRepository.GetAllAsync()).Where(x => x.UserID == idUser).SingleOrDefault(x => x.OrderID == idOrder);
 
             if (order == null)
-                return BadRequest(new { message = $"Cannot find orders {order.OrderID} in DB" });
+                return BadRequest(new { message = $"Cannot find order {idOrder} in DB" });
 
             var dto = _mapper.Map<AdminOrderDTO>(order);
             

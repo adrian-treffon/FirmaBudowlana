@@ -12,6 +12,6 @@ namespace FirmaBudowlana.Core.Repositories
         Task<IEnumerable<Team>> GetAllAsync();
         Task AddAsync(Team team);
         Task UpdateAsync(Team team);
-        Task RemoveAsync(Guid id);
+        Task RemoveAsync(Team team);
     }
 }
