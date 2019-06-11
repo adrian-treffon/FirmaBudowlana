@@ -18,7 +18,7 @@ namespace FirmaBudowlana.Core.Repositories
         }
 
         public async Task<Team> GetAsync(Guid id)
-            => await _context.Teams.SingleOrDefaultAsync(x => x.TeamID == id);
+            => await _context.Teams.AsNoTracking().SingleOrDefaultAsync(x => x.TeamID == id);
 
 
         public async Task<IEnumerable<Team>> GetAllAsync()
