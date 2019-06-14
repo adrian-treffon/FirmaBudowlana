@@ -3,11 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using FirmaBudowlana.Core.Repositories;
 using FirmaBudowlana.Infrastructure.EF;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FirmaBudowlana.Api.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class DeleteController : Controller
     {
 
@@ -25,6 +27,7 @@ namespace FirmaBudowlana.Api.Controllers
             _context = context;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Worker(Guid id)
         {
             var worker = await _workerRepository.GetAsync(id);
@@ -33,11 +36,12 @@ namespace FirmaBudowlana.Api.Controllers
 
             await _workerRepository.RemoveAsync(worker);
 
-            await CheckIfTeamIsEmpty();
+            await DeleteEmptyTeam();
 
             return Ok();
         }
 
+        [HttpGet]
         public async Task<IActionResult> Team(Guid id)
         {
             var team = await _teamRepository.GetAsync(id);
@@ -49,6 +53,7 @@ namespace FirmaBudowlana.Api.Controllers
             return Ok();
         }
 
+        [HttpGet]
         public async Task<IActionResult> Order(Guid id)
         {
             var order = await _orderRepository.GetAsync(id);
@@ -63,14 +68,14 @@ namespace FirmaBudowlana.Api.Controllers
         }
 
 
-        private async Task CheckIfTeamIsEmpty()
+        private async Task DeleteEmptyTeam()
         {
             var workerteam = await _context.WorkerTeam.ToListAsync();
             var teams = await _teamRepository.GetAllAsync();
 
             foreach (var team in teams)
             {
-                if (!(workerteam.Select(x => x.TeamID).Contains(team.TeamID))) await Team(team.TeamID);
+                if (!(workerteam.Select(x => x.TeamID).Contains(team.TeamID))) await _teamRepository.RemoveAsync(team);
             }
 
         }

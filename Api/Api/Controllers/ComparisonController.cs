@@ -101,10 +101,13 @@ namespace FirmaBudowlana.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Orders()
+        public async Task<IActionResult> Orders(DateTime? start,DateTime? end)
         {
-            var orders = _mapper.Map<IEnumerable<ComparisonOrderDTO>>(await _orderRepository.GetAllValidatedAsync()).ToList();
-            
+            var orders = _mapper.Map<IEnumerable<ComparisonOrderDTO>>((await _orderRepository.GetAllValidatedAsync())
+                .OrderBy(x => x.StartDate)).ToList();
+
+            if (start != null && end != null) orders = orders.Where(s => s.StartDate >= start && s.EndDate <= end).ToList();
+
             for (int i = 0; i <orders.Count(); i++)
             {
                 orders[i] = await MakeUpAnOrder(orders[i]);
@@ -129,10 +132,13 @@ namespace FirmaBudowlana.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Payments()
+        public async Task<IActionResult> Payments(DateTime? start, DateTime? end)
         {
-            var payment = await _paymentRepository.GetAllAsync();
-            return new JsonResult(payment);
+            var payments = (await _paymentRepository.GetAllAsync()).OrderByDescending(x => x.PaymentDate).ToList();
+
+            if (start != null && end != null) payments = payments.Where(s => s.PaymentDate >= start && s.PaymentDate <= end).ToList();
+
+            return new JsonResult(payments);
         }
 
         [HttpGet("Comparison/Payments/{id}")]

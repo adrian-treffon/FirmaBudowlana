@@ -5,11 +5,13 @@ using FirmaBudowlana.Core.DTO;
 using FirmaBudowlana.Core.Models;
 using FirmaBudowlana.Core.Repositories;
 using FirmaBudowlana.Infrastructure.EF;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FirmaBudowlana.Api.Controllers
 {
+    [Authorize(Roles ="Admin")]
     public class EditController : Controller
     {
         private readonly IMapper _mapper;
@@ -106,6 +108,7 @@ namespace FirmaBudowlana.Api.Controllers
 
             var orderTeam = (await _context.OrderTeam.ToListAsync()).Where(x => x.OrderID == order.OrderID).ToList();
             _context.OrderTeam.RemoveRange(orderTeam);
+
             await _context.OrderTeam.AddRangeAsync(order.OrderTeam);
             await _context.SaveChangesAsync();
             await _orderRepository.UpdateAsync(order);
