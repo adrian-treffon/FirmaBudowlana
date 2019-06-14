@@ -13,6 +13,7 @@
         <th scope="col">Data rozpoczęcia:</th>
         <th scope="col">Opis:</th>
         <th scope="col">Zatwierdź zlecenie:</th>
+        <th scope="col">Anuluj zlecenie:</th>
       </tr>
     </thead>
     <tbody>
@@ -21,6 +22,7 @@
         <td>{{order.startDate | date:'dd/MM/yyyy'}}</td>
         <td>{{order.description}}</td>
         <td><button type="button" class="btn btn-secondary ml-4" [routerLink]="['/validate-order', order.orderID]">Zatwierdź</button></td>
+        <td><button type="button" class="btn btn-outline-danger ml-4" (click)="deleteOrder(order.orderID)">Anuluj</button></td>
       </tr>
     </tbody>
   </table>

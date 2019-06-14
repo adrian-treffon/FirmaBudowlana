@@ -39,9 +39,8 @@ namespace FirmaBudowlana.Core.Repositories
         public async Task<Order> GetAsync(Guid id)
         => await _context.Orders.AsNoTracking().SingleOrDefaultAsync(x => x.OrderID == id);
 
-        public async Task RemoveAsync(Guid id)
+        public async Task RemoveAsync(Order order)
         {
-            var order = await GetAsync(id);
             _context.Orders.Remove(order);
             await _context.SaveChangesAsync();
         }

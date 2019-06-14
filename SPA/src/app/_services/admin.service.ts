@@ -22,7 +22,7 @@ export class AdminService {
   }
 
   getUnpaidPayments(): Observable<Order[]> {
-    return this.httpClient.get<Order[]>(this.baseUrl + 'add/payment')
+    return this.httpClient.get<Order[]>(this.baseUrl + 'add/payment');
   }
 
   getPaidPayments(): Observable<Payment[]> {
@@ -59,5 +59,17 @@ export class AdminService {
 
   getOrder(id: string): Observable<Order> {
     return this.httpClient.get<Order>(this.baseUrl + 'order/validate/' + id);
+  }
+
+  deleteOrder(id: string): Observable<any> {
+    return this.httpClient.get<any>(this.baseUrl + 'delete/order/' + id);
+  }
+
+  deleteTeam(id: string): Observable<any> {
+    return this.httpClient.get<any>(this.baseUrl + 'delete/team/' + id);
+  }
+
+  deleteWorker(id: string): Observable<any> {
+    return this.httpClient.get<any>(this.baseUrl + 'delete/worker/' + id);
   }
 }

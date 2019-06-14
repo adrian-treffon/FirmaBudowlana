@@ -18,7 +18,7 @@ namespace FirmaBudowlana.Core.Repositories
         }
 
         public async Task<Team> GetAsync(Guid id)
-            => await _context.Teams.SingleOrDefaultAsync(x => x.TeamID == id);
+            => await _context.Teams.AsNoTracking().SingleOrDefaultAsync(x => x.TeamID == id);
 
 
         public async Task<IEnumerable<Team>> GetAllAsync()
@@ -30,9 +30,8 @@ namespace FirmaBudowlana.Core.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task RemoveAsync(Guid id)
-        {
-            var team = await GetAsync(id);
+        public async Task RemoveAsync(Team team)
+        { 
             _context.Teams.Remove(team);
             await _context.SaveChangesAsync();
         }

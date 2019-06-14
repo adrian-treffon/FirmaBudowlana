@@ -17,7 +17,7 @@ namespace FirmaBudowlana.Core.Repositories
         }
 
         public async Task<Worker> GetAsync(Guid id)
-            => await _context.Workers.SingleOrDefaultAsync(x => x.WorkerID == id);
+            => await _context.Workers.AsNoTracking().SingleOrDefaultAsync(x => x.WorkerID == id);
 
 
         public async Task<IEnumerable<Worker>> GetAllAsync()
@@ -29,9 +29,8 @@ namespace FirmaBudowlana.Core.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task RemoveAsync(Guid id)
+        public async Task RemoveAsync(Worker worker)
         {
-            var worker = await GetAsync(id);
             _context.Workers.Remove(worker);
             await _context.SaveChangesAsync();
         }

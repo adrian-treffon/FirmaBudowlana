@@ -14,8 +14,15 @@
           <br>
           <div class="form-group">
             <label for="startDate">Kiedy mamy do Ciebie przyjść?</label>
-            <input class="form-control" [ngClass]="{'is-invalid': newOrderForm.get('startDate').errors && newOrderForm.get('startDate').touched }"
-            id="startDate" type="text" formControlName="startDate" bsDatepicker [bsConfig]="bsConfig">
+            <input class="form-control" 
+            [ngClass]="{'is-invalid': newOrderForm.get('startDate').errors && newOrderForm.get('startDate').touched }"
+            id="startDate" 
+            type="text" 
+            formControlName="startDate" 
+            placeholder="Wybierz datę..."
+            bsDatepicker 
+            [minDate]="now"
+            [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY' }">
             <div class="invalid-feedback">Data jest wymagana</div>
           </div>
       

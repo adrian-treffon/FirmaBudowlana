@@ -14,6 +14,6 @@ namespace FirmaBudowlana.Core.Repositories
         Task<IEnumerable<Order>> GetAllAsync();
         Task AddAsync(Order order);
         Task UpdateAsync(Order order);
-        Task RemoveAsync(Guid id);
+        Task RemoveAsync(Order order);
     }
 }

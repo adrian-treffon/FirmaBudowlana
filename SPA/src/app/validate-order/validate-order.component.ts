@@ -16,10 +16,10 @@ export class ValidateOrderComponent implements OnInit {
   teams: Team[] = new Array();
   orderId: string = null;
   order: Order = null;
-  bsConfig: Partial<BsDatepickerConfig>;
   validateOrderForm: FormGroup;
   allTeamsList: Team[];
   teamsToAllocate: Team[] = new Array();
+  startDate;
 
   dropdownList = [];
   selectedItems = [];
@@ -36,15 +36,14 @@ export class ValidateOrderComponent implements OnInit {
       this.orderId = params.id;
       this.adminService.getOrder(this.orderId).subscribe((orderTemp: Order) => {
         this.order = orderTemp;
+        this.startDate = new Date(this.order.startDate);
+        new Date(this.startDate).getTime();
       }, error => {
         this.alertify.error('Nie udało się załadować zamówienia do edycji: ' + error);
       });
     });
 
     this.createValidateOrderForm();
-    this.dropdownList = [
-      {item_id: 1, item_text: 'Test bo nie ma zespołów XD'}
-    ];
     for (let i = 0; i < this.teams.length; i++) {
       this.dropdownList.push({ item_id: i, item_text:
         this.teams[i].description});

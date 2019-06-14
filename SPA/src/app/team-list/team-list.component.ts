@@ -24,4 +24,15 @@ export class TeamListComponent implements OnInit {
       this.alertify.error('Nie udało się załadować listy zespołów: ' + error);
     });
   }
+
+  deleteTeam(id: string) {
+    this.alertify.confirm('Czy na pewno chcesz usunąć ten zespół?', () => {
+      this.adminService.deleteTeam(id).subscribe(() => {
+        this.alertify.success('Zespół został usunięty');
+        this.ngOnInit();
+      }, error => {
+        this.alertify.error('Błąd podczas usuwania zespołu!');
+      });
+    });
+  }
 }

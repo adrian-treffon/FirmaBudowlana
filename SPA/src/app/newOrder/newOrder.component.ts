@@ -16,14 +16,12 @@ export class NewOrderComponent implements OnInit {
   newOrderForm: FormGroup;
   order: Order;
   isSubmited = false;
+  now = new Date();
   constructor(private fb: FormBuilder, private router: Router, private authServide: AuthService, private alertify: AlertifyService) {}
 
   ngOnInit() {
-    this.bsConfig = {
-      containerClass: 'theme-default',
-    };
-
     this.createNewOrderForm();
+    new Date(this.now).getTime();
   }
   createNewOrderForm() {
     this.newOrderForm = this.fb.group({

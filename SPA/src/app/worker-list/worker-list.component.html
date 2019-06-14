@@ -15,6 +15,7 @@
         <th scope="col">Specjalizacja:</th>
         <th scope="col">zł/roboczogodzina:</th>
         <th scope="col">Zespoły:</th>
+        <th scope="col">Usuń pracownika</th>
       </tr>
     </thead>
     <tbody>
@@ -26,6 +27,7 @@
         <td>
             <span *ngFor="let team of worker.teams">{{team.description}}, </span>
         </td>
+        <td><button type="button" class="btn btn-outline-danger ml-4" (click)="deleteWorker(worker.workerID)">Usuń</button></td>
       </tr>
     </tbody>
   </table>

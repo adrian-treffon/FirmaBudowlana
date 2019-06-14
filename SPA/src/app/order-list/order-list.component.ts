@@ -32,4 +32,15 @@ export class OrderListComponent implements OnInit {
     this.selectedOrder = inputOrder;
     this.editMode = true;
   }
+
+  deleteOrder(id: string) {
+    this.alertify.confirm('Czy na pewno chcesz usunąć to zamówienie?', () => {
+      this.adminService.deleteOrder(id).subscribe(() => {
+        this.alertify.success('Zlecenie zostało usunięte');
+        this.ngOnInit();
+      }, error => {
+        this.alertify.error('Błąd podczas usuwania zlecenia!');
+      });
+    });
+  }
 }

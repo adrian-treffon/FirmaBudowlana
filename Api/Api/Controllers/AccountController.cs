@@ -33,12 +33,14 @@ namespace FirmaBudowlana.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([FromBody]UserLoginDTO userParam)
         {
+           if(userParam == null) return BadRequest(new { message = $"Post request account/login is empty" });
+
             var token = await _userService.Login(userParam.Email, userParam.Password);
 
             var user = await _userRepository.GetAsync(userParam.Email);
 
             if (token == null && user == null)
-                return BadRequest(new { message = " or password is incorrect" });
+                return BadRequest(new { message = "Email or password is incorrect" });
 
             var dto = new TokenDTO()
             {
@@ -53,6 +55,8 @@ namespace FirmaBudowlana.Controllers
         [HttpPost]
         public async Task<IActionResult> Register([FromBody]UserRegisterDTO userParam)
         {
+            if (userParam == null) return BadRequest(new { message = $"Post request account/register is empty" });
+
             await _userService.Register(userParam.FirstName, userParam.LastName, userParam.Address, userParam.Email, userParam.Password);
 
             return Ok();
@@ -74,14 +78,11 @@ namespace FirmaBudowlana.Controllers
             }
            
 
-            var result = (await _orderRepository.GetAllAsync()).Where(x => x.UserID == id);
+            var orders = (await _orderRepository.GetAllAsync()).Where(x => x.UserID == id);
 
-            if (result == null)
-                return BadRequest(new { message = "Incorrect id" });
+            var ordersDTO = _mapper.Map<IEnumerable<AdminOrderDTO>>(orders);
 
-            var dto = _mapper.Map<IEnumerable<AdminOrderDTO>>(result);
-
-            return new JsonResult(dto);
+            return new JsonResult(ordersDTO);
         }
 
         [Authorize(Roles = "User")]
@@ -99,12 +100,12 @@ namespace FirmaBudowlana.Controllers
                 return BadRequest(new { message = "Incorrect token" });
             }
 
-            var result = (await _orderRepository.GetAllAsync()).Where(x => x.UserID == idUser).SingleOrDefault(x => x.OrderID == idOrder);
+            var order = (await _orderRepository.GetAllAsync()).Where(x => x.UserID == idUser).SingleOrDefault(x => x.OrderID == idOrder);
 
-            if (result == null)
-                return BadRequest(new { message = "Incorrect id" });
+            if (order == null)
+                return BadRequest(new { message = $"Cannot find order {idOrder} in DB" });
 
-            var dto = _mapper.Map<AdminOrderDTO>(result);
+            var dto = _mapper.Map<AdminOrderDTO>(order);
             
             return new JsonResult(dto);
         }

@@ -33,7 +33,8 @@ export class NewTeamComponent implements OnInit {
 
     for (let i = 0; i < this.allWorkersList.length; i++) {
       this.dropdownList.push({ item_id: i, item_text:
-        this.allWorkersList[i].firstName + ' ' + this.allWorkersList[i].lastName});
+        this.allWorkersList[i].firstName + ' ' + this.allWorkersList[i].lastName + ', Specjalizacja: ' +
+        this.allWorkersList[i].specialization});
     }
 
     this.selectedItems = [];

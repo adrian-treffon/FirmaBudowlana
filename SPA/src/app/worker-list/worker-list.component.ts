@@ -28,4 +28,15 @@ export class WorkerListComponent implements OnInit {
       this.alertify.error('Nie udało się załadować listy pracowników: ' + error);
     });
   }
+
+  deleteWorker(id: string) {
+    this.alertify.confirm('Czy na pewno chcesz usunąć tego pracownika?', () => {
+      this.adminService.deleteWorker(id).subscribe(() => {
+        this.alertify.success('Pracownik został usunięty');
+        this.ngOnInit();
+      }, error => {
+        this.alertify.error('Błąd podczas usuwania pracownika!');
+      });
+    });
+  }
 }

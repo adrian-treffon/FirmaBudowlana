@@ -11,7 +11,8 @@
     <hr>
 
     <div class="form-group">
-      <textarea [ngClass]="{'is-invalid': newTeamForm.get('description').errors && newTeamForm.get('description').touched}"
+      <textarea
+        [ngClass]="{'is-invalid': newTeamForm.get('description').errors && newTeamForm.get('description').touched}"
         class="form-control" placeholder="Opisz zespół..." formControlName="description" rows="4"></textarea>
       <div class="invalid-feedback"
         *ngIf="newTeamForm.get('description').touched && newTeamForm.get('description').hasError('required')">Nazwa
@@ -24,9 +25,4 @@
       <button class="btn btn-default ml-2" [routerLink]="['/team-list']" type="button">Anuluj</button>
     </div>
   </form>
-
-
-
-
-
 </div>

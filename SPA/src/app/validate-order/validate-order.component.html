@@ -16,7 +16,11 @@
         <label for="endDate">Wprowadź datę zakończenia pracy:</label>
         <input class="form-control"
           [ngClass]="{'is-invalid': validateOrderForm.get('endDate').errors && validateOrderForm.get('endDate').touched }"
-          id="endDate" type="text" formControlName="endDate" bsDatepicker [bsConfig]="bsConfig">
+          id="endDate" type="text" 
+          formControlName="endDate" 
+          bsDatepicker
+          [minDate]="startDate" 
+          [bsConfig]="{ dateInputFormat: 'DD-MM-YYYY' }">
         <div class="invalid-feedback">Data jest wymagana</div>
       </div>
 

@@ -13,6 +13,7 @@
       <tr>
         <th scope="col">Opis:</th>
         <th scope="col">Pracownicy:</th>
+        <th scope="col">Usuń zespół:</th>
       </tr>
     </thead>
     <tbody>
@@ -22,6 +23,7 @@
           <span *ngFor="let worker of team.workers">{{worker.firstName}} {{worker.lastName}},
           </span>
         </td>
+        <td><button type="button" class="btn btn-outline-danger ml-4" (click)="deleteTeam(team.teamID)">Usuń</button></td>
       </tr>
     </tbody>
   </table>

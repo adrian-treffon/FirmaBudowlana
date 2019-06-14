@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,7 +40,7 @@ namespace FirmaBudowlana.Api.Controllers
         //dodaje nowego pracownika
         public async Task<IActionResult> Worker([FromBody]WorkerDTO workerDTO)
         {
-           if(workerDTO == null) return BadRequest(new { message = "Cannot find the worker in DB" });
+           if(workerDTO == null) return BadRequest(new { message = "Post request add/worker is empty" });
 
            var worker =_mapper.Map<Worker>(workerDTO);
            worker.WorkerID = Guid.NewGuid();
@@ -53,7 +52,7 @@ namespace FirmaBudowlana.Api.Controllers
         //z teamDTO tworze prawdzimy team i wsadzam do bazy
         public async Task<IActionResult> Team([FromBody] TeamDTO teamDTO)
         {
-            if (teamDTO == null) return BadRequest(new { message = "Cannot find the team in DB" });
+            if (teamDTO == null) return BadRequest(new { message = "Post request add/team is empty" });
 
             var team = _mapper.Map<Team>(teamDTO);
             team.TeamID = Guid.NewGuid();
@@ -80,15 +79,21 @@ namespace FirmaBudowlana.Api.Controllers
         //płacę za zlecenie
         public async Task<IActionResult> Payment([FromBody]OrderToPaidDTO orderToPaidDTO)
         {
-            if (orderToPaidDTO == null) return BadRequest(new { message = "Cannot find the order in DB" });
+            if (orderToPaidDTO == null) return BadRequest(new { message = "Post request add/payment is empty" });
 
             var order = await _orderRepository.GetAsync(orderToPaidDTO.OrderID);
+
+            if (order == null) return BadRequest(new { message = $"Cannot find the order {orderToPaidDTO.OrderID} in DB" });
 
             foreach (var teamID in orderToPaidDTO.Teams)
             {
                 var team = await _teamRepository.GetAsync(teamID.TeamID);
 
+                if (team == null) return BadRequest(new { message = $"There is no team {team.TeamID} to pay" });
+
                 var workers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.TeamID == team.TeamID).ToList();
+
+                if(!workers.Any()) return BadRequest(new { message = $"There is no workers in the team {team.TeamID} to pay" });
 
                 foreach (var ele in workers)
                 {
@@ -119,13 +124,15 @@ namespace FirmaBudowlana.Api.Controllers
         public async Task<IActionResult> Payment()
         {
             var unPaidOrders = (await _orderRepository.GetAllUnpaidAsync()).ToList();
-            if (unPaidOrders == null) return NotFound(new { message = "Cannot find any orders in DB" });
 
             var ordersDTO = _mapper.Map<IEnumerable<OrderToPaidDTO>>(unPaidOrders);
 
             foreach (var order in ordersDTO)
             {
                 var teams = (await _context.OrderTeam.ToListAsync()).Where(x => x.OrderID == order.OrderID).ToList();
+
+                if (teams == null) return BadRequest(new { message = $"There is no team to pay" });
+
                 var days = order.EndDate.DayOfYear - order.StartDate.DayOfYear;
 
                 var startDate = order.StartDate;
@@ -147,6 +154,9 @@ namespace FirmaBudowlana.Api.Controllers
                 foreach (var teamID in teams)
                 {
                     var team = _mapper.Map<TeamDTO>(await _teamRepository.GetAsync(teamID.TeamID));
+
+                    if (team == null) return BadRequest(new { message = $"Cannot find the team {team.TeamID} in DB" });
+
                     var workers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.TeamID == team.TeamID).ToList();
 
                     foreach (var workerID in workers)

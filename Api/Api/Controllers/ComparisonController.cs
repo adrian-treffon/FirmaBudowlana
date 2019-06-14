@@ -48,6 +48,7 @@ namespace FirmaBudowlana.Api.Controllers
                 {
                     var team = await _teamRepository.GetAsync(teamworker.TeamID);
                     worker.Teams.Add(team);
+
                 }
 
             }
@@ -58,6 +59,9 @@ namespace FirmaBudowlana.Api.Controllers
         public async Task<IActionResult> Workers(Guid id)
         {
             var worker = _mapper.Map<WorkerDTO>(await _workerRepository.GetAsync(id));
+
+            if (worker == null) return BadRequest(new { message = $"Cannot find the worker {id} in DB" });
+
             return new JsonResult(worker);
         }
 
@@ -66,7 +70,6 @@ namespace FirmaBudowlana.Api.Controllers
         {
             var teams = _mapper.Map<IEnumerable<TeamDTO>>(await _teamRepository.GetAllAsync());
 
-          
             foreach (var team in teams)
             {
                 var workers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.TeamID == team.TeamID).ToList();
@@ -84,6 +87,9 @@ namespace FirmaBudowlana.Api.Controllers
         public async Task<IActionResult> Teams(Guid id)
         {
             var team = _mapper.Map<TeamDTO>(await _teamRepository.GetAsync(id));
+
+            if (team == null) return BadRequest(new { message = $"Cannot find the team {id} in DB" });
+
             var workers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.TeamID == team.TeamID).ToList();
             foreach (var workerID in workers)
             {
@@ -95,10 +101,13 @@ namespace FirmaBudowlana.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Orders()
+        public async Task<IActionResult> Orders(DateTime? start,DateTime? end)
         {
-            var orders = _mapper.Map<IEnumerable<ComparisonOrderDTO>>(await _orderRepository.GetAllValidatedAsync()).ToList();
-            
+            var orders = _mapper.Map<IEnumerable<ComparisonOrderDTO>>((await _orderRepository.GetAllValidatedAsync())
+                .OrderBy(x => x.StartDate)).ToList();
+
+            if (start != null && end != null) orders = orders.Where(s => s.StartDate >= start && s.EndDate <= end).ToList();
+
             for (int i = 0; i <orders.Count(); i++)
             {
                 orders[i] = await MakeUpAnOrder(orders[i]);
@@ -112,6 +121,9 @@ namespace FirmaBudowlana.Api.Controllers
         public async Task<IActionResult> Orders(Guid id)
         {
             var order = await _orderRepository.GetAsync(id);
+
+            if (order == null) return BadRequest(new { message = $"Cannot find the order {id} in DB" });
+
             var fullOrder = _mapper.Map<ComparisonOrderDTO>(order);
 
             fullOrder = await MakeUpAnOrder(fullOrder);
@@ -120,29 +132,30 @@ namespace FirmaBudowlana.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Payments()
+        public async Task<IActionResult> Payments(DateTime? start, DateTime? end)
         {
-            var payment = await _paymentRepository.GetAllAsync();
-            return new JsonResult(payment);
+            var payments = (await _paymentRepository.GetAllAsync()).OrderByDescending(x => x.PaymentDate).ToList();
+
+            if (start != null && end != null) payments = payments.Where(s => s.PaymentDate >= start && s.PaymentDate <= end).ToList();
+
+            return new JsonResult(payments);
         }
 
         [HttpGet("Comparison/Payments/{id}")]
         public async Task<IActionResult> Payments(Guid id)
         {
             var payment = await _paymentRepository.GetAsync(id);
+            if (payment == null) return BadRequest(new { message = $"Cannot find the payment {id} in DB" });
             return new JsonResult(payment);
         }
 
         private async Task<ComparisonOrderDTO> MakeUpAnOrder(ComparisonOrderDTO order)
         {
-            try
-            {
-                order.Payment = (await _paymentRepository.GetAllAsync()).Where(x => x.OrderID == order.OrderID).SingleOrDefault();
-            }
-            catch(InvalidOperationException exception)
-            {
-                order.Payment = null;
-            }
+            
+            var payments = (await _paymentRepository.GetAllAsync()).Where(x => x.OrderID == order.OrderID);
+
+            if (payments.Any()) order.Paid = true; else order.Paid = false;
+
 
             var teams = (await _context.OrderTeam.ToListAsync()).Where(x => x.OrderID == order.OrderID).ToList();
 
