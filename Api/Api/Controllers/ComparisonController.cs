@@ -10,6 +10,7 @@ using FirmaBudowlana.Infrastructure.EF;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace FirmaBudowlana.Api.Controllers
 {
@@ -23,7 +24,7 @@ namespace FirmaBudowlana.Api.Controllers
         private readonly IPaymentRepository _paymentRepository;
         private readonly DBContext _context;
 
-        public ComparisonController(IMapper mapper, IOrderRepository orderRepository, IWorkerRepository workerRepository, 
+        public ComparisonController(IMapper mapper, IOrderRepository orderRepository, IWorkerRepository workerRepository,
             ITeamRepository teamRepository, IPaymentRepository paymentRepository, DBContext context)
         {
             _mapper = mapper;
@@ -101,14 +102,14 @@ namespace FirmaBudowlana.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Orders(DateTime? start,DateTime? end)
+        public async Task<IActionResult> Orders(DateTime? start, DateTime? end)
         {
             var orders = _mapper.Map<IEnumerable<ComparisonOrderDTO>>((await _orderRepository.GetAllValidatedAsync())
                 .OrderBy(x => x.StartDate)).ToList();
 
             if (start != null && end != null) orders = orders.Where(s => s.StartDate >= start && s.EndDate <= end).ToList();
 
-            for (int i = 0; i <orders.Count(); i++)
+            for (int i = 0; i < orders.Count(); i++)
             {
                 orders[i] = await MakeUpAnOrder(orders[i]);
             }
@@ -116,8 +117,8 @@ namespace FirmaBudowlana.Api.Controllers
             return new JsonResult(orders);
         }
 
-      
-        [HttpGet("Comparison/Orders/{id}")] 
+
+        [HttpGet("Comparison/Orders/{id}")]
         public async Task<IActionResult> Orders(Guid id)
         {
             var order = await _orderRepository.GetAsync(id);
@@ -127,16 +128,16 @@ namespace FirmaBudowlana.Api.Controllers
             var fullOrder = _mapper.Map<ComparisonOrderDTO>(order);
 
             fullOrder = await MakeUpAnOrder(fullOrder);
-            
+
             return new JsonResult(fullOrder);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Payments(DateTime? start, DateTime? end)
+        public async Task<IActionResult> Payments()
         {
             var payments = (await _paymentRepository.GetAllAsync()).OrderByDescending(x => x.PaymentDate).ToList();
 
-            if (start != null && end != null) payments = payments.Where(s => s.PaymentDate >= start && s.PaymentDate <= end).ToList();
+            // if (start != null && end != null) payments = payments.Where(s => s.PaymentDate >= start && s.PaymentDate <= end).ToList();
 
             return new JsonResult(payments);
         }
@@ -151,7 +152,7 @@ namespace FirmaBudowlana.Api.Controllers
 
         private async Task<ComparisonOrderDTO> MakeUpAnOrder(ComparisonOrderDTO order)
         {
-            
+
             var payments = (await _paymentRepository.GetAllAsync()).Where(x => x.OrderID == order.OrderID);
 
             if (payments.Any()) order.Paid = true; else order.Paid = false;
@@ -163,7 +164,7 @@ namespace FirmaBudowlana.Api.Controllers
             {
                 var team = _mapper.Map<TeamDTO>(await _teamRepository.GetAsync(teamID.TeamID));
                 var workers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.TeamID == team.TeamID).ToList();
-              
+
                 foreach (var workerID in workers)
                 {
                     var worker = await _workerRepository.GetAsync(workerID.WorkerID);
@@ -174,5 +175,40 @@ namespace FirmaBudowlana.Api.Controllers
             }
             return order;
         }
+
+        //[HttpGet]
+        //public async Task<IActionResult> Raport(DateTime? start, DateTime? end, IEnumerable<Worker> workersDTO, IEnumerable<Team> teamsDTO)
+        //{
+        //     var orders = new List<ComparisonOrderDTO>();
+                
+        //    //validated
+        //    if (teamsDTO != null && workersDTO == null)
+        //    {
+        //        var orderTeam = new List<Guid>();
+
+        //        foreach (var team in teamsDTO)
+        //        {
+        //            orderTeam.AddRange(_context.OrderTeam.Where(x => x.TeamID == team.TeamID).Select(x => x.OrderID).ToList());
+        //        }
+
+        //        foreach(var id in orderTeam)
+        //        {
+        //            orders.Add(_mapper.Map<ComparisonOrderDTO>(await _orderRepository.GetAsync(id)));
+        //        }
+
+        //        orders = orders.OrderBy(x => x.StartDate).ToList();
+        //    }
+
+        //    for (int i = 0; i < orders.Count(); i++)
+        //    {
+        //        orders[i] = await MakeUpAnOrder(orders[i]);
+        //    }
+           
+        //    if (start != null) orders = orders.Where(x => x.StartDate >= start).ToList();
+
+        //    if (end != null) orders = orders.Where(x => x.EndDate <= end).ToList();
+
+        //    return new JsonResult(orders);
+        //}
     }
 }

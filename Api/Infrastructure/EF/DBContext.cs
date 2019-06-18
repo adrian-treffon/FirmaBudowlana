@@ -5,6 +5,7 @@ namespace FirmaBudowlana.Infrastructure.EF
 {
     public class DBContext : DbContext
     {
+        
         public DBContext(DbContextOptions<DBContext> options) : base(options)
         {
            
@@ -19,7 +20,7 @@ namespace FirmaBudowlana.Infrastructure.EF
              .HasKey(t => new { t.OrderID, t.TeamID });
         }
 
-
+      
         public DbSet<User> Users { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<Worker> Workers { get; set; }
