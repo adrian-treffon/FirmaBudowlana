@@ -44,6 +44,7 @@ namespace FirmaBudowlana.Api.Controllers
 
            var worker =_mapper.Map<Worker>(workerDTO);
            worker.WorkerID = Guid.NewGuid();
+           worker.Active = true;
            await _workerRepository.AddAsync(worker);
            return Ok();
         }
@@ -56,6 +57,7 @@ namespace FirmaBudowlana.Api.Controllers
 
             var team = _mapper.Map<Team>(teamDTO);
             team.TeamID = Guid.NewGuid();
+            team.Active = true;
           
             foreach (var worker in teamDTO.Workers)
             {

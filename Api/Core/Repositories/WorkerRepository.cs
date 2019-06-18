@@ -3,6 +3,7 @@ using FirmaBudowlana.Infrastructure.EF;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FirmaBudowlana.Core.Repositories
@@ -22,6 +23,9 @@ namespace FirmaBudowlana.Core.Repositories
 
         public async Task<IEnumerable<Worker>> GetAllAsync()
             => await _context.Workers.ToListAsync();
+
+        public async Task<IEnumerable<Worker>> GetAllActiveAsync()
+           => await _context.Workers.Where(x=> x.Active == true).ToListAsync();
 
         public async Task AddAsync(Worker Worker)
         {

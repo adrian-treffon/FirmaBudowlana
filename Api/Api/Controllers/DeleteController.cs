@@ -34,7 +34,9 @@ namespace FirmaBudowlana.Api.Controllers
 
             if (worker == null) return BadRequest(new { message = $"Cannot find the worker {id} in DB" });
 
-            await _workerRepository.RemoveAsync(worker);
+            worker.Active = false;
+
+            await _workerRepository.UpdateAsync(worker);
 
             await DeleteEmptyTeam();
 
@@ -48,7 +50,9 @@ namespace FirmaBudowlana.Api.Controllers
 
             if (team == null) return BadRequest(new { message = $"Cannot find the team {id} in DB" });
 
-            await _teamRepository.RemoveAsync(team);
+            team.Active = false;
+
+            await _teamRepository.UpdateAsync(team);
 
             return Ok();
         }
@@ -72,10 +76,18 @@ namespace FirmaBudowlana.Api.Controllers
         {
             var workerteam = await _context.WorkerTeam.ToListAsync();
             var teams = await _teamRepository.GetAllAsync();
+            var workers = await _workerRepository.GetAllAsync();
 
             foreach (var team in teams)
             {
-                if (!(workerteam.Select(x => x.TeamID).Contains(team.TeamID))) await _teamRepository.RemoveAsync(team);
+                var workersInTeam = workerteam.Where(x => x.TeamID == team.TeamID).Select(c => c.WorkerID).ToList();
+                int inactiveWorkers = 0;
+                foreach (var workerID in workersInTeam)
+                {
+                    var worker = workers.Where(x => x.WorkerID == workerID).SingleOrDefault();
+                    if (worker.Active == false) inactiveWorkers++;
+                }
+                if (inactiveWorkers == workersInTeam.Count() || workersInTeam.Count() == 0) await Team(team.TeamID);
             }
 
         }
