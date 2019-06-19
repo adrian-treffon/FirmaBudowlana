@@ -100,8 +100,8 @@ namespace FirmaBudowlana.Api.Controllers
                 foreach (var ele in workers)
                 {
                     var worker = await _workerRepository.GetAsync(ele.WorkerID);
-                    var days = order.EndDate.Value.DayOfYear - order.StartDate.DayOfYear;
-                   
+                    var days = CountDaysWithoutWeekends(order.StartDate, (DateTime)order.EndDate);
+
                     var payment = new Payment
                     {
                         OrderID = orderToPaidDTO.OrderID,
@@ -135,24 +135,9 @@ namespace FirmaBudowlana.Api.Controllers
 
                 if (teams == null) return BadRequest(new { message = $"There is no team to pay" });
 
-                var days = order.EndDate.DayOfYear - order.StartDate.DayOfYear;
-
-                var startDate = order.StartDate;
-
-                if (days < 0)
-                {
-                    return BadRequest(new { message = "StartDate cannot be later than EndDate" });
-                }
-                else if (days == 0) days = 1;
+                var days = CountDaysWithoutWeekends(order.StartDate, order.EndDate);
 
                 
-                while (startDate.Date != order.EndDate.Date)
-                {
-                    if (startDate.DayOfWeek == DayOfWeek.Saturday || startDate.DayOfWeek == DayOfWeek.Sunday) days--;
-                    startDate = startDate.AddDays(1);
-                }
-
-
                 foreach (var teamID in teams)
                 {
                     var team = _mapper.Map<TeamDTO>(await _teamRepository.GetAsync(teamID.TeamID));
@@ -174,6 +159,24 @@ namespace FirmaBudowlana.Api.Controllers
             }
 
             return new JsonResult(ordersDTO);
+        }
+
+        private int CountDaysWithoutWeekends(DateTime start,DateTime end)
+        {
+            var days = end.DayOfYear - start.DayOfYear;
+
+            var startDate = start;
+
+            if (days == 0) return 1;
+            else if (days < 0) throw new Exception("End date cannot be previous start date");
+
+            while (startDate.Date != end.Date)
+            {
+                if (startDate.DayOfWeek == DayOfWeek.Saturday || startDate.DayOfWeek == DayOfWeek.Sunday) days--;
+                startDate = startDate.AddDays(1);
+            }
+
+            return days;
         }
 
     }

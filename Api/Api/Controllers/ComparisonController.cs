@@ -153,7 +153,12 @@ namespace FirmaBudowlana.Api.Controllers
 
             var payments = (await _paymentRepository.GetAllAsync()).Where(x => x.OrderID == order.OrderID);
 
-            if (payments.Any()) order.Paid = true; else order.Paid = false;
+            if (payments.Any())
+            {
+                order.Payments = _mapper.Map<List<PaymentDTO>>(payments);
+                order.Paid = true;
+            }
+            else order.Payments = null;
 
 
             var teams = (await _context.OrderTeam.ToListAsync()).Where(x => x.OrderID == order.OrderID).ToList();
@@ -174,11 +179,10 @@ namespace FirmaBudowlana.Api.Controllers
             return order;
         }
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Report(DateTime? start, DateTime? end,[FromBody]IEnumerable<Worker> workers,[FromBody]IEnumerable<Team> teams)
         {
            var orders = new List<ComparisonOrderDTO>();
-
 
             if (teams != null || workers != null)
             {

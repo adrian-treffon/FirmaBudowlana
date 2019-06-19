@@ -106,6 +106,15 @@ namespace FirmaBudowlana
                 (name: "default",
                 template: "{controller=Account}/{action=Login}/{id?}"
                 );
+                
+                routes.MapRoute
+                (
+                    name:"report",
+                    template: "{controller=Comparison}/{action=Report}/{start}/{end}",
+                    defaults: new { start = "null", end = "null" }
+                );
+               
+
 
             });
         }
