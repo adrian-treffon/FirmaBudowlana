@@ -13,5 +13,6 @@ namespace FirmaBudowlana.Core.Repositories
         Task AddAsync(Worker Worker);
         Task UpdateAsync(Worker Worker);
         Task RemoveAsync(Worker worker);
+        Task<IEnumerable<Worker>> GetAllActiveAsync();
     }
 }

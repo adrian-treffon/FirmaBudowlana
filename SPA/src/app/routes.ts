@@ -20,6 +20,11 @@ import { OrdersAllListComponent } from './orders-all-list/orders-all-list.compon
 import { OrdersAllResolver } from './resolvers/orders-all-list.resolver';
 import { PaymentPaidListComponent } from './payment-paid-list/payment-paid-list.component';
 import { PaymentUnpaidListComponent } from './payment-unpaid-list/payment-unpaid-list.component';
+import { EditWorkerComponent } from './edit-worker/edit-worker.component';
+import { WorkerEditResolver } from './resolvers/worker-edit.resolver';
+import { EditTeamComponent } from './edit-team/edit-team.component';
+import { EditTeamResolver } from './resolvers/edit-team.resolver';
+import { EditValidatedOrderComponent } from './edit-validated-order/edit-validated-order.component';
 
 export const appRoutes: Routes = [
     { path: '', component: HomeComponent},
@@ -41,7 +46,11 @@ export const appRoutes: Routes = [
             { path: 'order-all-list', component: OrdersAllListComponent, resolve: {orders: OrdersAllResolver}},
             { path: 'new-team', component: NewTeamComponent, resolve: {workers: NewTeamResolver}},
             { path: 'validate-order/:id', component: ValidateOrderComponent, pathMatch: 'full', resolve: {teams: ValidateOrderResolver}},
-            { path: 'order-details/:id', component: OrderDetailsComponent, pathMatch: 'full', resolve: {order: OrderDetailsResolver}}
+            { path: 'order-details/:id', component: OrderDetailsComponent, pathMatch: 'full', resolve: {order: OrderDetailsResolver}},
+            { path: 'edit-worker/:id', component: EditWorkerComponent, pathMatch: 'full', resolve: {worker: WorkerEditResolver}},
+            { path: 'edit-team', component: EditTeamComponent, resolve: {workers: EditTeamResolver}},
+            { path: 'edit-validated-order', component: EditValidatedOrderComponent, pathMatch: 'full',
+                    resolve: {teams: ValidateOrderResolver}}
         ]
     },
     { path: '**', redirectTo: '', pathMatch: 'full'}

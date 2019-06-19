@@ -3,8 +3,10 @@ import { AuthService } from '../_services/auth.service';
 import { AlertifyService } from '../_services/alertify.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { NewOrderComponent } from '../newOrder/newOrder.component';
 
 @Component({
+  providers: [NewOrderComponent],
   selector: 'app-nav',
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.css']
@@ -14,7 +16,8 @@ export class NavComponent implements OnInit {
   subscription: Subscription;
   roleLocal: string;
 
-  constructor(public authService: AuthService, private alertify: AlertifyService, private router: Router) {
+  constructor(public authService: AuthService, private alertify: AlertifyService, private router: Router, 
+              private newOrderComp: NewOrderComponent) {
   }
 
   ngOnInit() {}
@@ -60,13 +63,4 @@ export class NavComponent implements OnInit {
     this.roleLocal = 'User';
     this.router.navigate(['/home']);
   }
-
-  // isAdmin() {
-  //  if (this.authService.isAdmin()) {
-  //    return true;
-  //  }
-  //  if (!this.authService.isAdmin()) {
-  //    return false;
-  //  }
-  // }
 }

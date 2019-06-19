@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Order } from '../_models/order';
 import { AdminService } from '../_services/admin.service';
 import { AlertifyService } from '../_services/alertify.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -18,7 +18,6 @@ export class OrdersAllListComponent implements OnInit {
 
   ngOnInit() {
     this.loadOrders();
-    console.log(this.orderList);
   }
 
   loadOrders() {
@@ -52,5 +51,15 @@ export class OrdersAllListComponent implements OnInit {
     } else {
         return 'Nie';
       }
+  }
+
+  editOrder(order: Order) {
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        order: JSON.stringify(order)
+      }
+    };
+
+    this.router.navigate(['edit-validated-order'], navigationExtras);
   }
 }

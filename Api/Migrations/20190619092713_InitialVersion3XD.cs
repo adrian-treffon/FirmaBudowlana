@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FirmaBudowlana.Migrations
 {
-    public partial class sqliteSecondTempDatabase : Migration
+    public partial class InitialVersion3XD : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -45,7 +45,8 @@ namespace FirmaBudowlana.Migrations
                 columns: table => new
                 {
                     TeamID = table.Column<Guid>(nullable: false),
-                    Description = table.Column<string>(nullable: true)
+                    Description = table.Column<string>(nullable: true),
+                    Active = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -79,7 +80,8 @@ namespace FirmaBudowlana.Migrations
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
                     Specialization = table.Column<string>(nullable: true),
-                    ManHour = table.Column<decimal>(nullable: false)
+                    ManHour = table.Column<decimal>(nullable: false),
+                    Active = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {

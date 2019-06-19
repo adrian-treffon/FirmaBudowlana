@@ -31,6 +31,7 @@ import { NewTeamComponent } from './new-team/new-team.component';
 import { NewTeamResolver } from './resolvers/new-team.resolver';
 import { ValidateOrderComponent } from './validate-order/validate-order.component';
 import { ValidateOrderResolver } from './resolvers/validate-order.resolver';
+import { WorkerEditResolver } from './resolvers/worker-edit.resolver';
 import { NavResolver } from './resolvers/nav.resolver';
 import { OrderDetailsComponent } from './order-details/order-details.component';
 import { OrderDetailsResolver } from './resolvers/order-details.resolver';
@@ -39,6 +40,10 @@ import { OrdersAllListComponent } from './orders-all-list/orders-all-list.compon
 import { OrdersAllResolver } from './resolvers/orders-all-list.resolver';
 import { PaymentPaidListComponent } from './payment-paid-list/payment-paid-list.component';
 import { PaymentUnpaidListComponent } from './payment-unpaid-list/payment-unpaid-list.component';
+import { EditWorkerComponent } from './edit-worker/edit-worker.component';
+import { EditTeamComponent } from './edit-team/edit-team.component';
+import { EditTeamResolver } from './resolvers/edit-team.resolver';
+import { EditValidatedOrderComponent } from './edit-validated-order/edit-validated-order.component';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -62,7 +67,10 @@ export function tokenGetter() {
       OrderDetailsComponent,
       OrdersAllListComponent,
       PaymentPaidListComponent,
-      PaymentUnpaidListComponent
+      PaymentUnpaidListComponent,
+      EditWorkerComponent,
+      EditTeamComponent,
+      EditValidatedOrderComponent
    ],
    imports: [
       BrowserModule,
@@ -91,6 +99,8 @@ export function tokenGetter() {
       NavResolver,
       OrderDetailsResolver,
       OrdersAllResolver,
+      WorkerEditResolver,
+      EditTeamResolver,
       DatePipe
    ],
    bootstrap: [

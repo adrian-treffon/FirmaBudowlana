@@ -76,6 +76,8 @@ namespace FirmaBudowlana.Migrations
                     b.Property<Guid>("TeamID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<bool>("Active");
+
                     b.Property<string>("Description");
 
                     b.HasKey("TeamID");
@@ -114,6 +116,8 @@ namespace FirmaBudowlana.Migrations
                     b.Property<Guid>("WorkerID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<bool>("Active");
+
                     b.Property<string>("FirstName");
 
                     b.Property<string>("LastName");
@@ -142,12 +146,12 @@ namespace FirmaBudowlana.Migrations
 
             modelBuilder.Entity("FirmaBudowlana.Core.Models.OrderTeam", b =>
                 {
-                    b.HasOne("FirmaBudowlana.Core.Models.Order", "Order")
+                    b.HasOne("FirmaBudowlana.Core.Models.Order")
                         .WithMany("OrderTeam")
                         .HasForeignKey("OrderID")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("FirmaBudowlana.Core.Models.Team", "Team")
+                    b.HasOne("FirmaBudowlana.Core.Models.Team")
                         .WithMany("OrderTeam")
                         .HasForeignKey("TeamID")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -155,12 +159,12 @@ namespace FirmaBudowlana.Migrations
 
             modelBuilder.Entity("FirmaBudowlana.Core.Models.WorkerTeam", b =>
                 {
-                    b.HasOne("FirmaBudowlana.Core.Models.Team", "Team")
+                    b.HasOne("FirmaBudowlana.Core.Models.Team")
                         .WithMany("WorkerTeam")
                         .HasForeignKey("TeamID")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("FirmaBudowlana.Core.Models.Worker", "Worker")
+                    b.HasOne("FirmaBudowlana.Core.Models.Worker")
                         .WithMany("WorkerTeam")
                         .HasForeignKey("WorkerID")
                         .OnDelete(DeleteBehavior.Cascade);

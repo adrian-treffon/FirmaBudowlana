@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Order } from '../_models/order';
 import { AuthService } from '../_services/auth.service';
 import { AlertifyService } from '../_services/alertify.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-newOrder',
@@ -17,9 +18,11 @@ export class NewOrderComponent implements OnInit {
   order: Order;
   isSubmited = false;
   now = new Date();
-  constructor(private fb: FormBuilder, private router: Router, private authServide: AuthService, private alertify: AlertifyService) {}
+  constructor(private fb: FormBuilder, private router: Router, private authServide: AuthService,
+              private alertify: AlertifyService, private location: Location) {}
 
   ngOnInit() {
+    this.isSubmited = false;
     this.createNewOrderForm();
     new Date(this.now).getTime();
   }
@@ -28,6 +31,12 @@ export class NewOrderComponent implements OnInit {
       description: ['', Validators.required],
       startDate: ['', Validators.required]
     });
+  }
+
+  reloadEverything() {
+    console.log('Hello from reloadEverything');
+    this.isSubmited = false;
+    this.newOrderForm.reset();
   }
 
   submitOrder() {

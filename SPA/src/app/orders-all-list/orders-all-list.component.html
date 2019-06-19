@@ -16,12 +16,13 @@
         <th scope="col">Opłacone:</th>
         <th scope="col">ID użytkownika:</th>
         <th scope="col">Zespoły:</th>
+        <th scope="col">Edytuj zlecenie:</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let order of orderList; let i = index">
         <td>{{order.orderID}}</td>
-        <td>{{order.startDate | date:'dd/MM/yyyy'}}</td>
+        <td>{{order.startDate | date:'dd-MM-yyyy'}}</td>
         <td>{{this.getEndDate(i)}}</td>
         <td>{{this.getCost(i)}}</td>
         <td>{{order.description}}</td>
@@ -30,6 +31,7 @@
         <td>
             <span *ngFor="let team of order.teams; let j = index">{{team.description}}, </span>
         </td>
+        <td><button type="button" class="btn btn-dark" (click)="editOrder(order)" >Edytuj</button></td>
       </tr>
     </tbody>
   </table>

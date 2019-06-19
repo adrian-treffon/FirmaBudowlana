@@ -1,0 +1,44 @@
+
+<br><br>
+<div class="container col-sm-5">
+    <form [formGroup]="editWorkerForm" (ngSubmit)="editWorker()" >
+        <h2 class="text-center text-secondary">Edycja pracownika</h2>
+        <hr>
+        
+        <div class="form-group text-center">
+          <input [ngClass]="{'is-invalid': editWorkerForm.get('firstName').errors && editWorkerForm.get('firstName').touched}" class="form-control"
+            formControlName="firstName">
+            <h5><small class="text-muted">Imię</small></h5>
+          <div class="invalid-feedback" *ngIf="editWorkerForm.get('firstName').touched && editWorkerForm.get('firstName').hasError('required')">Imię jest wymagane</div>
+        </div>
+    
+        <div class="form-group text-center">
+          <input [ngClass]="{'is-invalid': editWorkerForm.get('lastName').errors && editWorkerForm.get('lastName').touched}" class="form-control"
+            formControlName="lastName">
+            <h5><small class="text-muted">Nazwisko</small></h5>
+          <div class="invalid-feedback" *ngIf="editWorkerForm.get('lastName').touched && editWorkerForm.get('lastName').hasError('required')">Nazwisko jest wymagane</div>
+        </div>
+    
+        <div class="form-group text-center">
+          <input [ngClass]="{'is-invalid': editWorkerForm.get('specialization').errors && editWorkerForm.get('specialization').touched}" class="form-control"
+            formControlName="specialization">
+            <h5><small class="text-muted">Specjalizacja</small></h5>
+          <div class="invalid-feedback" *ngIf="editWorkerForm.get('specialization').touched && editWorkerForm.get('specialization').hasError('required')">Specjalizacja jest wymagana</div>
+        </div>
+
+        <div class="form-group text-center">
+            <input type="number" [ngClass]="{'is-invalid': editWorkerForm.get('manHour').errors && editWorkerForm.get('manHour').touched}" class="form-control"
+              formControlName="manHour">
+              <h5><small class="text-muted">Opłata za roboczogodzinę</small></h5>
+            <div class="invalid-feedback" *ngIf="editWorkerForm.get('manHour').touched && editWorkerForm.get('manHour').hasError('required')">Stawka za roboczogodzinę jest wymagana</div>
+        </div>
+    
+        <br>
+    
+        <div class="form-group text-center">
+          <button [disabled]="!editWorkerForm.valid" class="btn btn-outline-dark mr-2" type="submit">Edytuj</button>
+          <button class="btn btn-default ml-2" [routerLink]="['/worker-list']" type="button">Anuluj</button>
+        </div>
+        
+      </form> 
+</div>

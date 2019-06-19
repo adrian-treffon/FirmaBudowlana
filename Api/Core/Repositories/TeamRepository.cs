@@ -22,7 +22,10 @@ namespace FirmaBudowlana.Core.Repositories
 
 
         public async Task<IEnumerable<Team>> GetAllAsync()
-            => await _context.Teams.ToListAsync();
+            => await _context.Teams.AsNoTracking().ToListAsync();
+
+        public async Task<IEnumerable<Team>> GetAllActiveAsync()
+            => await _context.Teams.AsNoTracking().Where(x=> x.Active == true).ToListAsync();
 
         public async Task AddAsync(Team team)
         {

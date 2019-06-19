@@ -30,12 +30,12 @@ export class WorkerListComponent implements OnInit {
   }
 
   deleteWorker(id: string) {
-    this.alertify.confirm('Czy na pewno chcesz usunąć tego pracownika?', () => {
+    this.alertify.confirm('Czy na pewno chcesz zwolnić tego pracownika?', () => {
       this.adminService.deleteWorker(id).subscribe(() => {
-        this.alertify.success('Pracownik został usunięty');
+        this.alertify.success('Pracownik został zwolniony');
         this.ngOnInit();
       }, error => {
-        this.alertify.error('Błąd podczas usuwania pracownika!');
+        this.alertify.error('Błąd podczas zwalniania pracownika!');
       });
     });
   }

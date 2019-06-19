@@ -45,6 +45,18 @@ export class AdminService {
     return this.httpClient.post(this.baseUrl + 'order/validate', order);
   }
 
+  editWorker(worker: Worker) {
+    return this.httpClient.post(this.baseUrl + 'edit/worker', worker);
+  }
+
+  editTeam(team: Team) {
+    return this.httpClient.post(this.baseUrl + 'edit/team', team);
+  }
+
+  editOrder(order: Order) {
+    return this.httpClient.post(this.baseUrl + 'edit/order', order);
+  }
+
   getTeams(): Observable<Team[]> {
     return this.httpClient.get<Team[]>(this.baseUrl + 'comparison/teams');
   }
@@ -67,6 +79,10 @@ export class AdminService {
 
   deleteTeam(id: string): Observable<any> {
     return this.httpClient.get<any>(this.baseUrl + 'delete/team/' + id);
+  }
+
+  getWorker(id: string): Observable<Worker> {
+    return this.httpClient.get<Worker>(this.baseUrl + 'comparison/workers/' + id);
   }
 
   deleteWorker(id: string): Observable<any> {
