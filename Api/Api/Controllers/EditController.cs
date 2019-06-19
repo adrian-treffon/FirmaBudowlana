@@ -31,15 +31,15 @@ namespace FirmaBudowlana.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Worker([FromBody]WorkerDTO worker)
+        public async Task<IActionResult> Worker([FromBody]WorkerDTO workerDTO)
         {
-            if (worker == null) return BadRequest(new { message = "Post request edit/worker is empty" });
+            if (workerDTO == null) return BadRequest(new { message = "Post request edit/worker is empty" });
+           
+            var workerFromDB = await _workerRepository.GetAsync(workerDTO.WorkerID);
 
-            var workerFromDB = await _workerRepository.GetAsync(worker.WorkerID);
+            if (workerFromDB == null) return BadRequest(new { message = $"Cannot find the worker {workerDTO.WorkerID} in DB" });
 
-            if (workerFromDB == null) return BadRequest(new { message = $"Cannot find the worker {worker.WorkerID} in DB" });
-
-            await _workerRepository.UpdateAsync(_mapper.Map<Worker>(worker));
+            await _workerRepository.UpdateAsync(_mapper.Map<Worker>(workerDTO));
 
             return Ok();
         }

@@ -8,7 +8,7 @@ namespace FirmaBudowlana.Core.Models
     {
         public Guid TeamID { get; set; }
         public string Description { get; set; }
-        public bool Active { get; set; }
+        public bool Active { get; set; } = true;
 
         [JsonIgnore]
         public List<WorkerTeam> WorkerTeam { get; set; }
