@@ -6,6 +6,7 @@ import { Worker } from '../_models/worker';
 import { Team } from '../_models/team';
 import { Order } from '../_models/order';
 import { Payment } from '../_models/payment';
+import { ReportParams } from '../_models/report-params';
 
 
 
@@ -55,6 +56,10 @@ export class AdminService {
 
   editOrder(order: Order) {
     return this.httpClient.post(this.baseUrl + 'edit/order', order);
+  }
+
+  getReport(reportParams: ReportParams) {
+    return this.httpClient.post(this.baseUrl + 'comparison/report', reportParams);
   }
 
   getTeams(): Observable<Team[]> {

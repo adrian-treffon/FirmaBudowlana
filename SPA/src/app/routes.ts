@@ -25,6 +25,8 @@ import { WorkerEditResolver } from './resolvers/worker-edit.resolver';
 import { EditTeamComponent } from './edit-team/edit-team.component';
 import { EditTeamResolver } from './resolvers/edit-team.resolver';
 import { EditValidatedOrderComponent } from './edit-validated-order/edit-validated-order.component';
+import { ReportInputComponent } from './report-input/report-input.component';
+import { ReportInputResolver } from './resolvers/report-input.resolver';
 
 export const appRoutes: Routes = [
     { path: '', component: HomeComponent},
@@ -42,6 +44,7 @@ export const appRoutes: Routes = [
             { path: 'team-list', component: TeamListComponent },
             { path: 'order-list', component: OrderListComponent},
             { path: 'payment-paid-list', component: PaymentPaidListComponent},
+            { path: 'report-input', component: ReportInputComponent, resolve: {result: ReportInputResolver}},
             { path: 'payment-unpaid-list', component: PaymentUnpaidListComponent},
             { path: 'order-all-list', component: OrdersAllListComponent, resolve: {orders: OrdersAllResolver}},
             { path: 'new-team', component: NewTeamComponent, resolve: {workers: NewTeamResolver}},

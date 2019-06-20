@@ -17,6 +17,14 @@ confirm(message: string, okCallback: () => any) {
   });
 }
 
+alert(message: string, okCallback: () => any) {
+  alertify.alert(message, function(e) {
+    if (e) {
+      okCallback();
+    } else {}
+  });
+}
+
 success(message: string) {
   alertify.success(message);
 }

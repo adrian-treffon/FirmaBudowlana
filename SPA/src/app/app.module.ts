@@ -44,6 +44,8 @@ import { EditWorkerComponent } from './edit-worker/edit-worker.component';
 import { EditTeamComponent } from './edit-team/edit-team.component';
 import { EditTeamResolver } from './resolvers/edit-team.resolver';
 import { EditValidatedOrderComponent } from './edit-validated-order/edit-validated-order.component';
+import { ReportInputComponent } from './report-input/report-input.component';
+import { ReportInputResolver } from './resolvers/report-input.resolver';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -70,8 +72,9 @@ export function tokenGetter() {
       PaymentUnpaidListComponent,
       EditWorkerComponent,
       EditTeamComponent,
-      EditValidatedOrderComponent
-   ],
+      EditValidatedOrderComponent,
+      ReportInputComponent
+      ],
    imports: [
       BrowserModule,
       FormsModule,
@@ -97,6 +100,7 @@ export function tokenGetter() {
       NewTeamResolver,
       ValidateOrderResolver,
       NavResolver,
+      ReportInputResolver,
       OrderDetailsResolver,
       OrdersAllResolver,
       WorkerEditResolver,

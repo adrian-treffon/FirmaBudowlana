@@ -174,7 +174,7 @@ namespace FirmaBudowlana.Api.Controllers
             return order;
         }
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Report(DateTime? start, DateTime? end,[FromBody]IEnumerable<Worker> workers,[FromBody]IEnumerable<Team> teams)
         {
            var orders = new List<ComparisonOrderDTO>();

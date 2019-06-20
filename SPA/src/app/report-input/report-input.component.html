@@ -1,0 +1,75 @@
+<div *ngIf="!isListMode" class="containter mx-auto col-6 col-md-5 col-xl-5 text-center">
+
+  <h1 class="text-center text-secondary">Generowanie raportu</h1>
+  <br><br>
+
+  <label>Opcjonalnie: Wybierz zespoły LUB pracowników, na których temat chcesz uzyskać dane. Jedna z list musi być pusta.</label>
+  <ng-multiselect-dropdown [placeholder]="'Wybierz zespoły (opcjonalne)...'" [data]="teamsDropdownList"
+    [(ngModel)]="teamsSelectedItems" [settings]="teamsDropdownSettings" (onSelect)="teamsOnItemSelect($event)"
+    (onSelectAll)="teamsOnSelectAll($event)" (onDeSelect)="teamsOnItemDeSelect($event)">
+  </ng-multiselect-dropdown>
+
+  <br><br>
+
+  <ng-multiselect-dropdown [placeholder]="'Wybierz pracowników (opcjonalne)...'" [data]="workersDropdownList"
+    [(ngModel)]="workersSelectedItems" [settings]="workersDropdownSettings" (onSelect)="workersOnItemSelect($event)"
+    (onSelectAll)="workersOnSelectAll($event)" (onDeSelect)="workersOnItemDeSelect($event)">
+  </ng-multiselect-dropdown>
+
+  <form [formGroup]="reportInputOrderForm" (ngSubmit)="sendReportInput()"
+    class="mx-auto col-12 col-md-12 col-xl-12 text-center">
+    <div class="form-group mt-5">
+      <div class="form-group">
+        <label for="endDate">Wprowadź zakres dat z których ma być generowany raport (opcjonalne)...</label>
+        <input class="form-control" id="range" type="text" formControlName="range" bsDaterangepicker
+          [minDate]="this.firstAvaliableDate" [bsConfig]="{ dateInputFormat: 'dd-MM-yyyy' }">
+        <div class="invalid-feedback">Data jest wymagana</div>
+      </div>
+      <br><br>
+      <div class="form-group text-center">
+        <button [disabled]="!reportInputOrderForm.valid" class="btn btn-outline-dark mr-2" type="submit">Wygeneruj
+          raport</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="isListMode" class="container">
+  <br>
+  <div class="col-sm-12">
+    <h1 class="d-inline-block text-secondary">Raport:</h1>
+    <button type="button" class="btn pull-right btn-info btn-lg text-center" (click)="isListMode = false">Wróć</button>
+  </div>
+
+  <br><br>
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">ID zamówienia:</th>
+        <th scope="col">Data rozpoczęcia:</th>
+        <th scope="col">Data zakończenia:</th>
+        <th scope="col">Koszt:</th>
+        <th scope="col">Opis:</th>
+        <th scope="col">Opłacone:</th>
+        <th scope="col">ID użytkownika:</th>
+        <th scope="col">Zespoły:</th>
+        <th scope="col">Edytuj zlecenie:</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of ordersReport; let i = index">
+        <td>{{order.orderID}}</td>
+        <td>{{order.startDate | date:'dd-MM-yyyy'}}</td>
+        <td>{{this.getEndDate(i)}}</td>
+        <td>{{this.getCost(i)}}</td>
+        <td>{{order.description}}</td>
+        <td>{{this.getPaid(i)}}</td>
+        <td>{{order.userID}}</td>
+        <td>
+          <span *ngFor="let team of order.teams; let j = index">{{team.description}}, </span>
+        </td>
+        <td><button type="button" class="btn btn-dark" (click)="editOrder(order)">Edytuj</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
