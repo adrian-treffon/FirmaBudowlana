@@ -180,27 +180,27 @@ namespace FirmaBudowlana.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Report(DateTime? start, DateTime? end,[FromBody]IEnumerable<Worker> workers,[FromBody]IEnumerable<Team> teams)
+        public async Task<IActionResult> Report([FromBody]ReportDTO report)
         {
            var orders = new List<ComparisonOrderDTO>();
 
-            if (teams != null || workers != null)
+            if (report.Teams.Count() != 0 || report.Workers.Count() != 0)
             {
                 var ordersID = new List<Guid>();
 
-                if (teams != null && workers == null)
+                if (report.Teams.Count() != 0 && report.Workers.Count() == 0)
                 {
-                    foreach (var team in teams)
+                    foreach (var team in report.Teams)
                     {
                         ordersID.AddRange(_context.OrderTeam.Where(x => x.TeamID == team.TeamID).Select(x => x.OrderID).ToList());
                     }
 
                 }
-                else if (teams == null && workers != null)
+                else if (report.Teams.Count() == 0 && report.Workers.Count() != 0)
                 {
                     var teamIDs = new List<Guid>();
 
-                    foreach (var worker in workers)
+                    foreach (var worker in report.Workers)
                     {
                         teamIDs.AddRange(_context.WorkerTeam.Where(x => x.WorkerID == worker.WorkerID).Select(x => x.TeamID).ToList());
                     }
@@ -210,7 +210,7 @@ namespace FirmaBudowlana.Api.Controllers
                         ordersID.AddRange(_context.OrderTeam.Where(x => x.TeamID == teamID).Select(o => o.OrderID).ToList());
                     }
 
-                }else if(teams != null && workers != null) return BadRequest(new { message = $"You can only choose teams or workers, not both" });
+                }else if(report.Teams.Count()  != 0 && report.Workers.Count() != 0) return BadRequest(new { message = $"You can only choose teams or workers, not both" });
 
                 foreach (var id in ordersID)
                 {
@@ -223,14 +223,12 @@ namespace FirmaBudowlana.Api.Controllers
 
                 }
             }
-            else if (teams == null || workers == null)
+            else if (report.Teams.Count() == 0 || report.Workers.Count() == 0)
             {
                 orders= _mapper.Map<List<ComparisonOrderDTO>>(await _orderRepository.GetAllValidatedAsync());
             }
 
-            if (start != null) orders = orders.Where(x => x.StartDate >= start).ToList();
-
-            if (end != null) orders = orders.Where(x => x.EndDate <= end).ToList();
+            if (report.StartDate != null && report.EndDate != null) orders = orders.Where(x => x.StartDate >= report.StartDate && x.StartDate <= report.EndDate).ToList();
 
             for (int i = 0; i < orders.Count(); i++)
             {
