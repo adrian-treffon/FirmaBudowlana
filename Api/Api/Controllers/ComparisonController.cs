@@ -55,6 +55,25 @@ namespace FirmaBudowlana.Api.Controllers
             return new JsonResult(workers);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> AllWorkers()
+        {
+            var workers = _mapper.Map<IEnumerable<WorkerDTO>>(await _workerRepository.GetAllAsync());
+
+            foreach (var worker in workers)
+            {
+                var teamworkers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.WorkerID == worker.WorkerID);
+
+                foreach (var teamworker in teamworkers)
+                {
+                    var team = await _teamRepository.GetAsync(teamworker.TeamID);
+                    worker.Teams.Add(team);
+                }
+
+            }
+            return new JsonResult(workers);
+        }
+
         [HttpGet("Comparison/Workers/{id}")]
         public async Task<IActionResult> Workers(Guid id)
         {
@@ -77,6 +96,24 @@ namespace FirmaBudowlana.Api.Controllers
                 {
                     var worker = await _workerRepository.GetAsync(workerID.WorkerID);
                     if(worker.Active) team.Workers.Add(worker);
+                }
+            }
+
+            return new JsonResult(teams);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AllTeams()
+        {
+            var teams = _mapper.Map<IEnumerable<TeamDTO>>(await _teamRepository.GetAllAsync());
+
+            foreach (var team in teams)
+            {
+                var workers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.TeamID == team.TeamID).ToList();
+                foreach (var workerID in workers)
+                {
+                    var worker = await _workerRepository.GetAsync(workerID.WorkerID);
+                    if (worker.Active) team.Workers.Add(worker);
                 }
             }
 
