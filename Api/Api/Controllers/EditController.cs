@@ -91,6 +91,9 @@ namespace FirmaBudowlana.Api.Controllers
 
             if (orderFromDB.Validated == false) return BadRequest(new { message = $"You cannot edit invalidated order" });
 
+            if (orderFromDB.Paid == true) return BadRequest(new { message = $"You cannot edit paid/finished order" });
+
+
             foreach (var team in adminOrderDTO.Teams)
             {
                 order.OrderTeam.Add(
@@ -110,7 +113,6 @@ namespace FirmaBudowlana.Api.Controllers
             _context.OrderTeam.RemoveRange(orderTeam);
 
             await _context.OrderTeam.AddRangeAsync(order.OrderTeam);
-            await _context.SaveChangesAsync();
             await _orderRepository.UpdateAsync(order);
 
             return Ok();

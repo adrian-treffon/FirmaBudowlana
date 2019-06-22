@@ -29,6 +29,7 @@ namespace FirmaBudowlana.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> AddByClient([FromBody]ClientOrderDTO clOrder)
         {
             var order = _mapper.Map<Order>(clOrder);
@@ -79,9 +80,7 @@ namespace FirmaBudowlana.Api.Controllers
                 order.OrderTeam.Add( 
                     new OrderTeam
                     {
-                        Order = order,
                         OrderID = order.OrderID,
-                        Team= team,
                         TeamID = team.TeamID
                     }
                     );

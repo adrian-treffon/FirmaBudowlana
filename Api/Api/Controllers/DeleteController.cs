@@ -50,6 +50,14 @@ namespace FirmaBudowlana.Api.Controllers
 
             if (team == null) return BadRequest(new { message = $"Cannot find the team {id} in DB" });
 
+            var orderTeam = _context.OrderTeam.Where(x => x.TeamID == team.TeamID).Select(o => o.OrderID).ToList();
+
+            foreach (var orderID in orderTeam)
+            {
+                var order = await _orderRepository.GetAsync(orderID);
+                if(!order.Paid) return BadRequest(new { message = $"Cannot disable the team {team.TeamID}, because of active orders" });
+            }
+
             team.Active = false;
 
             await _teamRepository.UpdateAsync(team);

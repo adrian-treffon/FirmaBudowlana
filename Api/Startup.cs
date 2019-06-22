@@ -57,17 +57,12 @@ namespace FirmaBudowlana
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
-                    ValidateAudience = false,
-                    
-          
+                    ValidateAudience = false,      
                 };
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-           
-           
-
+                      
             var containerBuilder = new ContainerBuilder();
 
             containerBuilder.RegisterModule<RepositoryModule>();
@@ -89,9 +84,7 @@ namespace FirmaBudowlana
             }
 
             app.UseStatusCodePages();
-
         
-
             app.UseCors(x => x
                  .AllowAnyOrigin()
                  .AllowAnyMethod()
@@ -99,23 +92,12 @@ namespace FirmaBudowlana
 
             app.UseAuthentication();
 
-
             app.UseMvc(routes =>
             {
                 routes.MapRoute
                 (name: "default",
                 template: "{controller=Account}/{action=Login}/{id?}"
-                );
-                
-                routes.MapRoute
-                (
-                    name:"report",
-                    template: "{controller=Comparison}/{action=Report}/{start}/{end}",
-                    defaults: new { start = "null", end = "null" }
-                );
-               
-
-
+                );                              
             });
         }
     }

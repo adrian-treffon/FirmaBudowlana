@@ -49,7 +49,6 @@ namespace FirmaBudowlana.Api.Controllers
                 {
                     var team = await _teamRepository.GetAsync(teamworker.TeamID);
                     worker.Teams.Add(team);
-
                 }
 
             }
@@ -151,11 +150,11 @@ namespace FirmaBudowlana.Api.Controllers
         private async Task<ComparisonOrderDTO> MakeUpAnOrder(ComparisonOrderDTO order)
         {
 
-            var payments = (await _paymentRepository.GetAllAsync()).Where(x => x.OrderID == order.OrderID);
+            var payments = (await _paymentRepository.GetAllAsync()).Where(x => x.OrderID == order.OrderID).ToList();
 
             if (payments.Any())
             {
-                order.Payments = _mapper.Map<List<PaymentDTO>>(payments);
+                order.Payments = payments;
                 order.Paid = true;
             }
             else order.Payments = null;
@@ -184,11 +183,11 @@ namespace FirmaBudowlana.Api.Controllers
         {
            var orders = new List<ComparisonOrderDTO>();
 
-            if (report.Teams.Count() != 0 || report.Workers.Count() != 0)
+            if (report.Teams.Any() || report.Workers.Any())
             {
                 var ordersID = new List<Guid>();
 
-                if (report.Teams.Count() != 0 && report.Workers.Count() == 0)
+                if (report.Teams.Any() && !report.Workers.Any())
                 {
                     foreach (var team in report.Teams)
                     {
@@ -196,7 +195,7 @@ namespace FirmaBudowlana.Api.Controllers
                     }
 
                 }
-                else if (report.Teams.Count() == 0 && report.Workers.Count() != 0)
+                else if (!report.Teams.Any() && report.Workers.Any())
                 {
                     var teamIDs = new List<Guid>();
 
@@ -210,7 +209,7 @@ namespace FirmaBudowlana.Api.Controllers
                         ordersID.AddRange(_context.OrderTeam.Where(x => x.TeamID == teamID).Select(o => o.OrderID).ToList());
                     }
 
-                }else if(report.Teams.Count()  != 0 && report.Workers.Count() != 0) return BadRequest(new { message = $"You can only choose teams or workers, not both" });
+                }else if(report.Teams.Any() && report.Workers.Any()) return BadRequest(new { message = $"You can only choose teams or workers, not both" });
 
                 foreach (var id in ordersID)
                 {
@@ -223,7 +222,7 @@ namespace FirmaBudowlana.Api.Controllers
 
                 }
             }
-            else if (report.Teams.Count() == 0 || report.Workers.Count() == 0)
+            else if (!report.Teams.Any() || !report.Workers.Any())
             {
                 orders= _mapper.Map<List<ComparisonOrderDTO>>(await _orderRepository.GetAllValidatedAsync());
             }
