@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using FirmaBudowlana.Core.DTO;
-using FirmaBudowlana.Core.Models;
 using FirmaBudowlana.Core.Repositories;
 using FirmaBudowlana.Infrastructure.EF;
 using Microsoft.AspNetCore.Authorization;
@@ -38,42 +37,12 @@ namespace FirmaBudowlana.Api.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Workers()
-        {
-            var workers = _mapper.Map<IEnumerable<WorkerDTO>>(await _workerRepository.GetAllActiveAsync());
-
-            foreach (var worker in workers)
-            {
-                var teamworkers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.WorkerID == worker.WorkerID);
-
-                foreach (var teamworker in teamworkers)
-                {
-                    var team = await _teamRepository.GetAsync(teamworker.TeamID);
-                    worker.Teams.Add(team);
-                }
-
-            }
-            return new JsonResult(workers);
-        }
-
+        => new JsonResult(_mapper.Map<IEnumerable<WorkerDTO>>(await _workerRepository.GetAllActiveAsync()));
+            
         [HttpGet]
         public async Task<IActionResult> AllWorkers()
-        {
-            var workers = _mapper.Map<IEnumerable<WorkerDTO>>(await _workerRepository.GetAllAsync());
-
-            foreach (var worker in workers)
-            {
-                var teamworkers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.WorkerID == worker.WorkerID);
-
-                foreach (var teamworker in teamworkers)
-                {
-                    var team = await _teamRepository.GetAsync(teamworker.TeamID);
-                    worker.Teams.Add(team);
-                }
-
-            }
-            return new JsonResult(workers);
-        }
-
+           => new JsonResult(_mapper.Map<IEnumerable<WorkerDTO>>(await _workerRepository.GetAllAsync()));
+             
         [HttpGet("Comparison/Workers/{id}")]
         public async Task<IActionResult> Workers(Guid id)
         {

@@ -18,14 +18,38 @@ namespace FirmaBudowlana.Core.Repositories
         }
 
         public async Task<Worker> GetAsync(Guid id)
-            => await _context.Workers.AsNoTracking().SingleOrDefaultAsync(x => x.WorkerID == id);
+        {
+             var worker = await _context.Workers.AsNoTracking().SingleOrDefaultAsync(x => x.WorkerID == id);
+             worker.WorkerTeam = await _context.WorkerTeam.Where(x => x.WorkerID == worker.WorkerID).ToListAsync();
+             return worker;
+        }
 
 
         public async Task<IEnumerable<Worker>> GetAllAsync()
-            => await _context.Workers.ToListAsync();
+        {
+            var workers = await _context.Workers.ToListAsync();
+
+            foreach (var worker in workers)
+            {
+                worker.WorkerTeam = await _context.WorkerTeam.Where(x => x.WorkerID == worker.WorkerID).ToListAsync();
+            }
+
+            return workers;
+
+        }
 
         public async Task<IEnumerable<Worker>> GetAllActiveAsync()
-           => await _context.Workers.Where(x=> x.Active == true).ToListAsync();
+        {
+            var workers = await _context.Workers.Where(x => x.Active == true).ToListAsync();
+
+            foreach (var worker in workers)
+            {
+                worker.WorkerTeam = await _context.WorkerTeam.Where(x => x.WorkerID == worker.WorkerID).ToListAsync();
+            }
+
+            return workers;
+        }
+       
 
         public async Task AddAsync(Worker Worker)
         {
