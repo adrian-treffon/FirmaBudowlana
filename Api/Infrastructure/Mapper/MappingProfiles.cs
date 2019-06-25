@@ -14,7 +14,7 @@ namespace FirmaBudowlana.Infrastructure.Mapper
 
             CreateMap<Order, OrderToPaidDTO>();
 
-            CreateMap<ComparisonOrderDTO, Order>().ReverseMap();
+            CreateMap<Order, ComparisonOrderDTO>().AfterMap<ComparisonOrderDTOMappingProfile>();
 
 
             CreateMap<Worker, WorkerDTO>().AfterMap<WorkerDTOMappingProfile>();

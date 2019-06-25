@@ -32,9 +32,7 @@ namespace FirmaBudowlana.Core.Repositories
             var workers = await _context.Workers.ToListAsync();
 
             for (int i = 0; i < workers.Count(); i++)
-            {
-                workers[i] = await GetWorkerTeamList(workers[i]);
-            }
+                await GetWorkerTeamList(workers[i]);
 
             return workers;
 
@@ -45,9 +43,7 @@ namespace FirmaBudowlana.Core.Repositories
             var workers = await _context.Workers.Where(x => x.Active == true).ToListAsync();
 
             for(int i =0; i <workers.Count();i++)
-            {
-                workers[i] = await GetWorkerTeamList(workers[i]);
-            }
+                await GetWorkerTeamList(workers[i]);
 
             return workers;
         }

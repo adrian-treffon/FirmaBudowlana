@@ -20,7 +20,7 @@ namespace FirmaBudowlana.Core.Repositories
         public async Task<Team> GetAsync(Guid id)
         {
             var team = await _context.Teams.AsNoTracking().SingleOrDefaultAsync(x => x.TeamID == id);
-            team = await GetWorkerTeamAndOrderTeamLists(team);
+            await GetWorkerTeamAndOrderTeamLists(team);
             return team;
         }
 
@@ -29,7 +29,7 @@ namespace FirmaBudowlana.Core.Repositories
         {
             var teams = await _context.Teams.AsNoTracking().ToListAsync();
 
-            for (int i = 0; i < teams.Count; i++) teams[i] = await GetWorkerTeamAndOrderTeamLists(teams[i]);
+            for (int i = 0; i < teams.Count; i++) await GetWorkerTeamAndOrderTeamLists(teams[i]);
             return teams;
         }
 
@@ -37,7 +37,7 @@ namespace FirmaBudowlana.Core.Repositories
         {
             var teams = await _context.Teams.AsNoTracking().Where(x => x.Active == true).ToListAsync();
 
-            for (int i = 0; i < teams.Count; i++) teams[i] = await GetWorkerTeamAndOrderTeamLists(teams[i]);
+            for (int i = 0; i < teams.Count; i++) await GetWorkerTeamAndOrderTeamLists(teams[i]);
 
             return teams;
         }
@@ -67,7 +67,7 @@ namespace FirmaBudowlana.Core.Repositories
 
             foreach (var workerTeam in team.WorkerTeam)
             {
-                workerTeam.Worker = await _context.Workers.AsNoTracking().Where(w => w.WorkerID == workerTeam.WorkerID).SingleAsync();  // GetAsync(workerTeam.WorkerID);
+                workerTeam.Worker = await _context.Workers.AsNoTracking().Where(w => w.WorkerID == workerTeam.WorkerID).SingleAsync(); 
             }
 
             foreach (var orderTeam in team.OrderTeam)

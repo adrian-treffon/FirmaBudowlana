@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using FirmaBudowlana.Core.DTO;
 using FirmaBudowlana.Core.Repositories;
+using FirmaBudowlana.Infrastructure.Commands.Order;
 using FirmaBudowlana.Infrastructure.EF;
+using Komis.Infrastructure.Commands;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,17 +23,17 @@ namespace FirmaBudowlana.Api.Controllers
         private readonly IWorkerRepository _workerRepository;
         private readonly ITeamRepository _teamRepository;
         private readonly IPaymentRepository _paymentRepository;
-        private readonly DBContext _context;
+        private readonly ICommandDispatcher _commandDispatcher;
 
         public ComparisonController(IMapper mapper, IOrderRepository orderRepository, IWorkerRepository workerRepository,
-            ITeamRepository teamRepository, IPaymentRepository paymentRepository, DBContext context)
+            ITeamRepository teamRepository, IPaymentRepository paymentRepository, ICommandDispatcher commandDispatcher)
         {
             _mapper = mapper;
             _orderRepository = orderRepository;
             _workerRepository = workerRepository;
             _teamRepository = teamRepository;
             _paymentRepository = paymentRepository;
-            _context = context;
+            _commandDispatcher = commandDispatcher;
         }
 
 
@@ -88,11 +90,6 @@ namespace FirmaBudowlana.Api.Controllers
             var orders = _mapper.Map<IEnumerable<ComparisonOrderDTO>>((await _orderRepository.GetAllValidatedAsync())
                 .OrderBy(x => x.StartDate)).ToList();
 
-            for (int i = 0; i < orders.Count(); i++)
-            {
-                orders[i] = await MakeUpAnOrder(orders[i]);
-            }
-
             return new JsonResult(orders);
         }
 
@@ -105,8 +102,6 @@ namespace FirmaBudowlana.Api.Controllers
             if (order == null) return BadRequest(new { message = $"Cannot find the order {id} in DB" });
 
             var fullOrder = _mapper.Map<ComparisonOrderDTO>(order);
-
-            fullOrder = await MakeUpAnOrder(fullOrder);
 
             return new JsonResult(fullOrder);
         }
@@ -127,96 +122,22 @@ namespace FirmaBudowlana.Api.Controllers
             return new JsonResult(payment);
         }
 
-        private async Task<ComparisonOrderDTO> MakeUpAnOrder(ComparisonOrderDTO order)
-        {
-
-            var payments = (await _paymentRepository.GetAllAsync()).Where(x => x.OrderID == order.OrderID).ToList();
-
-            if (payments.Any())
-            {
-                order.Payments = payments;
-                order.Paid = true;
-            }
-            else order.Payments = null;
-
-
-            var teams = (await _context.OrderTeam.ToListAsync()).Where(x => x.OrderID == order.OrderID).ToList();
-
-            foreach (var teamID in teams)
-            {
-                var team = _mapper.Map<TeamDTO>(await _teamRepository.GetAsync(teamID.TeamID));
-                var workers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.TeamID == team.TeamID).ToList();
-
-                foreach (var workerID in workers)
-                {
-                    var worker = await _workerRepository.GetAsync(workerID.WorkerID);
-                    team.Workers.Add(worker);
-                }
-
-                order.Teams.Add(team);
-            }
-            return order;
-        }
 
         [HttpPost]
         public async Task<IActionResult> Report([FromBody]ReportDTO report)
         {
-           var orders = new List<ComparisonOrderDTO>();
+            var command = new CreateReport() { Report = report };
 
-            if (report.Teams.Any() || report.Workers.Any())
+            try
             {
-                var ordersID = new List<Guid>();
-
-                if (report.Teams.Any() && !report.Workers.Any())
-                {
-                    foreach (var team in report.Teams)
-                    {
-                        ordersID.AddRange(_context.OrderTeam.Where(x => x.TeamID == team.TeamID).Select(x => x.OrderID).ToList());
-                    }
-
-                }
-                else if (!report.Teams.Any() && report.Workers.Any())
-                {
-                    var teamIDs = new List<Guid>();
-
-                    foreach (var worker in report.Workers)
-                    {
-                        teamIDs.AddRange(_context.WorkerTeam.Where(x => x.WorkerID == worker.WorkerID).Select(x => x.TeamID).ToList());
-                    }
-
-                    foreach (var teamID in teamIDs)
-                    {
-                        ordersID.AddRange(_context.OrderTeam.Where(x => x.TeamID == teamID).Select(o => o.OrderID).ToList());
-                    }
-
-                }else if(report.Teams.Any() && report.Workers.Any()) return BadRequest(new { message = $"You can only choose teams or workers, not both" });
-
-                foreach (var id in ordersID)
-                {
-                    var order = _mapper.Map<ComparisonOrderDTO>(await _orderRepository.GetAsync(id));
-
-                    if (!orders.Select(o => o.OrderID).Contains(order.OrderID))
-                    {
-                        orders.Add(order);
-                    }
-
-                }
+                await _commandDispatcher.DispatchAsync(command);
             }
-            else if (!report.Teams.Any() || !report.Workers.Any())
+            catch (Exception e)
             {
-                orders= _mapper.Map<List<ComparisonOrderDTO>>(await _orderRepository.GetAllValidatedAsync());
+                return BadRequest(new { message = e.Message });
             }
-
-            if (report.StartDate != null && report.EndDate != null) orders = orders.Where(x => x.StartDate >= report.StartDate && x.StartDate <= report.EndDate).ToList();
-
-            for (int i = 0; i < orders.Count(); i++)
-            {
-                orders[i] = await MakeUpAnOrder(orders[i]);
-            }
-
-            orders = orders.OrderBy(x => x.StartDate).ToList();
-
-            return new JsonResult(orders);
+           
+            return new JsonResult(command.Orders);
         }
     }
 }
