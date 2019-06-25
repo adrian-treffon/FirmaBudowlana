@@ -14,6 +14,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using AutoMapper;
+using Komis.Infrastructure.IoC;
 
 namespace FirmaBudowlana
 {
@@ -67,7 +68,8 @@ namespace FirmaBudowlana
 
             containerBuilder.RegisterModule<RepositoryModule>();
             containerBuilder.RegisterModule<ServiceModule>();
-          
+            containerBuilder.RegisterModule<CommandModule>();
+
             containerBuilder.Populate(services);
             var container = containerBuilder.Build();
             return new AutofacServiceProvider(container);

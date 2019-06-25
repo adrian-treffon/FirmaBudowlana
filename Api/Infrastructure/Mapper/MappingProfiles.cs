@@ -11,10 +11,20 @@ namespace FirmaBudowlana.Infrastructure.Mapper
         {
             CreateMap<ClientOrderDTO, Order>().ReverseMap();
             CreateMap<AdminOrderDTO, Order>().ReverseMap();
-            CreateMap<WorkerDTO, Worker>().ReverseMap().AfterMap<WorkerMappingProfile>();
-            CreateMap<TeamDTO, Team>().ReverseMap();
-            CreateMap<OrderToPaidDTO, Order>().ReverseMap();
+
+            CreateMap<Order, OrderToPaidDTO>();
+
             CreateMap<ComparisonOrderDTO, Order>().ReverseMap();
+
+
+            CreateMap<Worker, WorkerDTO>().AfterMap<WorkerDTOMappingProfile>();
+            CreateMap<WorkerDTO, Worker>();
+               
+
+            CreateMap<Team, TeamDTO>().AfterMap<TeamDTOMappingProfile>();
+            CreateMap<TeamDTO, Team>().AfterMap<TeamMappingProfile>();
+
+         
         }
     }
 }

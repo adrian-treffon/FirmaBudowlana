@@ -53,26 +53,20 @@ namespace FirmaBudowlana.Api.Controllers
           
             if (teamFromDB == null) return BadRequest(new { message = $"Cannot find the team {teamDTO.TeamID} in DB" });
 
-            var team = _mapper.Map<Team>(teamDTO);
+            var orderTeam = _context.OrderTeam.Where(x => x.TeamID == teamDTO.TeamID).Select(o => o.OrderID);
 
-            foreach (var worker in teamDTO.Workers)
+            foreach (var orderID in orderTeam)
             {
-                team.WorkerTeam.Add(
-                   new WorkerTeam()
-                   {
-                       Team = team,
-                       Worker = worker,
-                       TeamID = team.TeamID,
-                       WorkerID = worker.WorkerID
-                   }
-             );
+                var order = await _orderRepository.GetAsync(orderID);
+                if (!order.Paid) return BadRequest(new { message = $"Cannot deactivate the team {teamDTO.TeamID}, because of active orders" });
             }
+
+            var team = _mapper.Map<Team>(teamDTO);
 
             var workerTeam = (await _context.WorkerTeam.ToListAsync()).Where(x => x.TeamID == team.TeamID).ToList();
             _context.WorkerTeam.RemoveRange(workerTeam);
 
             await _context.WorkerTeam.AddRangeAsync(team.WorkerTeam);
-            await _context.SaveChangesAsync();
             await _teamRepository.UpdateAsync(team);
 
             return Ok();
@@ -99,9 +93,7 @@ namespace FirmaBudowlana.Api.Controllers
                 order.OrderTeam.Add(
                     new OrderTeam
                     {
-                        Order = order,
                         OrderID = order.OrderID,
-                        Team = team,
                         TeamID = team.TeamID
                     }
                     );

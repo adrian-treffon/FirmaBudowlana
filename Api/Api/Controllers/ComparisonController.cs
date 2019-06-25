@@ -60,35 +60,18 @@ namespace FirmaBudowlana.Api.Controllers
 
             foreach (var team in teams)
             {
-                var workers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.TeamID == team.TeamID).ToList();
-                foreach (var workerID in workers)
+                foreach (var worker in team.Workers)
                 {
-                    var worker = await _workerRepository.GetAsync(workerID.WorkerID);
-                    if(worker.Active) team.Workers.Add(worker);
+                    if (!worker.Active) team.Workers.Remove(worker);
                 }
             }
-
             return new JsonResult(teams);
         }
 
         [HttpGet]
         public async Task<IActionResult> AllTeams()
-        {
-            var teams = _mapper.Map<IEnumerable<TeamDTO>>(await _teamRepository.GetAllAsync());
-
-            foreach (var team in teams)
-            {
-                var workers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.TeamID == team.TeamID).ToList();
-                foreach (var workerID in workers)
-                {
-                    var worker = await _workerRepository.GetAsync(workerID.WorkerID);
-                    if (worker.Active) team.Workers.Add(worker);
-                }
-            }
-
-            return new JsonResult(teams);
-        }
-
+         => new JsonResult(_mapper.Map<IEnumerable<TeamDTO>>(await _teamRepository.GetAllAsync()));
+      
         [HttpGet("Comparison/Teams/{id}")]
         public async Task<IActionResult> Teams(Guid id)
         {
@@ -96,23 +79,14 @@ namespace FirmaBudowlana.Api.Controllers
 
             if (team == null) return BadRequest(new { message = $"Cannot find the team {id} in DB" });
 
-            var workers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.TeamID == team.TeamID).ToList();
-            foreach (var workerID in workers)
-            {
-                var worker = await _workerRepository.GetAsync(workerID.WorkerID);
-                team.Workers.Add(worker);
-            }
-
             return new JsonResult(team);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Orders(DateTime? start, DateTime? end)
+        public async Task<IActionResult> Orders()
         {
             var orders = _mapper.Map<IEnumerable<ComparisonOrderDTO>>((await _orderRepository.GetAllValidatedAsync())
                 .OrderBy(x => x.StartDate)).ToList();
-
-            if (start != null && end != null) orders = orders.Where(s => s.StartDate >= start && s.EndDate <= end).ToList();
 
             for (int i = 0; i < orders.Count(); i++)
             {

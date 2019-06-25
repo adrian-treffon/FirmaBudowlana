@@ -34,6 +34,20 @@ namespace FirmaBudowlana.Api.Controllers
 
             if (worker == null) return BadRequest(new { message = $"Cannot find the worker {id} in DB" });
 
+            var teamIDs = _context.WorkerTeam.Where(x => x.WorkerID == id).Select(y => y.TeamID);
+
+            foreach (var teamID in teamIDs)
+            {
+                var ordersID =_context.OrderTeam.Where(x => x.TeamID == teamID).Select(y => y.OrderID);
+
+                foreach (var orderID in ordersID)
+                {
+                    var order = await _orderRepository.GetAsync(orderID);
+                    if(!order.Paid) return BadRequest(new { message = $"Cannot deactivate the worker {id}, because of active orders" });
+                }
+
+            }
+
             worker.Active = false;
 
             await _workerRepository.UpdateAsync(worker);
@@ -55,7 +69,7 @@ namespace FirmaBudowlana.Api.Controllers
             foreach (var orderID in orderTeam)
             {
                 var order = await _orderRepository.GetAsync(orderID);
-                if(!order.Paid) return BadRequest(new { message = $"Cannot disable the team {team.TeamID}, because of active orders" });
+                if(!order.Paid) return BadRequest(new { message = $"Cannot deactivate the team {team.TeamID}, because of active orders" });
             }
 
             team.Active = false;

@@ -1,11 +1,12 @@
 ﻿using FirmaBudowlana.Core.Models;
+using Komis.Infrastructure.Commands;
 using System;
 using System.Collections.Generic;
 
 
 namespace FirmaBudowlana.Core.DTO
 {
-    public class OrderToPaidDTO
+    public class OrderToPaidDTO : ICommand
     {
         public Guid OrderID { get; set; }
         public string Description { get; set; }
