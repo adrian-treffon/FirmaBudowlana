@@ -1,0 +1,44 @@
+[33mba4a72c[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;31morigin/FirmaBudowlana-SPA[m[33m, [m[1;32mFirmaBudowlana-SPA[m[33m)[m HEAD@{0}: reset: moving to ORIG_HEAD
+[33mba4a72c[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;31morigin/FirmaBudowlana-SPA[m[33m, [m[1;32mFirmaBudowlana-SPA[m[33m)[m HEAD@{1}: reset: moving to master
+[33mba4a72c[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;31morigin/FirmaBudowlana-SPA[m[33m, [m[1;32mFirmaBudowlana-SPA[m[33m)[m HEAD@{2}: reset: moving to HEAD
+[33mba4a72c[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;31morigin/FirmaBudowlana-SPA[m[33m, [m[1;32mFirmaBudowlana-SPA[m[33m)[m HEAD@{3}: reset: moving to master
+[33mba4a72c[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;31morigin/FirmaBudowlana-SPA[m[33m, [m[1;32mFirmaBudowlana-SPA[m[33m)[m HEAD@{4}: merge FirmaBudowlana-SPA: Fast-forward
+[33m35452f7[m HEAD@{5}: checkout: moving from FirmaBudowlana-SPA to master
+[33mba4a72c[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;31morigin/FirmaBudowlana-SPA[m[33m, [m[1;32mFirmaBudowlana-SPA[m[33m)[m HEAD@{6}: commit: Error handling, few minor fixes, api update
+[33m56dc7b3[m HEAD@{7}: commit: Added report component
+[33m7e5df15[m HEAD@{8}: commit: Added reports component
+[33m6b44eb3[m HEAD@{9}: commit: Added edit components + fixes with navbar and text
+[33m3b660fb[m HEAD@{10}: commit: Deleting + improvements in dates and teams
+[33m35452f7[m HEAD@{11}: checkout: moving from master to FirmaBudowlana-SPA
+[33m35452f7[m HEAD@{12}: merge FirmaBudowlana-SPA: Fast-forward
+[33mb4a34a8[m HEAD@{13}: checkout: moving from FirmaBudowlana-SPA to master
+[33m35452f7[m HEAD@{14}: commit: Done paymend stuff, first usable version
+[33m7048729[m HEAD@{15}: commit: Finished unpaid&paid list components
+[33mb4a34a8[m HEAD@{16}: merge master: Fast-forward
+[33m7e11122[m HEAD@{17}: checkout: moving from master to FirmaBudowlana-SPA
+[33mb4a34a8[m HEAD@{18}: checkout: moving from FirmaBudowlana-SPA to master
+[33m7e11122[m HEAD@{19}: checkout: moving from master to FirmaBudowlana-SPA
+[33mb4a34a8[m HEAD@{20}: commit: Finished orders components + minor changes
+[33m7e11122[m HEAD@{21}: merge FirmaBudowlana-SPA: Fast-forward
+[33m2d22304[m HEAD@{22}: checkout: moving from FirmaBudowlana-SPA to master
+[33m7e11122[m HEAD@{23}: checkout: moving from master to FirmaBudowlana-SPA
+[33m2d22304[m HEAD@{24}: checkout: moving from FirmaBudowlana-SPA to master
+[33m7e11122[m HEAD@{25}: checkout: moving from master to FirmaBudowlana-SPA
+[33m2d22304[m HEAD@{26}: checkout: moving from FirmaBudowlana-SPA to master
+[33m7e11122[m HEAD@{27}: commit: Fixes
+[33m113742a[m HEAD@{28}: commit: Few new components added
+[33m39bd455[m HEAD@{29}: commit: M I G H T Y commit, a lot of new components added
+[33mc014ecf[m HEAD@{30}: commit: Added WorkerList skeletron, api update +jwt change
+[33m0a85348[m HEAD@{31}: commit: Added newOrder component
+[33m3102200[m HEAD@{32}: checkout: moving from FirmaBudowlana-SPA to FirmaBudowlana-SPA
+[33m3102200[m HEAD@{33}: commit: Done registration form, logging & backend stuff
+[33m3ba92e2[m HEAD@{34}: commit: Initial commit: added skeleton of login & register
+[33me950cb9[m[33m ([m[1;31morigin/develop[m[33m, [m[1;32mdevelop[m[33m)[m HEAD@{35}: checkout: moving from develop to FirmaBudowlana-SPA
+[33me950cb9[m[33m ([m[1;31morigin/develop[m[33m, [m[1;32mdevelop[m[33m)[m HEAD@{36}: merge FirmaBudowlana-SPA: Fast-forward
+[33m2d22304[m HEAD@{37}: checkout: moving from FirmaBudowlana-SPA to develop
+[33me950cb9[m[33m ([m[1;31morigin/develop[m[33m, [m[1;32mdevelop[m[33m)[m HEAD@{38}: checkout: moving from FirmaBudowlana-SPA to FirmaBudowlana-SPA
+[33me950cb9[m[33m ([m[1;31morigin/develop[m[33m, [m[1;32mdevelop[m[33m)[m HEAD@{39}: commit: Test
+[33m2d22304[m HEAD@{40}: checkout: moving from develop to FirmaBudowlana-SPA
+[33m2d22304[m HEAD@{41}: checkout: moving from FirmaBudowlana-SPA to develop
+[33m2d22304[m HEAD@{42}: checkout: moving from master to FirmaBudowlana-SPA
+[33m2d22304[m HEAD@{43}: clone: from https://github.com/Norvos/FirmaBudowlana
