@@ -16,7 +16,7 @@
         <th scope="col">Opłacone:</th>
         <th scope="col">ID użytkownika:</th>
         <th scope="col">Zespoły:</th>
-        <th scope="col">Edytuj nieopłacone zlecenie:</th>
+        <th scope="col">Edytuj zlecenie:</th>
       </tr>
     </thead>
     <tbody>
@@ -31,7 +31,7 @@
         <td>
             <span *ngFor="let team of order.teams; let j = index">{{team.description}}, </span>
         </td>
-        <td><button type="button" [disabled]="isPaid(order)" class="btn btn-dark" (click)="editOrder(order)" >{{this.getButtonText(i)}}</button></td>
+        <td><button type="button" class="btn btn-dark" (click)="editOrder(order)" >Edytuj</button></td>
       </tr>
     </tbody>
   </table>

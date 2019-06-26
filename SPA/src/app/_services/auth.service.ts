@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 import { User } from '../_models/user';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Order } from '../_models/order';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -25,14 +25,16 @@ export class AuthService {
     login(model: any) {
         return this.http.post(this.baseUrl + 'account/login', model).pipe(
             map((response: any) => {
-            if (response.token) {
-                localStorage.setItem('token', response.token);
-                localStorage.setItem('user', JSON.stringify(response.user));
-                this.decodedToken = this.jwtHelper.decodeToken(response.token);
+            const user = response;
+            if (user) {
+                localStorage.setItem('token', user.token);
+                localStorage.setItem('user', JSON.stringify(user.user));
+                this.decodedToken = this.jwtHelper.decodeToken(user.token);
                 this.changeCurrentRole(this.decodedToken.role);
-                this.currentUser = response.user;
+                this.currentUser = user.user;
                 this.id = this.decodedToken.nameid;
-            }})
+            }
+            })
         );
     }
 

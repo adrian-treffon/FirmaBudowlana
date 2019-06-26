@@ -46,7 +46,6 @@ import { EditTeamResolver } from './resolvers/edit-team.resolver';
 import { EditValidatedOrderComponent } from './edit-validated-order/edit-validated-order.component';
 import { ReportInputComponent } from './report-input/report-input.component';
 import { ReportInputResolver } from './resolvers/report-input.resolver';
-import { ErrorInterceptorProvider } from './_services/error.interceptor';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -106,8 +105,7 @@ export function tokenGetter() {
       OrdersAllResolver,
       WorkerEditResolver,
       EditTeamResolver,
-      DatePipe,
-      ErrorInterceptorProvider
+      DatePipe
    ],
    bootstrap: [
       AppComponent

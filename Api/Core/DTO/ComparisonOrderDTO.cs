@@ -1,6 +1,8 @@
 ﻿using FirmaBudowlana.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FirmaBudowlana.Core.DTO
 {
@@ -12,14 +14,13 @@ namespace FirmaBudowlana.Core.DTO
         public DateTime EndDate { get; set; }
         public decimal Cost { get; set; }
         public string Description { get; set; }
+
         public List<TeamDTO> Teams { get; set; }
-        public List<Payment> Payments { get; set; }
         public bool Paid { get; set; }
 
         public ComparisonOrderDTO()
         {
             Teams = new List<TeamDTO>();
-            Payments = new List<Payment>();
         }
     }
 }

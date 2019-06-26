@@ -1,73 +1,95 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
-using FirmaBudowlana.Infrastructure.Commands.Order;
-using FirmaBudowlana.Infrastructure.Commands.Team;
-using FirmaBudowlana.Infrastructure.Commands.Worker;
-using Komis.Infrastructure.Commands;
+using FirmaBudowlana.Core.Repositories;
+using FirmaBudowlana.Infrastructure.EF;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace FirmaBudowlana.Api.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class DeleteController : Controller
     {
-     
-        private readonly ICommandDispatcher _commandDispatcher;
 
-        public DeleteController(ICommandDispatcher commandDispatcher)
+        private readonly IWorkerRepository _workerRepository;
+        private readonly ITeamRepository _teamRepository;
+        private readonly IOrderRepository _orderRepository;
+        private readonly DBContext _context;
+
+        public DeleteController(IWorkerRepository workerRepository,
+            ITeamRepository teamRepository, IOrderRepository orderRepository,DBContext context)
         {
-            _commandDispatcher = commandDispatcher;
-           
+            _workerRepository = workerRepository;
+            _teamRepository = teamRepository;
+            _orderRepository = orderRepository;
+            _context = context;
         }
 
         [HttpGet]
         public async Task<IActionResult> Worker(Guid id)
         {
-            try
-            {
-                await _commandDispatcher.DispatchAsync(new DeleteWorker() {WorkerID = id});
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new { message = e.Message });
-            }
+            var worker = await _workerRepository.GetAsync(id);
+
+            if (worker == null) return BadRequest(new { message = $"Cannot find the worker {id} in DB" });
+
+            worker.Active = false;
+
+            await _workerRepository.UpdateAsync(worker);
+
+            await DeleteEmptyTeam();
+
             return Ok();
         }
 
         [HttpGet]
         public async Task<IActionResult> Team(Guid id)
         {
-            try
-            {
-                await _commandDispatcher.DispatchAsync(new DeleteTeam() { TeamID = id });
-            }
-            catch (Exception e)
-            {
-                //return BadRequest(new { message = e.Message });
-                throw e;
-            }
-            return Ok();
+            var team = await _teamRepository.GetAsync(id);
 
+            if (team == null) return BadRequest(new { message = $"Cannot find the team {id} in DB" });
+
+            team.Active = false;
+
+            await _teamRepository.UpdateAsync(team);
+
+            return Ok();
         }
 
         [HttpGet]
         public async Task<IActionResult> Order(Guid id)
         {
-            try
-            {
-                await _commandDispatcher.DispatchAsync(new DeleteOrder() { OrderID = id });
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new { message = e.Message });
-            }
-            return Ok();
+            var order = await _orderRepository.GetAsync(id);
 
+            if (order == null) return BadRequest(new { message = $"Cannot find the order {id} in DB" });
+
+            if(order.Validated == true) return BadRequest(new { message = $"You cannot remove validated order" });
+
+            await _orderRepository.RemoveAsync(order);
+
+            return Ok();
         }
 
 
-       
+        private async Task DeleteEmptyTeam()
+        {
+            var workerteam = await _context.WorkerTeam.ToListAsync();
+            var teams = await _teamRepository.GetAllAsync();
+            var workers = await _workerRepository.GetAllAsync();
+
+            foreach (var team in teams)
+            {
+                var workersInTeam = workerteam.Where(x => x.TeamID == team.TeamID).Select(c => c.WorkerID).ToList();
+                int inactiveWorkers = 0;
+                foreach (var workerID in workersInTeam)
+                {
+                    var worker = workers.Where(x => x.WorkerID == workerID).SingleOrDefault();
+                    if (worker.Active == false) inactiveWorkers++;
+                }
+                if (inactiveWorkers == workersInTeam.Count() || workersInTeam.Count() == 0) await Team(team.TeamID);
+            }
+
+        }
     }
 }

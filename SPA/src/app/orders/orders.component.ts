@@ -25,8 +25,8 @@ export class OrdersComponent implements OnInit {
   });
   }
 
-  isValidatedText(isValidatedBool: boolean) {
-    if (isValidatedBool === true) {
+  isPaidText(isPaidBool: boolean) {
+    if (isPaidBool === true) {
       return 'Tak';
     } else {
         return 'Nie';

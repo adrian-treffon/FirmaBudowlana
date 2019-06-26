@@ -106,6 +106,7 @@ export class ReportInputComponent implements OnInit {
         this.adminService.getReport(this.reportParams).subscribe((data: any) => {
           this.isListMode = true;
           this.ordersReport = data;
+          console.log(data);
         }, error => {
           this.alertify.error('Bład: ' + error);
         });
@@ -171,21 +172,5 @@ export class ReportInputComponent implements OnInit {
     };
 
     this.router.navigate(['edit-validated-order'], navigationExtras);
-  }
-
-  isPaid(i: number) {
-    if (this.ordersReport[i].paid === true) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  getButtonText(i: number) {
-    if (this.ordersReport[i].paid === true) {
-      return 'Opłacone';
-    } else {
-      return 'Edytuj';
-    }
   }
 }

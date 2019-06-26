@@ -20,7 +20,7 @@
       <tr *ngFor="let order of userOrderList">
         <td>{{order.orderID}}</td>
         <td>{{order.description}}</td>
-        <td>{{this.isValidatedText(order.validated)}}</td>
+        <td>{{this.isPaidText(order.paid)}}</td>
         <td><button type="button" class="btn btn-secondary" [routerLink]="['/order-details', order.orderID]">Szczegóły</button></td>
       </tr>
     </tbody>

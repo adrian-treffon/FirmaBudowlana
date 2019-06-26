@@ -18,36 +18,14 @@ namespace FirmaBudowlana.Core.Repositories
         }
 
         public async Task<Worker> GetAsync(Guid id)
-        {
-             var worker = await _context.Workers.AsNoTracking().SingleOrDefaultAsync(x => x.WorkerID == id);
-
-             worker = await GetWorkerTeamList(worker);
-
-            return worker;
-        }
+            => await _context.Workers.AsNoTracking().SingleOrDefaultAsync(x => x.WorkerID == id);
 
 
         public async Task<IEnumerable<Worker>> GetAllAsync()
-        {
-            var workers = await _context.Workers.ToListAsync();
-
-            for (int i = 0; i < workers.Count(); i++)
-                await GetWorkerTeamList(workers[i]);
-
-            return workers;
-
-        }
+            => await _context.Workers.ToListAsync();
 
         public async Task<IEnumerable<Worker>> GetAllActiveAsync()
-        {
-            var workers = await _context.Workers.Where(x => x.Active == true).ToListAsync();
-
-            for(int i =0; i <workers.Count();i++)
-                await GetWorkerTeamList(workers[i]);
-
-            return workers;
-        }
-       
+           => await _context.Workers.Where(x=> x.Active == true).ToListAsync();
 
         public async Task AddAsync(Worker Worker)
         {
@@ -67,17 +45,6 @@ namespace FirmaBudowlana.Core.Repositories
             await _context.SaveChangesAsync();
         }
 
-        private async Task<Worker> GetWorkerTeamList(Worker worker)
-        {
-            worker.WorkerTeam = await _context.WorkerTeam.Where(x => x.WorkerID == worker.WorkerID).ToListAsync();
-
-            foreach (var workerteam in worker.WorkerTeam)
-            {
-                workerteam.Team = await _context.Teams.Where(x => x.TeamID == workerteam.TeamID).SingleAsync();
-            }
-
-            return worker;
-        }
       
     }
 }

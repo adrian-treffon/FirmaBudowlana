@@ -11,36 +11,21 @@ namespace FirmaBudowlana.Core.Repositories
     public class TeamRepository : ITeamRepository
     {
         private readonly DBContext _context;
-      
-       public TeamRepository(DBContext context)
+
+        public TeamRepository(DBContext context)
         {
             _context = context;
         }
 
         public async Task<Team> GetAsync(Guid id)
-        {
-            var team = await _context.Teams.AsNoTracking().SingleOrDefaultAsync(x => x.TeamID == id);
-            await GetWorkerTeamAndOrderTeamLists(team);
-            return team;
-        }
+            => await _context.Teams.AsNoTracking().SingleOrDefaultAsync(x => x.TeamID == id);
 
 
         public async Task<IEnumerable<Team>> GetAllAsync()
-        {
-            var teams = await _context.Teams.AsNoTracking().ToListAsync();
-
-            for (int i = 0; i < teams.Count; i++) await GetWorkerTeamAndOrderTeamLists(teams[i]);
-            return teams;
-        }
+            => await _context.Teams.AsNoTracking().ToListAsync();
 
         public async Task<IEnumerable<Team>> GetAllActiveAsync()
-        {
-            var teams = await _context.Teams.AsNoTracking().Where(x => x.Active == true).ToListAsync();
-
-            for (int i = 0; i < teams.Count; i++) await GetWorkerTeamAndOrderTeamLists(teams[i]);
-
-            return teams;
-        }
+            => await _context.Teams.AsNoTracking().Where(x=> x.Active == true).ToListAsync();
 
         public async Task AddAsync(Team team)
         {
@@ -59,25 +44,5 @@ namespace FirmaBudowlana.Core.Repositories
             _context.Teams.Update(team);
             await _context.SaveChangesAsync();
         }
-
-        private async Task<Team> GetWorkerTeamAndOrderTeamLists(Team team)
-        {
-            team.WorkerTeam = _context.WorkerTeam.Where(x => x.TeamID == team.TeamID).ToList();
-            team.OrderTeam = _context.OrderTeam.Where(x => x.TeamID == team.TeamID).ToList();
-
-            foreach (var workerTeam in team.WorkerTeam)
-            {
-                workerTeam.Worker = await _context.Workers.AsNoTracking().Where(w => w.WorkerID == workerTeam.WorkerID).SingleAsync(); 
-            }
-
-            foreach (var orderTeam in team.OrderTeam)
-            {
-                orderTeam.Order = await _context.Orders.AsNoTracking().Where(o=> o.OrderID == orderTeam.OrderID).SingleAsync();
-            }
-
-            return team;
-        }
-
-
     }
 }

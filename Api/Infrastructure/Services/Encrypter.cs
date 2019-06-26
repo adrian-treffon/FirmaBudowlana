@@ -15,6 +15,7 @@ namespace FirmaBudowlana.Infrastructure.Services
                 throw new ArgumentException("Can not generate salt from an empty value.", nameof(value));
             }
 
+            var random = new Random();
             var saltBytes = new byte[SaltSize];
             var rng = RandomNumberGenerator.Create();
             rng.GetBytes(saltBytes);

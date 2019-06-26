@@ -1,9 +1,13 @@
-﻿using FirmaBudowlana.Core.DTO;
-using FirmaBudowlana.Infrastructure.Commands.User;
-using Komis.Infrastructure.Commands;
+﻿using AutoMapper;
+using FirmaBudowlana.Core.DTO;
+using FirmaBudowlana.Core.Repositories;
+using FirmaBudowlana.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace FirmaBudowlana.Controllers
@@ -12,41 +16,48 @@ namespace FirmaBudowlana.Controllers
     [AllowAnonymous]
     public class AccountController : Controller
     {
-        private readonly ICommandDispatcher _commandDispatcher;
+        private readonly IUserService _userService;
+        private readonly IUserRepository _userRepository;
+        private readonly IOrderRepository _orderRepository;
+        private readonly IMapper _mapper;
 
-        public AccountController(ICommandDispatcher commandDispatcher)
+        public AccountController(IUserService userService, IUserRepository userRepository, IOrderRepository orderRepository, IMapper mapper)
         {
-            _commandDispatcher= commandDispatcher;
+            _userService = userService;
+            _userRepository = userRepository;
+            _orderRepository = orderRepository;
+            _mapper= mapper;
+         
         }
 
         [HttpPost]
         public async Task<IActionResult> Login([FromBody]UserLoginDTO userParam)
         {
-            var command = new Login() { LoginCredentials = userParam };
-            try
+           if(userParam == null) return BadRequest(new { message = $"Post request account/login is empty" });
+
+            var token = await _userService.Login(userParam.Email, userParam.Password);
+
+            var user = await _userRepository.GetAsync(userParam.Email);
+
+            if (token == null && user == null)
+                return BadRequest(new { message = "Email or password is incorrect" });
+
+            var dto = new TokenDTO()
             {
-                await _commandDispatcher.DispatchAsync(command);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new { message = e.Message });
-            }
-           
-            return new JsonResult(command.Token);
+                Token = token,
+                User = user
+            };
+
+            return new JsonResult(dto);
         }
 
         
         [HttpPost]
         public async Task<IActionResult> Register([FromBody]UserRegisterDTO userParam)
         {
-            try
-            {
-                await _commandDispatcher.DispatchAsync(new Register() { UserCredentials = userParam});
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new { message = e.Message });
-            }
+            if (userParam == null) return BadRequest(new { message = $"Post request account/register is empty" });
+
+            await _userService.Register(userParam.FirstName, userParam.LastName, userParam.Address, userParam.Email, userParam.Password);
 
             return Ok();
         }
@@ -55,47 +66,48 @@ namespace FirmaBudowlana.Controllers
         [HttpGet]
         public async Task<IActionResult> UserOrders(Guid id)
         {
-            var command = new GetUserOrders()
-            {
-                Token = Request.Headers["Authorization"],
-                User = User,
-                UserID = id
-            };
+            var accesToken = Request.Headers["Authorization"];
 
             try
             {
-                await _commandDispatcher.DispatchAsync(command);
+                if (Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) != id) return Unauthorized();
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                return BadRequest(new { message = e.Message });
+                return BadRequest(new { message = "Incorrect token" });
             }
+           
 
-            return new JsonResult(command.Orders);
+            var orders = (await _orderRepository.GetAllAsync()).Where(x => x.UserID == id);
+
+            var ordersDTO = _mapper.Map<IEnumerable<AdminOrderDTO>>(orders);
+
+            return new JsonResult(ordersDTO);
         }
 
         [Authorize(Roles = "User")]
         [HttpGet("Account/OrderDetails/{idUser}/{idOrder}")]
         public async Task<IActionResult> OrderDetails(Guid idUser, Guid idOrder)
         {
-            var command = new GetUserSpecifyOrder()
-            {
-                Token = Request.Headers["Authorization"],
-                User = User,
-                UserID = idUser,
-                OrderID=idOrder
-            };
+            var accesToken = Request.Headers["Authorization"];
 
             try
             {
-                await _commandDispatcher.DispatchAsync(command);
+                if (Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) != idUser) return Unauthorized();
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                return BadRequest(new { message = e.Message });
+                return BadRequest(new { message = "Incorrect token" });
             }
 
-            return new JsonResult(command.Order);
+            var order = (await _orderRepository.GetAllAsync()).Where(x => x.UserID == idUser).SingleOrDefault(x => x.OrderID == idOrder);
+
+            if (order == null)
+                return BadRequest(new { message = $"Cannot find order {idOrder} in DB" });
+
+            var dto = _mapper.Map<AdminOrderDTO>(order);
+            
+            return new JsonResult(dto);
         }
          
 

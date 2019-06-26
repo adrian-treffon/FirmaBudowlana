@@ -14,8 +14,8 @@ export class ReportInputResolver implements Resolve<any> {
 
     resolve(route: ActivatedRouteSnapshot): Observable<any> {
         return forkJoin([
-                this.adminService.getAllWorkers(),
-                this.adminService.getAllTeams()
+                this.adminService.getWorkers(),
+                this.adminService.getTeams()
                 .pipe(catchError(error => {
                     return of(null);
                 }))

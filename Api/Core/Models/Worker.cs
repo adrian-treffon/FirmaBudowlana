@@ -12,7 +12,6 @@ namespace FirmaBudowlana.Core.Models
         public string LastName { get; set; }
         public string Specialization { get; set; }
         public decimal ManHour { get; set; }
-
         public bool Active { get; set; } = true;
 
         [JsonIgnore]
