@@ -13,13 +13,13 @@ namespace FirmaBudowlana.Api.Controllers
     [Authorize(Roles = "Admin")]
     public class DeleteController : Controller
     {
-     
+
         private readonly ICommandDispatcher _commandDispatcher;
 
         public DeleteController(ICommandDispatcher commandDispatcher)
         {
             _commandDispatcher = commandDispatcher;
-           
+
         }
 
         [HttpGet]
@@ -27,11 +27,11 @@ namespace FirmaBudowlana.Api.Controllers
         {
             try
             {
-                await _commandDispatcher.DispatchAsync(new DeleteWorker() {WorkerID = id});
+                await _commandDispatcher.DispatchAsync(new DeleteWorker() { WorkerID = id });
             }
             catch (Exception e)
             {
-                return BadRequest(new { message = e.Message });
+                return StatusCode(500, e.Message);
             }
             return Ok();
         }
@@ -45,8 +45,7 @@ namespace FirmaBudowlana.Api.Controllers
             }
             catch (Exception e)
             {
-                //return BadRequest(new { message = e.Message });
-                throw e;
+                return StatusCode(500, e.Message);
             }
             return Ok();
 
@@ -61,13 +60,13 @@ namespace FirmaBudowlana.Api.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(new { message = e.Message });
+                return StatusCode(500, e.Message);
             }
             return Ok();
 
         }
 
 
-       
+
     }
 }

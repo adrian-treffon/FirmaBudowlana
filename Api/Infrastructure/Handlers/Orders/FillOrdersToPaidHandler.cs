@@ -37,7 +37,7 @@ namespace FirmaBudowlana.Infrastructure.Handlers.Orders
             {
                 var teams = (await _context.OrderTeam.ToListAsync()).Where(x => x.OrderID == order.OrderID).ToList();
 
-                if (teams == null) throw new Exception($"There is no team to pay");
+                if (teams == null) throw new Exception($"Nie znaleziono zespołów");
 
                 var days = DaysWithoutWeekends.Count(order.StartDate, order.EndDate);
 
@@ -45,7 +45,7 @@ namespace FirmaBudowlana.Infrastructure.Handlers.Orders
                 {
                     var team = _mapper.Map<TeamDTO>(await _teamRepository.GetAsync(teamID.TeamID));
 
-                    if (team == null) throw new Exception($"Cannot find the team {team.TeamID} in DB");
+                    if (team == null) throw new Exception($"Nie znaleziono zespołu w bazie danych");
 
 
                     foreach (var worker in team.Workers)

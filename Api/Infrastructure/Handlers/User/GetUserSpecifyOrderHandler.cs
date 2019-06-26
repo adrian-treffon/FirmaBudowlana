@@ -26,17 +26,18 @@ namespace FirmaBudowlana.Infrastructure.Handlers.User
         {
             try
             {
-                if (Guid.Parse(command.User.FindFirst(ClaimTypes.NameIdentifier).Value) != command.UserID) throw new Exception($"Incorrect token");
+                if (Guid.Parse(command.User.FindFirst(ClaimTypes.NameIdentifier).Value) != command.UserID)
+                    throw new Exception("Niepoprawny token");
             }
             catch (Exception)
             {
-                throw new Exception($"Incorrect token");
+                throw new Exception("Niepoprawny token");
             }
 
             var order = (await _orderRepository.GetAllAsync()).Where(x => x.UserID == command.UserID).SingleOrDefault(x => x.OrderID == command.OrderID);
 
             if (order == null)
-               throw new Exception($"Cannot find order {command.OrderID} in DB");
+               throw new Exception($"Nie można znaleźć zlecenia w bazie danych");
 
            command.Order = _mapper.Map<AdminOrderDTO>(order);
         }

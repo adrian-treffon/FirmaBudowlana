@@ -1,8 +1,6 @@
 ﻿using FirmaBudowlana.Core.Repositories;
-using FirmaBudowlana.Infrastructure.Commands.Team;
 using FirmaBudowlana.Infrastructure.EF;
 using Komis.Infrastructure.Commands;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,14 +24,16 @@ namespace FirmaBudowlana.Infrastructure.Commands.Team
         {
             var team = await _teamRepository.GetAsync(command.TeamID);
 
-            if (team == null) throw new Exception($"Cannot find the team {command.TeamID} in DB");
+            if (team == null) throw new Exception($"Nie znalezniono zespołu w bazie danych");
+
+            if (team.Active == false) throw new Exception($"Nie można rozwiązać zespołu, ponieważ został już rozwiązany wcześniej");
 
             var orderTeam = _context.OrderTeam.Where(x => x.TeamID == team.TeamID).Select(o => o.OrderID).ToList();
 
             foreach (var orderID in orderTeam)
             {
                 var order = await _orderRepository.GetAsync(orderID);
-                if (!order.Paid) throw new Exception($"Cannot deactivate the team {team.TeamID}, because of active orders");
+                if (!order.Paid) throw new Exception($"Nie można rozwiązać zespołu, który obecnie posiada aktywne zlecenia");
             }
 
             team.Active = false;

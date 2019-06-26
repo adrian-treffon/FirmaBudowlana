@@ -33,7 +33,7 @@ namespace FirmaBudowlana.Infrastructure.Handlers.User
             var user = await _userRepository.GetAsync(command.LoginCredentials.Email);
 
             if (token == null && user == null)
-                throw new Exception("Email or password is incorrect" );
+                throw new Exception("Niepoprawny login lub hasło" );
 
            command.Token = new TokenDTO()
             {

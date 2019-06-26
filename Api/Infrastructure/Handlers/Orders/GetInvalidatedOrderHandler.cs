@@ -25,10 +25,10 @@ namespace FirmaBudowlana.Infrastructure.Handlers.Orders
 
         public async Task HandleAsync(GetInvalidatedOrder command)
         {
-            if (command.OrderID == Guid.Empty) throw new Exception("Incorrect ID format");
+            if (command.OrderID == Guid.Empty) throw new Exception("Niepoprawny format ID");
 
             var order = await _orderRepository.GetAsync(command.OrderID);
-            if (order == null) throw new Exception($"Order {command.OrderID} not found");
+            if (order == null) throw new Exception($"Nie znaleziono zlecenia w bazie danych");
 
             var teams = await _teamRepository.GetAllAsync();
 

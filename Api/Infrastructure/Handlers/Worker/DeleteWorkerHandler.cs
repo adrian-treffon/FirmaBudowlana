@@ -31,7 +31,9 @@ namespace FirmaBudowlana.Infrastructure.Commands.Worker
         {
             var worker = await _workerRepository.GetAsync(command.WorkerID);
 
-            if (worker == null) throw new Exception($"Cannot find the worker {command.WorkerID} in DB");
+            if (worker == null) throw new Exception($"Nie można znaleźć pracownika w bazie danych");
+
+            if (worker.Active == false) throw new Exception($"Nie można zwolnić pracownika, gdyż został już zwolniony wcześniej");
 
             var teamIDs = _context.WorkerTeam.Where(x => x.WorkerID == command.WorkerID).Select(y => y.TeamID);
 
@@ -42,7 +44,8 @@ namespace FirmaBudowlana.Infrastructure.Commands.Worker
                 foreach (var orderID in ordersID)
                 {
                     var order = await _orderRepository.GetAsync(orderID);
-                    if (!order.Paid) throw new Exception($"Cannot deactivate the worker {command.WorkerID}, because of active orders");
+                    if (!order.Paid)
+                        throw new Exception($"Nie można zwolnić pracownika, ponieważ pracuje on w przynajmniej jednym aktywnym zleceniu");
                 }
 
             }
@@ -71,14 +74,7 @@ namespace FirmaBudowlana.Infrastructure.Commands.Worker
                 }
                 if (inactiveWorkers == workersInTeam.Count() || workersInTeam.Count() == 0)
                 {
-                    try
-                    {
-                        await _commandDispatcher.DispatchAsync(new DeleteTeam() { TeamID = team.TeamID });
-                    }
-                    catch (Exception)
-                    {
-                        throw new Exception($"Cannot disable team {team.TeamID}");
-                    }
+                    await _commandDispatcher.DispatchAsync(new DeleteTeam() { TeamID = team.TeamID });
                 }
             }
 

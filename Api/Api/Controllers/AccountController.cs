@@ -16,7 +16,7 @@ namespace FirmaBudowlana.Controllers
 
         public AccountController(ICommandDispatcher commandDispatcher)
         {
-            _commandDispatcher= commandDispatcher;
+            _commandDispatcher = commandDispatcher;
         }
 
         [HttpPost]
@@ -29,23 +29,23 @@ namespace FirmaBudowlana.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(new { message = e.Message });
+                return StatusCode(500, e.Message);
             }
-           
+
             return new JsonResult(command.Token);
         }
 
-        
+
         [HttpPost]
         public async Task<IActionResult> Register([FromBody]UserRegisterDTO userParam)
         {
             try
             {
-                await _commandDispatcher.DispatchAsync(new Register() { UserCredentials = userParam});
+                await _commandDispatcher.DispatchAsync(new Register() { UserCredentials = userParam });
             }
             catch (Exception e)
             {
-                return BadRequest(new { message = e.Message });
+                return StatusCode(500, e.Message);
             }
 
             return Ok();
@@ -68,7 +68,7 @@ namespace FirmaBudowlana.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(new { message = e.Message });
+                return StatusCode(500, e.Message);
             }
 
             return new JsonResult(command.Orders);
@@ -83,7 +83,7 @@ namespace FirmaBudowlana.Controllers
                 Token = Request.Headers["Authorization"],
                 User = User,
                 UserID = idUser,
-                OrderID=idOrder
+                OrderID = idOrder
             };
 
             try
@@ -92,12 +92,13 @@ namespace FirmaBudowlana.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(new { message = e.Message });
+                return StatusCode(500, e.Message);
+                return StatusCode(500, e.Message);
             }
 
             return new JsonResult(command.Order);
         }
-         
+
 
 
     }

@@ -24,7 +24,7 @@ namespace FirmaBudowlana.Infrastructure.Handlers.Worker
 
             var workerFromDB = await _workerRepository.GetAsync(command.Worker.WorkerID);
 
-            if (workerFromDB == null) throw new Exception($"Cannot find the worker {command.Worker.WorkerID} in DB");
+            if (workerFromDB == null) throw new Exception($"Nie można znaleźć pracownika w bazie danych");
 
             await _workerRepository.UpdateAsync(_mapper.Map<Core.Models.Worker>(command.Worker));
         }

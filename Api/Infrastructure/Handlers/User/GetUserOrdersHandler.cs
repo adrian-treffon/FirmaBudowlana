@@ -26,11 +26,12 @@ namespace FirmaBudowlana.Infrastructure.Handlers.User
         {
             try
             {
-                if (Guid.Parse(command.User.FindFirst(ClaimTypes.NameIdentifier).Value) != command.UserID) throw new Exception("Incorrect token");
+                if (Guid.Parse(command.User.FindFirst(ClaimTypes.NameIdentifier).Value) != command.UserID)
+                    throw new Exception("Niepoprawny token");
             }
             catch (Exception)
             {
-                throw new Exception("Incorrect token");
+                throw new Exception("Niepoprawny token");
             }
 
             var orders = (await _orderRepository.GetAllAsync()).Where(x => x.UserID == command.UserID);

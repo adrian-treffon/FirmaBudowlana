@@ -22,7 +22,7 @@ namespace FirmaBudowlana.Infrastructure.Handlers.Team
         public async Task HandleAsync(AddTeam command)
         {
             if (command.Team== null)throw new Exception( "Post request add/team is empty");
-            if (command.Team.Workers.Count == 0) throw new Exception("Choose at least one worker");
+            if (command.Team.Workers.Count == 0) throw new Exception("Wybierz przynajmnniej jedego pracownika");
             var team = _mapper.Map<Core.Models.Team>(command.Team);
             team.TeamID = Guid.NewGuid();
             await _teamRepository.AddAsync(team);

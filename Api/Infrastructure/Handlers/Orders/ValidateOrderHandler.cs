@@ -28,12 +28,12 @@ namespace FirmaBudowlana.Infrastructure.Handlers.Orders
         {
             var _order = await _orderRepository.GetAsync(command.Order.OrderID);
 
-            if (_order == null) throw new Exception("Order not found");
+            if (_order == null) throw new Exception("Nie znaleziono zlecenia w bazie danych");
 
             var order = _mapper.Map<Order>(command.Order);
             order.Validated = true;
 
-            if (!command.Order.Teams.Any()) throw new Exception("Choose at least one team");
+            if (!command.Order.Teams.Any()) throw new Exception("Wybierz przynajmniej jeden zespół");
 
             foreach (var team in command.Order.Teams)
             {

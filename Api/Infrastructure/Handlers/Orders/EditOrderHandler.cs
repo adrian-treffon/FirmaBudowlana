@@ -32,15 +32,14 @@ namespace FirmaBudowlana.Infrastructure.Handlers.Orders
 
             var orderFromDB = await _orderRepository.GetAsync(command.Order.OrderID);
 
-            if (orderFromDB == null) throw new Exception($"Cannot find the order {command.Order.OrderID} in DB");
+            if (orderFromDB == null) throw new Exception($"Nie można znaleźć zlecenia w bazie danych");
 
             var order = _mapper.Map<Order>(command.Order);
 
-            if (orderFromDB.Validated == false) throw new Exception($"You cannot edit invalidated order");
+            if (orderFromDB.Validated == false || orderFromDB.Paid == true)
+                throw new Exception($"Nie można edytować zakończonych zleceń");
 
-            if (orderFromDB.Paid == true) throw new Exception($"You cannot edit paid/finished order");
-
-
+      
             foreach (var team in command.Order.Teams)
             {
                 order.OrderTeam.Add(

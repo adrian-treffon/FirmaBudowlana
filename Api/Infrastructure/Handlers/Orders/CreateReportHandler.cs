@@ -55,7 +55,7 @@ namespace FirmaBudowlana.Infrastructure.Handlers.Orders
                     }
 
                 }
-                else if (command.Report.Teams.Any() && command.Report.Workers.Any()) throw new Exception($"You can only choose teams or workers, not both");
+                else if (command.Report.Teams.Any() && command.Report.Workers.Any()) throw new Exception($"Możesz wybrać zespoły lub pracowników");
 
                 foreach (var id in ordersID)
                 {

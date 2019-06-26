@@ -27,11 +27,11 @@ namespace FirmaBudowlana.Api.Controllers
 
             try
             {
-                await _commandDispatcher.DispatchAsync(new AddWorker() {Worker= workerDTO });
+                await _commandDispatcher.DispatchAsync(new AddWorker() { Worker = workerDTO });
             }
             catch (Exception e)
             {
-                return BadRequest(new { message = e.Message });
+                return StatusCode(500, e.Message);
             }
             return Ok();
         }
@@ -41,11 +41,11 @@ namespace FirmaBudowlana.Api.Controllers
         {
             try
             {
-                await _commandDispatcher.DispatchAsync(new AddTeam() { Team = teamDTO});
+                await _commandDispatcher.DispatchAsync(new AddTeam() { Team = teamDTO });
             }
             catch (Exception e)
             {
-                return BadRequest(new { message = e.Message });
+                return StatusCode(500, e.Message);
             }
             return Ok();
         }
@@ -55,11 +55,11 @@ namespace FirmaBudowlana.Api.Controllers
         {
             try
             {
-                await _commandDispatcher.DispatchAsync(new PayOrder() { Order = orderToPaidDTO});
+                await _commandDispatcher.DispatchAsync(new PayOrder() { Order = orderToPaidDTO });
             }
             catch (Exception e)
             {
-                return BadRequest(new { message = e.Message });
+                return StatusCode(500, e.Message);
             }
 
             return Ok();
@@ -75,7 +75,7 @@ namespace FirmaBudowlana.Api.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(new { message = e.Message });
+                return StatusCode(500, e.Message);
             }
 
             return new JsonResult(command.Orders);

@@ -37,7 +37,7 @@ namespace FirmaBudowlana.Api.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(new { message = e.Message });
+                return StatusCode(500, e.Message);
             }
 
             return Ok();
@@ -62,7 +62,7 @@ namespace FirmaBudowlana.Api.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(new { message = e.Message });
+                return StatusCode(500, e.Message);
             }
 
             return new JsonResult(command.Order);
@@ -79,7 +79,7 @@ namespace FirmaBudowlana.Api.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(new { message = e.Message });
+                return StatusCode(500, e.Message);
             }
 
             return Ok();

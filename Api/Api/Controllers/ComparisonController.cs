@@ -60,7 +60,7 @@ namespace FirmaBudowlana.Api.Controllers
         {
             var worker = _mapper.Map<WorkerDTO>(await _workerRepository.GetAsync(id));
 
-            if (worker == null) return BadRequest(new { message = $"Cannot find the worker {id} in DB" });
+            if (worker == null) return BadRequest(new { message = $"Nie można znaleźć pracownika w bazie danych" });
 
             return new JsonResult(worker);
         }
@@ -89,7 +89,7 @@ namespace FirmaBudowlana.Api.Controllers
         {
             var team = _mapper.Map<TeamDTO>(await _teamRepository.GetAsync(id));
 
-            if (team == null) return BadRequest(new { message = $"Cannot find the team {id} in DB" });
+            if (team == null) return BadRequest(new { message = $"Nie można znaleźć zespołu w bazie danych" });
 
             return new JsonResult(team);
         }
@@ -109,7 +109,7 @@ namespace FirmaBudowlana.Api.Controllers
         {
             var order = await _orderRepository.GetAsync(id);
 
-            if (order == null) return BadRequest(new { message = $"Cannot find the order {id} in DB" });
+            if (order == null) return BadRequest(new { message = $"Nie można zlecenia pracownika w bazie danych" });
 
             var fullOrder = _mapper.Map<ComparisonOrderDTO>(order);
 
@@ -128,7 +128,7 @@ namespace FirmaBudowlana.Api.Controllers
         public async Task<IActionResult> Payments(Guid id)
         {
             var payment = await _paymentRepository.GetAsync(id);
-            if (payment == null) return BadRequest(new { message = $"Cannot find the payment {id} in DB" });
+            if (payment == null) return BadRequest(new { message = $"Nie można znaleźć wypłaty w bazie danych" });
             return new JsonResult(payment);
         }
 
@@ -144,7 +144,7 @@ namespace FirmaBudowlana.Api.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(new { message = e.Message });
+                return StatusCode(500, e.Message);
             }
            
             return new JsonResult(command.Orders);

@@ -36,17 +36,17 @@ namespace FirmaBudowlana.Infrastructure.Handlers.Orders
 
             var order = await _orderRepository.GetAsync(command.Order.OrderID);
 
-            if (order == null) throw new Exception($"Cannot find the order {command.Order.OrderID} in DB");
+            if (order == null) throw new Exception($"Nie znaleziono zlecenia w bazie danych");
 
             foreach (var teamID in command.Order.Teams)
             {
                 var team = await _teamRepository.GetAsync(teamID.TeamID);
 
-                if (team == null) throw new Exception($"There is no team {team.TeamID} to pay");
+                if (team == null) throw new Exception($"Nie znaleziono zespołu w bazie danych");
 
                 var workers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.TeamID == team.TeamID).ToList();
 
-                if (!workers.Any()) throw new Exception($"There is no workers in the team {team.TeamID} to pay");
+                if (!workers.Any()) throw new Exception($"Nie znaleziono pracowników w bazie danych");
 
                 foreach (var ele in workers)
                 {
