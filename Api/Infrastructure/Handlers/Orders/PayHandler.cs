@@ -1,6 +1,7 @@
 ﻿using FirmaBudowlana.Core.DTO;
 using FirmaBudowlana.Core.Models;
 using FirmaBudowlana.Core.Repositories;
+using FirmaBudowlana.Infrastructure.Commands.Order;
 using FirmaBudowlana.Infrastructure.EF;
 using FirmaBudowlana.Infrastructure.Extensions;
 using Komis.Infrastructure.Commands;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace FirmaBudowlana.Infrastructure.Handlers.Orders
 {
-    public class PayHandler : ICommandHandler<OrderToPaidDTO>
+    public class PayHandler : ICommandHandler<PayOrder>
     {
         private readonly IWorkerRepository _workerRepository;
         private readonly ITeamRepository _teamRepository;
@@ -29,15 +30,15 @@ namespace FirmaBudowlana.Infrastructure.Handlers.Orders
             _paymentRepository = paymentRepository;
         }
 
-        public async Task HandleAsync(OrderToPaidDTO command)
+        public async Task HandleAsync(PayOrder command)
         {
             if (command == null) throw new Exception("Post request add/payment is empty");
 
-            var order = await _orderRepository.GetAsync(command.OrderID);
+            var order = await _orderRepository.GetAsync(command.Order.OrderID);
 
-            if (order == null) throw new Exception($"Cannot find the order {command.OrderID} in DB");
+            if (order == null) throw new Exception($"Cannot find the order {command.Order.OrderID} in DB");
 
-            foreach (var teamID in command.Teams)
+            foreach (var teamID in command.Order.Teams)
             {
                 var team = await _teamRepository.GetAsync(teamID.TeamID);
 
@@ -54,7 +55,7 @@ namespace FirmaBudowlana.Infrastructure.Handlers.Orders
 
                     var payment = new Payment
                     {
-                        OrderID = command.OrderID,
+                        OrderID = command.Order.OrderID,
                         WorkerID = worker.WorkerID,
                         Amount = worker.ManHour * 8 * days,
                         PaymentDate = DateTime.UtcNow,

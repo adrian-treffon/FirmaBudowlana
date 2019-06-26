@@ -57,8 +57,8 @@ namespace FirmaBudowlana.Infrastructure.Commands.Worker
         private async Task DeleteEmptyTeam()
         {
             var workerteam = await _context.WorkerTeam.ToListAsync();
-            var teams = await _teamRepository.GetAllAsync();
-            var workers = await _workerRepository.GetAllAsync();
+            var teams = await _teamRepository.GetAllActiveAsync();
+            var workers = await _workerRepository.GetAllActiveAsync();
 
             foreach (var team in teams)
             {
@@ -75,7 +75,7 @@ namespace FirmaBudowlana.Infrastructure.Commands.Worker
                     {
                         await _commandDispatcher.DispatchAsync(new DeleteTeam() { TeamID = team.TeamID });
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         throw new Exception($"Cannot disable team {team.TeamID}");
                     }

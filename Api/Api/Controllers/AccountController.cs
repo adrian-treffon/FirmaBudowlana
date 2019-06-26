@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using FirmaBudowlana.Core.DTO;
 using FirmaBudowlana.Core.Repositories;
+using FirmaBudowlana.Infrastructure.Commands.User;
 using FirmaBudowlana.Infrastructure.Services;
+using Komis.Infrastructure.Commands;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -17,38 +19,34 @@ namespace FirmaBudowlana.Controllers
     public class AccountController : Controller
     {
         private readonly IUserService _userService;
-        private readonly IUserRepository _userRepository;
         private readonly IOrderRepository _orderRepository;
         private readonly IMapper _mapper;
+        private readonly ICommandDispatcher _commandDispatcher;
 
-        public AccountController(IUserService userService, IUserRepository userRepository, IOrderRepository orderRepository, IMapper mapper)
+        public AccountController(IUserService userService, IOrderRepository orderRepository, 
+            IMapper mapper, ICommandDispatcher commandDispatcher)
         {
             _userService = userService;
-            _userRepository = userRepository;
             _orderRepository = orderRepository;
             _mapper= mapper;
+            _commandDispatcher= commandDispatcher;
          
         }
 
         [HttpPost]
         public async Task<IActionResult> Login([FromBody]UserLoginDTO userParam)
         {
-           if(userParam == null) return BadRequest(new { message = $"Post request account/login is empty" });
-
-            var token = await _userService.Login(userParam.Email, userParam.Password);
-
-            var user = await _userRepository.GetAsync(userParam.Email);
-
-            if (token == null && user == null)
-                return BadRequest(new { message = "Email or password is incorrect" });
-
-            var dto = new TokenDTO()
+            var command = new Login() { LoginCredentials = userParam };
+            try
             {
-                Token = token,
-                User = user
-            };
-
-            return new JsonResult(dto);
+                await _commandDispatcher.DispatchAsync(command);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { message = e.Message });
+            }
+           
+            return new JsonResult(command.Token);
         }
 
         
@@ -77,7 +75,6 @@ namespace FirmaBudowlana.Controllers
                 return BadRequest(new { message = "Incorrect token" });
             }
            
-
             var orders = (await _orderRepository.GetAllAsync()).Where(x => x.UserID == id);
 
             var ordersDTO = _mapper.Map<IEnumerable<AdminOrderDTO>>(orders);

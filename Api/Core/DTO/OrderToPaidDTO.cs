@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace FirmaBudowlana.Core.DTO
 {
-    public class OrderToPaidDTO : ICommand
+    public class OrderToPaidDTO
     {
         public Guid OrderID { get; set; }
         public string Description { get; set; }
