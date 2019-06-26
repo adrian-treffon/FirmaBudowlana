@@ -6,12 +6,10 @@ using AutoMapper;
 using FirmaBudowlana.Core.DTO;
 using FirmaBudowlana.Core.Repositories;
 using FirmaBudowlana.Infrastructure.Commands.Order;
-using FirmaBudowlana.Infrastructure.EF;
 using Komis.Infrastructure.Commands;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
+
 
 namespace FirmaBudowlana.Api.Controllers
 {
@@ -39,7 +37,19 @@ namespace FirmaBudowlana.Api.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Workers()
-        => new JsonResult(_mapper.Map<IEnumerable<WorkerDTO>>(await _workerRepository.GetAllActiveAsync()));
+        {
+            var workers = _mapper.Map<IEnumerable<WorkerDTO>>(await _workerRepository.GetAllActiveAsync());
+
+            foreach (var worker in workers)
+            {
+                foreach (var team in worker.Teams.ToList())
+                {
+                    if (!team.Active) worker.Teams.Remove(team);
+                }                 
+            }
+            return new JsonResult(workers);
+        }
+       
             
         [HttpGet]
         public async Task<IActionResult> AllWorkers()

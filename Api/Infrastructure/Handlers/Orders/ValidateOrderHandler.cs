@@ -33,6 +33,8 @@ namespace FirmaBudowlana.Infrastructure.Handlers.Orders
             var order = _mapper.Map<Order>(command.Order);
             order.Validated = true;
 
+            if (!command.Order.Teams.Any()) throw new Exception("Choose at least one team");
+
             foreach (var team in command.Order.Teams)
             {
                 order.OrderTeam.Add(

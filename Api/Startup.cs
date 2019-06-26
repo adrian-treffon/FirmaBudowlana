@@ -15,6 +15,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using AutoMapper;
 using Komis.Infrastructure.IoC;
+using System.Net;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
+using FirmaBudowlana.Infrastructure.Error;
 
 namespace FirmaBudowlana
 {
@@ -83,6 +87,24 @@ namespace FirmaBudowlana
             {
                 app.UseDeveloperExceptionPage();
                 app.UseHttpMethodOverride();
+            }
+            else
+            {
+                app.UseExceptionHandler(builder =>
+                {
+                    builder.Run(async context => {
+                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                        var error = context.Features.Get<IExceptionHandlerFeature>();
+                        if (error != null)
+                        {
+                            context.Response.AddAplicationError(error.Error.Message);
+                            await context.Response.WriteAsync(error.Error.Message);
+                        }
+
+                    });
+
+
+                });
             }
 
             app.UseStatusCodePages();

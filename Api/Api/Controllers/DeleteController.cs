@@ -45,7 +45,8 @@ namespace FirmaBudowlana.Api.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(new { message = e.Message });
+                //return BadRequest(new { message = e.Message });
+                throw e;
             }
             return Ok();
 

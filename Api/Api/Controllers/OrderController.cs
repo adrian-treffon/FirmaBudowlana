@@ -1,13 +1,10 @@
-﻿using AutoMapper;
-using FirmaBudowlana.Core.DTO;
-using FirmaBudowlana.Core.Models;
+﻿using FirmaBudowlana.Core.DTO;
 using FirmaBudowlana.Core.Repositories;
 using FirmaBudowlana.Infrastructure.Commands.Order;
 using Komis.Infrastructure.Commands;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace FirmaBudowlana.Api.Controllers
@@ -15,17 +12,12 @@ namespace FirmaBudowlana.Api.Controllers
     [Authorize]
     public class OrderController : Controller
     {
-        private readonly IMapper _mapper;
         private readonly IOrderRepository _orderRepository;
-        private readonly ITeamRepository _teamRepository;
         private readonly ICommandDispatcher _commandDispatcher;
 
-        public OrderController(IMapper mapper, IOrderRepository orderRepository, ITeamRepository teamRepository,
-             ICommandDispatcher commandDispatcher)
+        public OrderController(IOrderRepository orderRepository,ICommandDispatcher commandDispatcher)
         {
-            _mapper = mapper;
             _orderRepository = orderRepository;
-            _teamRepository = teamRepository;
             _commandDispatcher = commandDispatcher;
         }
 
@@ -33,10 +25,21 @@ namespace FirmaBudowlana.Api.Controllers
         [Authorize(Roles = "User")]
         public async Task<IActionResult> AddByClient([FromBody]ClientOrderDTO clOrder)
         {
-            var order = _mapper.Map<Order>(clOrder);
-            order.OrderID = Guid.NewGuid();
-            order.UserID = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            await _orderRepository.AddAsync(order);
+            var command = new AddClientOrder()
+            {
+                Order = clOrder,
+                User = User
+            };
+
+            try
+            {
+                await _commandDispatcher.DispatchAsync(command);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { message = e.Message });
+            }
+
             return Ok();
         }
 
@@ -51,17 +54,18 @@ namespace FirmaBudowlana.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Validate(Guid id)
         {
-            if(id == Guid.Empty) return BadRequest(new { message = "Incorrect ID format" });
-           
-            var order = await _orderRepository.GetAsync(id);
-            if (order == null) return NotFound(new { message = "Order not found" });
+            var command = new GetInvalidatedOrder() {OrderID = id };
 
-            var teams = await _teamRepository.GetAllAsync();
+            try
+            {
+                await _commandDispatcher.DispatchAsync(command);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { message = e.Message });
+            }
 
-            var dto = _mapper.Map<AdminOrderDTO>(order);
-            dto.Teams = teams;
-
-            return new JsonResult(dto);
+            return new JsonResult(command.Order);
         }
 
 

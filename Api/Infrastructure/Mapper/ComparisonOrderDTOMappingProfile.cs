@@ -46,9 +46,7 @@ namespace FirmaBudowlana.Infrastructure.Mapper
 
             foreach (var team in teams)
             {
-                var jeden =_teamRepository.GetAsync(team.TeamID).Result;
-                var dwa = _mapper.Map<TeamDTO>(jeden);
-                destination.Teams.Add(dwa);
+                destination.Teams.Add(_mapper.Map<TeamDTO>(_teamRepository.GetAsync(team.TeamID).Result));
             }
         }
     }
