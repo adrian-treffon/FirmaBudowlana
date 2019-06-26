@@ -11,7 +11,6 @@ export class OrderDetailsResolver implements Resolve<Order> {
     constructor(private authService: AuthService, private router: Router, private alertify: AlertifyService) {}
 
     resolve(route: ActivatedRouteSnapshot): Observable<Order> {
-        // console.log('From order-detail resolver, route.data.id = ' + route.params.id);
         return this.authService.getUserOrder(route.params.id).pipe(
             catchError(error => {
                 this.alertify.error('Problem z uzyskiwaniem danych');

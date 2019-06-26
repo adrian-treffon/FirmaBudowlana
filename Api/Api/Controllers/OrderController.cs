@@ -1,13 +1,10 @@
-﻿using AutoMapper;
-using FirmaBudowlana.Core.DTO;
-using FirmaBudowlana.Core.Models;
+﻿using FirmaBudowlana.Core.DTO;
 using FirmaBudowlana.Core.Repositories;
-using FirmaBudowlana.Infrastructure.EF;
+using FirmaBudowlana.Infrastructure.Commands.Order;
+using Komis.Infrastructure.Commands;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace FirmaBudowlana.Api.Controllers
@@ -15,33 +12,41 @@ namespace FirmaBudowlana.Api.Controllers
     [Authorize]
     public class OrderController : Controller
     {
-        private readonly IMapper _mapper;
         private readonly IOrderRepository _orderRepository;
-        private readonly ITeamRepository _teamRepository;
-        private readonly DBContext _context;
+        private readonly ICommandDispatcher _commandDispatcher;
 
-        public OrderController(IMapper mapper, IOrderRepository orderRepository, ITeamRepository teamRepository, DBContext context)
+        public OrderController(IOrderRepository orderRepository,ICommandDispatcher commandDispatcher)
         {
-            _mapper = mapper;
             _orderRepository = orderRepository;
-            _teamRepository = teamRepository;
-            _context = context;
+            _commandDispatcher = commandDispatcher;
         }
 
         [HttpPost]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> AddByClient([FromBody]ClientOrderDTO clOrder)
         {
-            var order = _mapper.Map<Order>(clOrder);
-            order.OrderID = Guid.NewGuid();
-            order.UserID = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            await _orderRepository.AddAsync(order);
+            var command = new AddClientOrder()
+            {
+                Order = clOrder,
+                User = User
+            };
+
+            try
+            {
+                await _commandDispatcher.DispatchAsync(command);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { message = e.Message });
+            }
+
             return Ok();
         }
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ShowInvalidated()
-        => Ok(await _orderRepository.GetAllInvalidatedAsync());
+        => new JsonResult(await _orderRepository.GetAllInvalidatedAsync());
 
 
        
@@ -49,18 +54,18 @@ namespace FirmaBudowlana.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Validate(Guid id)
         {
-            if(id == Guid.Empty)
-            return BadRequest(new { message = "Incorrect ID format" });
-           
-            var order = await _orderRepository.GetAsync(id);
-            if (order == null) return NotFound(new { message = "Order not found" });
+            var command = new GetInvalidatedOrder() {OrderID = id };
 
-            var teams = await _teamRepository.GetAllAsync();
+            try
+            {
+                await _commandDispatcher.DispatchAsync(command);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { message = e.Message });
+            }
 
-            var dto = _mapper.Map<AdminOrderDTO>(order);
-            dto.Teams = teams;
-
-            return new JsonResult(dto);
+            return new JsonResult(command.Order);
         }
 
 
@@ -68,27 +73,15 @@ namespace FirmaBudowlana.Api.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Validate([FromBody]AdminOrderDTO adminOrder)
         {
-            var _order = await _orderRepository.GetAsync(adminOrder.OrderID);
-            if (_order == null) return NotFound(new { message = "Order not found" });
-
-            var order = _mapper.Map<Order>(adminOrder);
-            order.Validated = true;
-          
-            foreach (var team in adminOrder.Teams)
+            try
             {
-                order.OrderTeam.Add( 
-                    new OrderTeam
-                    {
-                        Order = order,
-                        OrderID = order.OrderID,
-                        Team= team,
-                        TeamID = team.TeamID
-                    }
-                    );
+                await _commandDispatcher.DispatchAsync(new ValidateOrder() { Order = adminOrder});
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { message = e.Message });
             }
 
-            await _context.OrderTeam.AddRangeAsync(order.OrderTeam);
-            await _orderRepository.UpdateAsync(order);
             return Ok();
         }
     }

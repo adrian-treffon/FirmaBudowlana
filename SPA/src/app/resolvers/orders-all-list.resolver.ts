@@ -11,7 +11,6 @@ export class OrdersAllResolver implements Resolve<Order[]> {
     constructor(private adminService: AdminService, private router: Router, private alertify: AlertifyService) {}
 
     resolve(route: ActivatedRouteSnapshot): Observable<Order[]> {
-        // console.log('From order-detail resolver, route.data.id = ' + route.params.id);
         return this.adminService.getAllOrders().pipe(
             catchError(error => {
                 this.alertify.error('Problem z uzyskiwaniem listy zamówień!');

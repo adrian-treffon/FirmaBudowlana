@@ -14,6 +14,11 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using AutoMapper;
+using Komis.Infrastructure.IoC;
+using System.Net;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
+using FirmaBudowlana.Infrastructure.Error;
 
 namespace FirmaBudowlana
 {
@@ -50,27 +55,25 @@ namespace FirmaBudowlana
             })
             .AddJwtBearer(x =>
             {
-                //x.RequireHttpsMetadata = false;
-                //x.SaveToken = true;
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Secret").Value)),
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateAudience = false,      
                 };
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-           
-           
-
+                      
             var containerBuilder = new ContainerBuilder();
 
             containerBuilder.RegisterModule<RepositoryModule>();
             containerBuilder.RegisterModule<ServiceModule>();
-          
+            containerBuilder.RegisterModule<CommandModule>();
+
             containerBuilder.Populate(services);
             var container = containerBuilder.Build();
             return new AutofacServiceProvider(container);
@@ -85,11 +88,27 @@ namespace FirmaBudowlana
                 app.UseDeveloperExceptionPage();
                 app.UseHttpMethodOverride();
             }
+            else
+            {
+                app.UseExceptionHandler(builder =>
+                {
+                    builder.Run(async context => {
+                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                        var error = context.Features.Get<IExceptionHandlerFeature>();
+                        if (error != null)
+                        {
+                            context.Response.AddAplicationError(error.Error.Message);
+                            await context.Response.WriteAsync(error.Error.Message);
+                        }
+
+                    });
+
+
+                });
+            }
 
             app.UseStatusCodePages();
-
         
-
             app.UseCors(x => x
                  .AllowAnyOrigin()
                  .AllowAnyMethod()
@@ -97,14 +116,12 @@ namespace FirmaBudowlana
 
             app.UseAuthentication();
 
-
             app.UseMvc(routes =>
             {
                 routes.MapRoute
                 (name: "default",
                 template: "{controller=Account}/{action=Login}/{id?}"
-                );
-
+                );                              
             });
         }
     }

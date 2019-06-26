@@ -32,7 +32,7 @@ export class TeamListComponent implements OnInit {
         this.alertify.success('Zespół został rozwiązany');
         this.ngOnInit();
       }, error => {
-        this.alertify.error('Błąd podczas rozwiązywania zespołu!');
+        this.alertify.error(error);
       });
     });
   }

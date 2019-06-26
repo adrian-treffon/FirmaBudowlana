@@ -4,13 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using FirmaBudowlana.Core.DTO;
-using FirmaBudowlana.Core.Models;
 using FirmaBudowlana.Core.Repositories;
-using FirmaBudowlana.Infrastructure.EF;
+using FirmaBudowlana.Infrastructure.Commands.Order;
+using Komis.Infrastructure.Commands;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
+
 
 namespace FirmaBudowlana.Api.Controllers
 {
@@ -22,17 +21,17 @@ namespace FirmaBudowlana.Api.Controllers
         private readonly IWorkerRepository _workerRepository;
         private readonly ITeamRepository _teamRepository;
         private readonly IPaymentRepository _paymentRepository;
-        private readonly DBContext _context;
+        private readonly ICommandDispatcher _commandDispatcher;
 
         public ComparisonController(IMapper mapper, IOrderRepository orderRepository, IWorkerRepository workerRepository,
-            ITeamRepository teamRepository, IPaymentRepository paymentRepository, DBContext context)
+            ITeamRepository teamRepository, IPaymentRepository paymentRepository, ICommandDispatcher commandDispatcher)
         {
             _mapper = mapper;
             _orderRepository = orderRepository;
             _workerRepository = workerRepository;
             _teamRepository = teamRepository;
             _paymentRepository = paymentRepository;
-            _context = context;
+            _commandDispatcher = commandDispatcher;
         }
 
 
@@ -43,19 +42,19 @@ namespace FirmaBudowlana.Api.Controllers
 
             foreach (var worker in workers)
             {
-                var teamworkers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.WorkerID == worker.WorkerID);
-
-                foreach (var teamworker in teamworkers)
+                foreach (var team in worker.Teams.ToList())
                 {
-                    var team = await _teamRepository.GetAsync(teamworker.TeamID);
-                    worker.Teams.Add(team);
-
-                }
-
+                    if (!team.Active) worker.Teams.Remove(team);
+                }                 
             }
             return new JsonResult(workers);
         }
-
+       
+            
+        [HttpGet]
+        public async Task<IActionResult> AllWorkers()
+           => new JsonResult(_mapper.Map<IEnumerable<WorkerDTO>>(await _workerRepository.GetAllAsync()));
+             
         [HttpGet("Comparison/Workers/{id}")]
         public async Task<IActionResult> Workers(Guid id)
         {
@@ -73,17 +72,18 @@ namespace FirmaBudowlana.Api.Controllers
 
             foreach (var team in teams)
             {
-                var workers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.TeamID == team.TeamID).ToList();
-                foreach (var workerID in workers)
+                foreach (var worker in team.Workers)
                 {
-                    var worker = await _workerRepository.GetAsync(workerID.WorkerID);
-                    if(worker.Active) team.Workers.Add(worker);
+                    if (!worker.Active) team.Workers.Remove(worker);
                 }
             }
-
             return new JsonResult(teams);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> AllTeams()
+         => new JsonResult(_mapper.Map<IEnumerable<TeamDTO>>(await _teamRepository.GetAllAsync()));
+      
         [HttpGet("Comparison/Teams/{id}")]
         public async Task<IActionResult> Teams(Guid id)
         {
@@ -91,28 +91,14 @@ namespace FirmaBudowlana.Api.Controllers
 
             if (team == null) return BadRequest(new { message = $"Cannot find the team {id} in DB" });
 
-            var workers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.TeamID == team.TeamID).ToList();
-            foreach (var workerID in workers)
-            {
-                var worker = await _workerRepository.GetAsync(workerID.WorkerID);
-                team.Workers.Add(worker);
-            }
-
             return new JsonResult(team);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Orders(DateTime? start, DateTime? end)
+        public async Task<IActionResult> Orders()
         {
             var orders = _mapper.Map<IEnumerable<ComparisonOrderDTO>>((await _orderRepository.GetAllValidatedAsync())
                 .OrderBy(x => x.StartDate)).ToList();
-
-            if (start != null && end != null) orders = orders.Where(s => s.StartDate >= start && s.EndDate <= end).ToList();
-
-            for (int i = 0; i < orders.Count(); i++)
-            {
-                orders[i] = await MakeUpAnOrder(orders[i]);
-            }
 
             return new JsonResult(orders);
         }
@@ -126,8 +112,6 @@ namespace FirmaBudowlana.Api.Controllers
             if (order == null) return BadRequest(new { message = $"Cannot find the order {id} in DB" });
 
             var fullOrder = _mapper.Map<ComparisonOrderDTO>(order);
-
-            fullOrder = await MakeUpAnOrder(fullOrder);
 
             return new JsonResult(fullOrder);
         }
@@ -148,94 +132,22 @@ namespace FirmaBudowlana.Api.Controllers
             return new JsonResult(payment);
         }
 
-        private async Task<ComparisonOrderDTO> MakeUpAnOrder(ComparisonOrderDTO order)
-        {
-
-            var payments = (await _paymentRepository.GetAllAsync()).Where(x => x.OrderID == order.OrderID);
-
-            if (payments.Any()) order.Paid = true; else order.Paid = false;
-
-
-            var teams = (await _context.OrderTeam.ToListAsync()).Where(x => x.OrderID == order.OrderID).ToList();
-
-            foreach (var teamID in teams)
-            {
-                var team = _mapper.Map<TeamDTO>(await _teamRepository.GetAsync(teamID.TeamID));
-                var workers = (await _context.WorkerTeam.ToListAsync()).Where(x => x.TeamID == team.TeamID).ToList();
-
-                foreach (var workerID in workers)
-                {
-                    var worker = await _workerRepository.GetAsync(workerID.WorkerID);
-                    team.Workers.Add(worker);
-                }
-
-                order.Teams.Add(team);
-            }
-            return order;
-        }
 
         [HttpPost]
-        public async Task<IActionResult> Report(DateTime? start, DateTime? end,[FromBody]IEnumerable<Worker> workers,[FromBody]IEnumerable<Team> teams)
+        public async Task<IActionResult> Report([FromBody]ReportDTO report)
         {
-           var orders = new List<ComparisonOrderDTO>();
+            var command = new CreateReport() { Report = report };
 
-
-            if (teams != null || workers != null)
+            try
             {
-                var ordersID = new List<Guid>();
-
-                if (teams != null && workers == null)
-                {
-                    foreach (var team in teams)
-                    {
-                        ordersID.AddRange(_context.OrderTeam.Where(x => x.TeamID == team.TeamID).Select(x => x.OrderID).ToList());
-                    }
-
-                }
-                else if (teams == null && workers != null)
-                {
-                    var teamIDs = new List<Guid>();
-
-                    foreach (var worker in workers)
-                    {
-                        teamIDs.AddRange(_context.WorkerTeam.Where(x => x.WorkerID == worker.WorkerID).Select(x => x.TeamID).ToList());
-                    }
-
-                    foreach (var teamID in teamIDs)
-                    {
-                        ordersID.AddRange(_context.OrderTeam.Where(x => x.TeamID == teamID).Select(o => o.OrderID).ToList());
-                    }
-
-                }else if(teams != null && workers != null) return BadRequest(new { message = $"You can only choose teams or workers, not both" });
-
-                foreach (var id in ordersID)
-                {
-                    var order = _mapper.Map<ComparisonOrderDTO>(await _orderRepository.GetAsync(id));
-
-                    if (!orders.Select(o => o.OrderID).Contains(order.OrderID))
-                    {
-                        orders.Add(order);
-                    }
-
-                }
+                await _commandDispatcher.DispatchAsync(command);
             }
-            else if (teams == null || workers == null)
+            catch (Exception e)
             {
-                orders= _mapper.Map<List<ComparisonOrderDTO>>(await _orderRepository.GetAllValidatedAsync());
+                return BadRequest(new { message = e.Message });
             }
-
-            if (start != null) orders = orders.Where(x => x.StartDate >= start).ToList();
-
-            if (end != null) orders = orders.Where(x => x.EndDate <= end).ToList();
-
-            for (int i = 0; i < orders.Count(); i++)
-            {
-                orders[i] = await MakeUpAnOrder(orders[i]);
-            }
-
-            orders = orders.OrderBy(x => x.StartDate).ToList();
-
-            return new JsonResult(orders);
+           
+            return new JsonResult(command.Orders);
         }
     }
 }

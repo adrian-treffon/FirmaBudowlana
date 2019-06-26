@@ -62,4 +62,21 @@ export class OrdersAllListComponent implements OnInit {
 
     this.router.navigate(['edit-validated-order'], navigationExtras);
   }
+
+  isPaid(order: Order) 
+  {
+    if (order.paid === true) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  getButtonText(i: number) {
+    if (this.orderList[i].paid) {
+      return 'Opłacone';
+    } else {
+      return 'Edytuj';
+    }
+  }
 }

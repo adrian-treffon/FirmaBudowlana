@@ -22,6 +22,10 @@ export class AdminService {
     return this.httpClient.get<Worker[]>(this.baseUrl + 'comparison/workers');
   }
 
+  getAllWorkers(): Observable<Worker[]> {
+    return this.httpClient.get<Worker[]>(this.baseUrl + 'comparison/AllWorkers');
+  }
+
   getUnpaidPayments(): Observable<Order[]> {
     return this.httpClient.get<Order[]>(this.baseUrl + 'add/payment');
   }
@@ -60,6 +64,10 @@ export class AdminService {
 
   getReport(reportParams: ReportParams) {
     return this.httpClient.post(this.baseUrl + 'comparison/report', reportParams);
+  }
+
+  getAllTeams(): Observable<Team[]> {
+    return this.httpClient.get<Team[]>(this.baseUrl + 'comparison/AllTeams');
   }
 
   getTeams(): Observable<Team[]> {

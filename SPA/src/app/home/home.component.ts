@@ -12,7 +12,6 @@ export class HomeComponent implements OnInit {
   constructor(public authService: AuthService) { }
 
   ngOnInit() {
-    console.log(this.authService.isUser());
   }
 
   activateRegisterMode() {
