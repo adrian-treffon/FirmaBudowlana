@@ -2,10 +2,9 @@
 using FirmaBudowlana.Core.Repositories;
 using FirmaBudowlana.Infrastructure.Commands.Team;
 using FirmaBudowlana.Infrastructure.EF;
+using FirmaBudowlana.Infrastructure.Exceptions;
 using Komis.Infrastructure.Commands;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,18 +27,18 @@ namespace FirmaBudowlana.Infrastructure.Handlers.Team
 
         public async Task HandleAsync(EditTeam command)
         {
-            if (command.Team == null) throw new Exception("Post request edit/team is empty");
+            if (command.Team == null) throw new ServiceException(ErrorCodes.PustyRequest,"Post request edit/team is empty");
 
             var teamFromDB = await _teamRepository.GetAsync(command.Team.TeamID);
 
-            if (teamFromDB == null) throw new Exception("Nie można znaleźć zespołu w bazie");
+            if (teamFromDB == null) throw new ServiceException(ErrorCodes.Nieznaleziono,"Nie można znaleźć zespołu w bazie");
 
             var orderTeam = _context.OrderTeam.Where(x => x.TeamID == command.Team.TeamID).Select(o => o.OrderID);
 
             foreach (var orderID in orderTeam)
             {
                 var order = await _orderRepository.GetAsync(orderID);
-                if (!order.Paid) throw new Exception("Nie można edytować zespołu, który obecnie posiada aktywne zlecenia");
+                if (!order.Paid) throw new ServiceException(ErrorCodes.BładEdycji,"Nie można edytować zespołu, który obecnie posiada aktywne zlecenia");
             }
 
             var team = _mapper.Map<Core.Models.Team>(command.Team);

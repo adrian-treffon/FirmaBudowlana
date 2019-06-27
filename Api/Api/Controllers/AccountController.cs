@@ -23,15 +23,9 @@ namespace FirmaBudowlana.Controllers
         public async Task<IActionResult> Login([FromBody]UserLoginDTO userParam)
         {
             var command = new Login() { LoginCredentials = userParam };
-            try
-            {
-                await _commandDispatcher.DispatchAsync(command);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-
+           
+           await _commandDispatcher.DispatchAsync(command);
+       
             return new JsonResult(command.Token);
         }
 
@@ -39,15 +33,9 @@ namespace FirmaBudowlana.Controllers
         [HttpPost]
         public async Task<IActionResult> Register([FromBody]UserRegisterDTO userParam)
         {
-            try
-            {
-                await _commandDispatcher.DispatchAsync(new Register() { UserCredentials = userParam });
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-
+            
+            await _commandDispatcher.DispatchAsync(new Register() { UserCredentials = userParam });
+            
             return Ok();
         }
 
@@ -62,16 +50,9 @@ namespace FirmaBudowlana.Controllers
                 UserID = id
             };
 
-            try
-            {
-                await _commandDispatcher.DispatchAsync(command);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-
-            return new JsonResult(command.Orders);
+           await _commandDispatcher.DispatchAsync(command);
+           
+           return new JsonResult(command.Orders);
         }
 
         [Authorize(Roles = "User")]
@@ -86,16 +67,8 @@ namespace FirmaBudowlana.Controllers
                 OrderID = idOrder
             };
 
-            try
-            {
-                await _commandDispatcher.DispatchAsync(command);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-                return StatusCode(500, e.Message);
-            }
-
+            await _commandDispatcher.DispatchAsync(command);
+           
             return new JsonResult(command.Order);
         }
 

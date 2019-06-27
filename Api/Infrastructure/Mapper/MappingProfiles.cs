@@ -24,6 +24,8 @@ namespace FirmaBudowlana.Infrastructure.Mapper
             CreateMap<Team, TeamDTO>().AfterMap<TeamDTOMappingProfile>();
             CreateMap<TeamDTO, Team>().AfterMap<TeamMappingProfile>();
 
+            CreateMap<User, ComparisonUserDTO>();
+
          
         }
     }

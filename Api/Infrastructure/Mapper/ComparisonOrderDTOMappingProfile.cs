@@ -17,9 +17,12 @@ namespace FirmaBudowlana.Infrastructure.Mapper
         private readonly ITeamRepository _teamRepository;
         private readonly IPaymentRepository _paymentRepository;
         private readonly DBContext _context;
+        private readonly IUserRepository _userRepository;
+      
 
         public ComparisonOrderDTOMappingProfile(IMapper mapper, IOrderRepository orderRepository, IWorkerRepository workerRepository,
-            ITeamRepository teamRepository, IPaymentRepository paymentRepository, DBContext context)
+            ITeamRepository teamRepository, IPaymentRepository paymentRepository, DBContext context, IUserRepository userRepository
+           )
         {
             _mapper = mapper;
             _orderRepository = orderRepository;
@@ -27,6 +30,7 @@ namespace FirmaBudowlana.Infrastructure.Mapper
             _teamRepository = teamRepository;
             _paymentRepository = paymentRepository;
             _context = context;
+            _userRepository = userRepository;
         }
 
       
@@ -41,6 +45,7 @@ namespace FirmaBudowlana.Infrastructure.Mapper
             }
             else destination.Payments = null;
 
+            destination.User = _mapper.Map<ComparisonUserDTO>(_userRepository.GetAsync(source.UserID).Result);
 
             var teams =  _context.OrderTeam.Where(x => x.OrderID == source.OrderID).ToList();
 

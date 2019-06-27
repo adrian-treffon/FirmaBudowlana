@@ -3,6 +3,7 @@ using FirmaBudowlana.Core.DTO;
 using FirmaBudowlana.Core.Repositories;
 using FirmaBudowlana.Infrastructure.Commands.Order;
 using FirmaBudowlana.Infrastructure.EF;
+using FirmaBudowlana.Infrastructure.Exceptions;
 using FirmaBudowlana.Infrastructure.Extensions;
 using Komis.Infrastructure.Commands;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +38,7 @@ namespace FirmaBudowlana.Infrastructure.Handlers.Orders
             {
                 var teams = (await _context.OrderTeam.ToListAsync()).Where(x => x.OrderID == order.OrderID).ToList();
 
-                if (teams == null) throw new Exception($"Nie znaleziono zespołów");
+                if (teams == null) throw new ServiceException(ErrorCodes.Nieznaleziono,$"Nie znaleziono zespołów");
 
                 var days = DaysWithoutWeekends.Count(order.StartDate, order.EndDate);
 
@@ -45,7 +46,7 @@ namespace FirmaBudowlana.Infrastructure.Handlers.Orders
                 {
                     var team = _mapper.Map<TeamDTO>(await _teamRepository.GetAsync(teamID.TeamID));
 
-                    if (team == null) throw new Exception($"Nie znaleziono zespołu w bazie danych");
+                    if (team == null) throw new ServiceException(ErrorCodes.Nieznaleziono, $"Nie znaleziono zespołu w bazie danych");
 
 
                     foreach (var worker in team.Workers)

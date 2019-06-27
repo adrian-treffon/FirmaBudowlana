@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FirmaBudowlana.Core.Repositories;
 using FirmaBudowlana.Infrastructure.Commands.Worker;
+using FirmaBudowlana.Infrastructure.Exceptions;
 using Komis.Infrastructure.Commands;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace FirmaBudowlana.Infrastructure.Handlers.Worker
 
         public async Task HandleAsync(AddWorker command)
         {
-            if (command.Worker == null) throw new Exception("Post request add/worker is empty");
+            if (command.Worker == null) throw new ServiceException(ErrorCodes.PustyRequest,"Post request add/worker is empty");
 
             var worker = _mapper.Map<Core.Models.Worker>(command.Worker);
             worker.WorkerID = Guid.NewGuid();

@@ -18,7 +18,7 @@ using Komis.Infrastructure.IoC;
 using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
-using FirmaBudowlana.Infrastructure.Error;
+using FirmaBudowlana.Api.Framework;
 
 namespace FirmaBudowlana
 {
@@ -90,24 +90,9 @@ namespace FirmaBudowlana
             }
             else
             {
-                app.UseExceptionHandler(builder =>
-                {
-                    builder.Run(async context =>
-                    {
-                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                        var error = context.Features.Get<IExceptionHandlerFeature>();
-
-                        if (error != null)
-                        {
-                            context.Response.AddAplicationError(error.Error.Message);
-                            await context.Response.WriteAsync(error.Error.Message);
-                        }
-
-                    });
-
-
-                });
+                app.UseMyExceptionHandler();
             }
+          
 
             app.UseStatusCodePages();
         

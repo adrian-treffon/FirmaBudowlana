@@ -1,6 +1,7 @@
 ﻿using FirmaBudowlana.Core.Repositories;
 using FirmaBudowlana.Infrastructure.Commands.Team;
 using FirmaBudowlana.Infrastructure.EF;
+using FirmaBudowlana.Infrastructure.Exceptions;
 using Komis.Infrastructure.Commands;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -31,9 +32,9 @@ namespace FirmaBudowlana.Infrastructure.Commands.Worker
         {
             var worker = await _workerRepository.GetAsync(command.WorkerID);
 
-            if (worker == null) throw new Exception($"Nie można znaleźć pracownika w bazie danych");
+            if (worker == null) throw new ServiceException(ErrorCodes.Nieznaleziono,$"Nie można znaleźć pracownika w bazie danych");
 
-            if (worker.Active == false) throw new Exception($"Nie można zwolnić pracownika, gdyż został już zwolniony wcześniej");
+            if (worker.Active == false) throw new ServiceException(ErrorCodes.BładUsuwania,$"Nie można zwolnić pracownika, gdyż został już zwolniony wcześniej");
 
             var teamIDs = _context.WorkerTeam.Where(x => x.WorkerID == command.WorkerID).Select(y => y.TeamID);
 
@@ -45,7 +46,7 @@ namespace FirmaBudowlana.Infrastructure.Commands.Worker
                 {
                     var order = await _orderRepository.GetAsync(orderID);
                     if (!order.Paid)
-                        throw new Exception($"Nie można zwolnić pracownika, ponieważ pracuje on w przynajmniej jednym aktywnym zleceniu");
+                        throw new ServiceException(ErrorCodes.BładUsuwania,$"Nie można zwolnić pracownika, ponieważ pracuje on w przynajmniej jednym aktywnym zleceniu");
                 }
 
             }

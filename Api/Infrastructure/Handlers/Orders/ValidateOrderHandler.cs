@@ -3,9 +3,8 @@ using FirmaBudowlana.Core.Models;
 using FirmaBudowlana.Core.Repositories;
 using FirmaBudowlana.Infrastructure.Commands.Order;
 using FirmaBudowlana.Infrastructure.EF;
+using FirmaBudowlana.Infrastructure.Exceptions;
 using Komis.Infrastructure.Commands;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,12 +27,12 @@ namespace FirmaBudowlana.Infrastructure.Handlers.Orders
         {
             var _order = await _orderRepository.GetAsync(command.Order.OrderID);
 
-            if (_order == null) throw new Exception("Nie znaleziono zlecenia w bazie danych");
+            if (_order == null) throw new ServiceException(ErrorCodes.Nieznaleziono,"Nie znaleziono zlecenia w bazie danych");
 
             var order = _mapper.Map<Order>(command.Order);
             order.Validated = true;
 
-            if (!command.Order.Teams.Any()) throw new Exception("Wybierz przynajmniej jeden zespół");
+            if (!command.Order.Teams.Any()) throw new ServiceException(ErrorCodes.NiepoprawnyFormat,"Wybierz przynajmniej jeden zespół");
 
             foreach (var team in command.Order.Teams)
             {
