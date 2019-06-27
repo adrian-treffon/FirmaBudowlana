@@ -73,7 +73,7 @@ namespace FirmaBudowlana.Api.Controllers
 
             foreach (var team in teams)
             {
-                foreach (var worker in team.Workers)
+                foreach (var worker in team.Workers.ToList())
                 {
                     if (!worker.Active) team.Workers.Remove(worker);
                 }

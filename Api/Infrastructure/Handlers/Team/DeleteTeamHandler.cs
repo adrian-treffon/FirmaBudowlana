@@ -2,6 +2,7 @@
 using FirmaBudowlana.Infrastructure.EF;
 using FirmaBudowlana.Infrastructure.Exceptions;
 using Komis.Infrastructure.Commands;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,7 +29,7 @@ namespace FirmaBudowlana.Infrastructure.Commands.Team
 
             if (team.Active == false) throw new ServiceException(ErrorCodes.BladUsuwania,$"Nie można rozwiązać zespołu, ponieważ został już rozwiązany wcześniej");
 
-            var orderTeam = _context.OrderTeam.Where(x => x.TeamID == team.TeamID).Select(o => o.OrderID).ToList();
+            var orderTeam = _context.OrderTeam.AsNoTracking().Where(x => x.TeamID == team.TeamID).Select(o => o.OrderID).ToList();
 
             foreach (var orderID in orderTeam)
             {

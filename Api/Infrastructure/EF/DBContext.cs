@@ -8,7 +8,7 @@ namespace FirmaBudowlana.Infrastructure.EF
         
         public DBContext(DbContextOptions<DBContext> options) : base(options)
         {
-           
+          
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -20,7 +20,8 @@ namespace FirmaBudowlana.Infrastructure.EF
              .HasKey(t => new { t.OrderID, t.TeamID });
         }
 
-      
+
+       
         public DbSet<User> Users { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<Worker> Workers { get; set; }

@@ -33,6 +33,8 @@ namespace FirmaBudowlana.Infrastructure.Handlers.Team
 
             if (teamFromDB == null) throw new ServiceException(ErrorCodes.Nieznaleziono,"Nie można znaleźć zespołu w bazie");
 
+            if(!command.Team.Workers.Any()) throw new ServiceException(ErrorCodes.NiepoprawnyFormat, "Wybierz przynajmniej jedngo pracownika");
+
             var orderTeam = _context.OrderTeam.Where(x => x.TeamID == command.Team.TeamID).Select(o => o.OrderID);
 
             foreach (var orderID in orderTeam)
