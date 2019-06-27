@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Order } from '../_models/order';
 import { AdminService } from '../_services/admin.service';
 import { AlertifyService } from '../_services/alertify.service';
 import { Router } from '@angular/router';
+import { OrderWithUser } from '../_models/orderWithUser';
 
 @Component({
   selector: 'app-order-list',
@@ -10,8 +10,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./order-list.component.css']
 })
 export class OrderListComponent implements OnInit {
-  orderList: Order[];
-  selectedOrder: Order;
+  orderList: OrderWithUser[];
+  selectedOrder: OrderWithUser;
   editMode = false;
 
   constructor(private adminService: AdminService, private alertify: AlertifyService, private router: Router) { }
@@ -21,14 +21,14 @@ export class OrderListComponent implements OnInit {
   }
 
   loadOrders() {
-    this.adminService.getUnvalidatedOrders().subscribe((ordersTemp: Order[]) => {
+    this.adminService.getUnvalidatedOrdersWithUser().subscribe((ordersTemp: OrderWithUser[]) => {
         this.orderList = ordersTemp;
     }, error => {
       this.alertify.error('Nie udało się załadować listy zleceń: ' + error);
     });
   }
 
-  onEditMode(inputOrder: Order) {
+  onEditMode(inputOrder: OrderWithUser) {
     this.selectedOrder = inputOrder;
     this.editMode = true;
   }

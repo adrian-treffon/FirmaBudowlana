@@ -68,7 +68,7 @@ namespace FirmaBudowlana.Infrastructure.Services
 
             if (user != null)
             {
-                throw new Exception($"User with email: '{email}' already exists.");
+                throw new Exception($"Użytkownik z tym adresem email już istnieje");
             }
 
             var salt = _encrypter.GetSalt(password);

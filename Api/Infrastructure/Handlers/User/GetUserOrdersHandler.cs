@@ -2,6 +2,7 @@
 using FirmaBudowlana.Core.DTO;
 using FirmaBudowlana.Core.Repositories;
 using FirmaBudowlana.Infrastructure.Commands.User;
+using FirmaBudowlana.Infrastructure.Exceptions;
 using Komis.Infrastructure.Commands;
 using System;
 using System.Collections.Generic;
@@ -24,15 +25,10 @@ namespace FirmaBudowlana.Infrastructure.Handlers.User
 
         public async Task HandleAsync(GetUserOrders command)
         {
-            try
-            {
-                if (Guid.Parse(command.User.FindFirst(ClaimTypes.NameIdentifier).Value) != command.UserID) throw new Exception("Incorrect token");
-            }
-            catch (Exception)
-            {
-                throw new Exception("Incorrect token");
-            }
-
+           
+            if (Guid.Parse(command.User.FindFirst(ClaimTypes.NameIdentifier).Value) != command.UserID)
+                throw new ServiceException(ErrorCodes.NiepoprawnyFormat,"Niepoprawny token");
+           
             var orders = (await _orderRepository.GetAllAsync()).Where(x => x.UserID == command.UserID);
 
             command.Orders = _mapper.Map<IEnumerable<AdminOrderDTO>>(orders);

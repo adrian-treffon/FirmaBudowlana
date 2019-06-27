@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Order } from '../_models/order';
 import { AdminService } from '../_services/admin.service';
 import { AlertifyService } from '../_services/alertify.service';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { DatePipe } from '@angular/common';
+import { OrderWithUser } from '../_models/orderWithUser';
 
 @Component({
   selector: 'app-orders-all-list',
@@ -11,7 +11,7 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./orders-all-list.component.css']
 })
 export class OrdersAllListComponent implements OnInit {
-  orderList: Order[];
+  orderList: OrderWithUser[];
 
   constructor(private adminService: AdminService, private alertify: AlertifyService, private router: Router,
               private datePipe: DatePipe, private route: ActivatedRoute) { }
@@ -23,6 +23,7 @@ export class OrdersAllListComponent implements OnInit {
   loadOrders() {
     this.route.data.subscribe(data => {
       this.orderList = data.orders;
+      console.log(this.orderList);
     });
   }
 
@@ -53,7 +54,7 @@ export class OrdersAllListComponent implements OnInit {
       }
   }
 
-  editOrder(order: Order) {
+  editOrder(order: OrderWithUser) {
     const navigationExtras: NavigationExtras = {
       queryParams: {
         order: JSON.stringify(order)
@@ -63,7 +64,7 @@ export class OrdersAllListComponent implements OnInit {
     this.router.navigate(['edit-validated-order'], navigationExtras);
   }
 
-  isPaid(order: Order) 
+  isPaid(order: OrderWithUser)
   {
     if (order.paid === true) {
       return true;

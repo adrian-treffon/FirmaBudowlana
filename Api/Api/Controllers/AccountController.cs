@@ -16,38 +16,26 @@ namespace FirmaBudowlana.Controllers
 
         public AccountController(ICommandDispatcher commandDispatcher)
         {
-            _commandDispatcher= commandDispatcher;
+            _commandDispatcher = commandDispatcher;
         }
 
         [HttpPost]
         public async Task<IActionResult> Login([FromBody]UserLoginDTO userParam)
         {
             var command = new Login() { LoginCredentials = userParam };
-            try
-            {
-                await _commandDispatcher.DispatchAsync(command);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new { message = e.Message });
-            }
            
+           await _commandDispatcher.DispatchAsync(command);
+       
             return new JsonResult(command.Token);
         }
 
-        
+
         [HttpPost]
         public async Task<IActionResult> Register([FromBody]UserRegisterDTO userParam)
         {
-            try
-            {
-                await _commandDispatcher.DispatchAsync(new Register() { UserCredentials = userParam});
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new { message = e.Message });
-            }
-
+            
+            await _commandDispatcher.DispatchAsync(new Register() { UserCredentials = userParam });
+            
             return Ok();
         }
 
@@ -62,16 +50,9 @@ namespace FirmaBudowlana.Controllers
                 UserID = id
             };
 
-            try
-            {
-                await _commandDispatcher.DispatchAsync(command);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new { message = e.Message });
-            }
-
-            return new JsonResult(command.Orders);
+           await _commandDispatcher.DispatchAsync(command);
+           
+           return new JsonResult(command.Orders);
         }
 
         [Authorize(Roles = "User")]
@@ -83,21 +64,14 @@ namespace FirmaBudowlana.Controllers
                 Token = Request.Headers["Authorization"],
                 User = User,
                 UserID = idUser,
-                OrderID=idOrder
+                OrderID = idOrder
             };
 
-            try
-            {
-                await _commandDispatcher.DispatchAsync(command);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new { message = e.Message });
-            }
-
+            await _commandDispatcher.DispatchAsync(command);
+           
             return new JsonResult(command.Order);
         }
-         
+
 
 
     }

@@ -2,9 +2,9 @@
 using FirmaBudowlana.Core.DTO;
 using FirmaBudowlana.Core.Repositories;
 using FirmaBudowlana.Infrastructure.Commands.User;
+using FirmaBudowlana.Infrastructure.Exceptions;
 using Komis.Infrastructure.Commands;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -24,19 +24,14 @@ namespace FirmaBudowlana.Infrastructure.Handlers.User
 
         public async Task HandleAsync(GetUserSpecifyOrder command)
         {
-            try
-            {
-                if (Guid.Parse(command.User.FindFirst(ClaimTypes.NameIdentifier).Value) != command.UserID) throw new Exception($"Incorrect token");
-            }
-            catch (Exception)
-            {
-                throw new Exception($"Incorrect token");
-            }
-
+          
+            if (Guid.Parse(command.User.FindFirst(ClaimTypes.NameIdentifier).Value) != command.UserID)
+                throw new ServiceException(ErrorCodes.NiepoprawnyFormat,"Niepoprawny token");
+           
             var order = (await _orderRepository.GetAllAsync()).Where(x => x.UserID == command.UserID).SingleOrDefault(x => x.OrderID == command.OrderID);
 
             if (order == null)
-               throw new Exception($"Cannot find order {command.OrderID} in DB");
+               throw new ServiceException(ErrorCodes.Nieznaleziono,$"Nie można znaleźć zlecenia w bazie danych");
 
            command.Order = _mapper.Map<AdminOrderDTO>(order);
         }

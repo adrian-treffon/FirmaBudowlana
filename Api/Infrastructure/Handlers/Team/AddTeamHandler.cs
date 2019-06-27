@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FirmaBudowlana.Core.Repositories;
 using FirmaBudowlana.Infrastructure.Commands.Team;
+using FirmaBudowlana.Infrastructure.Exceptions;
 using Komis.Infrastructure.Commands;
 using System;
 using System.Threading.Tasks;
@@ -21,8 +22,8 @@ namespace FirmaBudowlana.Infrastructure.Handlers.Team
 
         public async Task HandleAsync(AddTeam command)
         {
-            if (command.Team== null)throw new Exception( "Post request add/team is empty");
-            if (command.Team.Workers.Count == 0) throw new Exception("Choose at least one worker");
+            if (command.Team== null)throw new ServiceException(ErrorCodes.PustyRequest, "Post request add/team is empty");
+            if (command.Team.Workers.Count == 0) throw new ServiceException(ErrorCodes.NiepoprawnyFormat,"Wybierz przynajmnniej jedego pracownika");
             var team = _mapper.Map<Core.Models.Team>(command.Team);
             team.TeamID = Guid.NewGuid();
             await _teamRepository.AddAsync(team);

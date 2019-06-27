@@ -25,42 +25,26 @@ namespace FirmaBudowlana.Api.Controllers
         public async Task<IActionResult> Worker([FromBody]WorkerDTO workerDTO)
         {
 
-            try
-            {
-                await _commandDispatcher.DispatchAsync(new AddWorker() {Worker= workerDTO });
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new { message = e.Message });
-            }
-            return Ok();
+           await _commandDispatcher.DispatchAsync(new AddWorker() { Worker = workerDTO });
+           
+           return Ok();
         }
 
         [HttpPost]
         public async Task<IActionResult> Team([FromBody] TeamDTO teamDTO)
         {
-            try
-            {
-                await _commandDispatcher.DispatchAsync(new AddTeam() { Team = teamDTO});
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new { message = e.Message });
-            }
+           
+            await _commandDispatcher.DispatchAsync(new AddTeam() { Team = teamDTO });
+           
             return Ok();
         }
 
         [HttpPost]
         public async Task<IActionResult> Payment([FromBody]OrderToPaidDTO orderToPaidDTO)
         {
-            try
-            {
-                await _commandDispatcher.DispatchAsync(new PayOrder() { Order = orderToPaidDTO});
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new { message = e.Message });
-            }
+           
+            await _commandDispatcher.DispatchAsync(new PayOrder() { Order = orderToPaidDTO });
+           
 
             return Ok();
         }
@@ -69,14 +53,8 @@ namespace FirmaBudowlana.Api.Controllers
         public async Task<IActionResult> Payment()
         {
             var command = new FillOrdersToPaid();
-            try
-            {
-                await _commandDispatcher.DispatchAsync(command);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new { message = e.Message });
-            }
+           
+            await _commandDispatcher.DispatchAsync(command);
 
             return new JsonResult(command.Orders);
         }

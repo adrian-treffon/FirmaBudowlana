@@ -3,6 +3,7 @@ using FirmaBudowlana.Core.DTO;
 using FirmaBudowlana.Core.Repositories;
 using FirmaBudowlana.Infrastructure.Commands.Order;
 using FirmaBudowlana.Infrastructure.EF;
+using FirmaBudowlana.Infrastructure.Exceptions;
 using Komis.Infrastructure.Commands;
 using System;
 using System.Collections.Generic;
@@ -55,7 +56,8 @@ namespace FirmaBudowlana.Infrastructure.Handlers.Orders
                     }
 
                 }
-                else if (command.Report.Teams.Any() && command.Report.Workers.Any()) throw new Exception($"You can only choose teams or workers, not both");
+                else if (command.Report.Teams.Any() && command.Report.Workers.Any())
+                    throw new ServiceException(ErrorCodes.NiepoprawnyFormat,$"Możesz wybrać zespoły lub pracowników");
 
                 foreach (var id in ordersID)
                 {

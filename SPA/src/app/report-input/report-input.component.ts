@@ -6,8 +6,8 @@ import { AlertifyService } from '../_services/alertify.service';
 import { Team } from '../_models/team';
 import { Worker } from '../_models/worker';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Order } from '../_models/order';
 import { DatePipe } from '@angular/common';
+import { OrderWithUser } from '../_models/orderWithUser';
 
 @Component({
   selector: 'app-report-input',
@@ -20,7 +20,7 @@ export class ReportInputComponent implements OnInit {
   reportInputOrderForm: FormGroup;
   teams: Team[] = new Array();
   workers: Worker[] = new Array();
-  ordersReport: Order[];
+  ordersReport: OrderWithUser[];
   rangeStartDate: Date;
   rangeEndDate: Date;
   firstAvaliableDate: Date;
@@ -163,7 +163,7 @@ export class ReportInputComponent implements OnInit {
       }
   }
 
-  editOrder(order: Order) {
+  editOrder(order: OrderWithUser) {
     const navigationExtras: NavigationExtras = {
       queryParams: {
         order: JSON.stringify(order)

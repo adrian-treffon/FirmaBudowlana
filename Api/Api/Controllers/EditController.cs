@@ -1,10 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using System.Threading.Tasks;
 using FirmaBudowlana.Core.DTO;
-using FirmaBudowlana.Core.Models;
-using FirmaBudowlana.Core.Repositories;
 using FirmaBudowlana.Infrastructure.Commands.Order;
 using FirmaBudowlana.Infrastructure.Commands.Team;
 using FirmaBudowlana.Infrastructure.Commands.Worker;
@@ -28,29 +23,17 @@ namespace FirmaBudowlana.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Worker([FromBody]WorkerDTO workerDTO)
         {
-            try
-            {
-                await _commandDispatcher.DispatchAsync(new EditWorker() {Worker=workerDTO});
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new { message = e.Message });
-            }
+           
+           await _commandDispatcher.DispatchAsync(new EditWorker() {Worker=workerDTO});
 
-            return Ok();
+           return Ok();
         }
 
         [HttpPost]
         public async Task<IActionResult> Team([FromBody]TeamDTO teamDTO)
         {
-            try
-            {
-                await _commandDispatcher.DispatchAsync(new EditTeam() { Team = teamDTO});
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new { message = e.Message });
-            }
+           
+           await _commandDispatcher.DispatchAsync(new EditTeam() { Team = teamDTO});
 
             return Ok();
         }
@@ -58,16 +41,10 @@ namespace FirmaBudowlana.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Order([FromBody]AdminOrderDTO adminOrderDTO)
         {
-            try
-            {
-                await _commandDispatcher.DispatchAsync(new EditOrder() {Order= adminOrderDTO });
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new { message = e.Message });
-            }
+           
+           await _commandDispatcher.DispatchAsync(new EditOrder() {Order= adminOrderDTO });
 
-            return Ok();
+           return Ok();
         }
 
     }

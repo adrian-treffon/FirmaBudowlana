@@ -7,6 +7,7 @@ import { Team } from '../_models/team';
 import { Order } from '../_models/order';
 import { Payment } from '../_models/payment';
 import { ReportParams } from '../_models/report-params';
+import { OrderWithUser } from '../_models/orderWithUser';
 
 
 
@@ -78,8 +79,16 @@ export class AdminService {
     return this.httpClient.get<Order[]>(this.baseUrl + 'order/showInvalidated');
   }
 
+  getUnvalidatedOrdersWithUser(): Observable<OrderWithUser[]> {
+    return this.httpClient.get<OrderWithUser[]>(this.baseUrl + 'order/showInvalidated');
+  }
+
   getAllOrders(): Observable<Order[]> {
     return this.httpClient.get<Order[]>(this.baseUrl + 'comparison/orders');
+  }
+
+  getAllOrdersWithUser(): Observable<OrderWithUser[]> {
+    return this.httpClient.get<OrderWithUser[]>(this.baseUrl + 'comparison/orders');
   }
 
   getOrder(id: string): Observable<Order> {
