@@ -33,6 +33,8 @@ namespace FirmaBudowlana.Infrastructure.Handlers.Orders
 
             if (orderFromDB == null) throw new ServiceException(ErrorCodes.Nieznaleziono,$"Nie można znaleźć zlecenia w bazie danych");
 
+            if (!command.Order.Teams.Any()) throw new ServiceException(ErrorCodes.NiepoprawnyFormat, "Wybierz przynajmniej jeden zespół");
+
             var order = _mapper.Map<Order>(command.Order);
 
             if (orderFromDB.Validated == false || orderFromDB.Paid == true)

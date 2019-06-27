@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FirmaBudowlana.Core.Models;
 using FirmaBudowlana.Core.Repositories;
+using FirmaBudowlana.Infrastructure.Exceptions;
 using FirmaBudowlana.Infrastructure.Settings;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -68,7 +69,7 @@ namespace FirmaBudowlana.Infrastructure.Services
 
             if (user != null)
             {
-                throw new Exception($"Użytkownik z tym adresem email już istnieje");
+                throw new ServiceException(ErrorCodes.NiepoprawnyFormat,$"Użytkownik z tym adresem email już istnieje");
             }
 
             var salt = _encrypter.GetSalt(password);

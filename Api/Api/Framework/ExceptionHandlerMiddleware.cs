@@ -47,7 +47,7 @@ namespace FirmaBudowlana.Api.Framework
                     break;                       
             }
 
-            var response = new { code = errorCode, message = exception.Message };
+            var response = new { code = errorCode, message = exception.Message.Insert(0," ") };
             var payload = JsonConvert.SerializeObject(response);
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)statusCode;
