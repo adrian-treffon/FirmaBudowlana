@@ -1,0 +1,33 @@
+<div class="container">
+
+  <br>
+  <div class="col-sm-12">
+    <h1 class="d-inline-block text-secondary">Lista zespołów:</h1>
+    <button type="button" [routerLink]="['/new-team']" class="btn pull-right btn-info btn-lg text-center">Dodaj nowy
+      zespół</button>
+  </div>
+
+  <br><br>
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Opis:</th>
+        <th scope="col">Pracownicy:</th>
+        <th scope="col">Edytuj zespół:</th>
+        <th scope="col">Rozwiąż zespół:</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let team of teamList">
+        <td>{{team.description}}</td>
+        <td>
+          <span *ngFor="let worker of team.workers">{{worker.firstName}} {{worker.lastName}},
+          </span>
+        </td>
+        <td><button type="button" class="btn btn-dark ml-3" (click)="editTeam(team)" >Edytuj</button></td>
+        <td><button type="button" class="btn btn-outline-danger ml-4" (click)="deleteTeam(team.teamID)">Rozwiąż</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>

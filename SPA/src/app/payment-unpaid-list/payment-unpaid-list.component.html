@@ -1,0 +1,59 @@
+<div class="container text-center">
+
+  <br>
+  <div class="col-sm-12">
+      <h1 class="d-inline-block text-secondary">Nieopłacone zamówienia:</h1>
+  </div>
+  
+  <br><br>
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">ID:</th>
+        <th scope="col">Data rozpoczęcia:</th>
+        <th scope="col">Data zakończenia:</th>
+        <th scope="col">Opis:</th>
+        <th scope="col">Zespoły:</th>
+        <th scope="col">Koszt:</th>
+        <th scope="col">Potwierdź płatność:</th>
+        
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of orderList; let i = index">
+        <td>{{order.orderID}}</td>
+        <td>{{order.startDate | date:'dd/MM/yyyy'}}</td>
+        <td>{{this.getEndDate(i)}}</td>
+        <td>{{order.description}}</td>
+        <td><div class="btn-group" dropdown>
+          <button id="button-basic" dropdownToggle type="button" class="btn btn-outline-secondary dropdown-toggle"
+                  aria-controls="dropdown-basic">
+            Rozwiń <span class="caret"></span>
+          </button>
+          <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu"
+              role="menu" aria-labelledby="button-basic">
+            <li role="menuitem">  <table class="table">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">Opis:</th>
+                  <th scope="col">Pracownicy:</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let team of order.teams; let i = index">
+                  <td>{{team.description}}</td>
+                  <td>
+                    <span *ngFor="let worker of team.workers">{{worker.firstName}} {{worker.lastName}},
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table></li>
+          </ul>
+        </div></td>
+        <td>{{order.paymentCost}} zł</td>
+        <td><button type="button" class="btn btn-dark" (click)="pay(i)">Zapłać pracownikom</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

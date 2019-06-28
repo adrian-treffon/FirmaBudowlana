@@ -1,0 +1,28 @@
+<div class="container">
+  <br>
+  <div class="col-sm-12">
+      <h1 class="d-inline-block text-secondary">Zlecenia wypłat dla pracowników:</h1>
+  </div>
+  
+  <br><br>
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">ID płatności:</th>
+        <th scope="col">ID pracownika:</th>
+        <th scope="col">ID zamówienia:</th>
+        <th scope="col">Data opłacenia:</th>
+        <th scope="col">Kwota:</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let payment of payments; let i = index">
+        <td>{{payment.paymentID}}</td>
+        <td>{{payment.workerID}}</td>
+        <td>{{payment.orderID}}</td>
+        <td>{{payment.paymentDate | date:'dd/MM/yyyy'}}</td>
+        <td>{{payment.amount}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

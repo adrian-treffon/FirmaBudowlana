@@ -1,0 +1,37 @@
+<div class="container">
+
+  <br>
+  <div class="col-sm-12">
+      <h1 class="d-inline-block text-secondary">Lista pracowników:</h1>
+      <button type="button" [routerLink]="['/new-worker']" class="btn pull-right btn-info btn-lg text-center">Dodaj nowego pracownika</button>
+  </div>
+  
+  <br><br>
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Imię:</th>
+        <th scope="col">Nazwisko:</th>
+        <th scope="col">Specjalizacja:</th>
+        <th scope="col">zł/roboczogodzina:</th>
+        <th scope="col">Zespoły:</th>
+        <th scope="col">Edytuj pracownika:</th>
+        <th scope="col">Zwolnij pracownika</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let worker of workers">
+        <td>{{worker.firstName}}</td>
+        <td>{{worker.lastName}}</td>
+        <td>{{worker.specialization}}</td>
+        <td>{{worker.manHour}}</td>
+        <td>
+            <span *ngFor="let team of worker.teams">{{team.description}}, </span>
+        </td>
+        <td><button type="button" class="btn btn-dark" [routerLink]="['/edit-worker', worker.workerID]">Edytuj</button></td>
+        <td><button type="button" class="btn btn-outline-danger ml-4" (click)="deleteWorker(worker.workerID)">Zwolnij</button></td>
+      </tr>
+    </tbody>
+  </table>
+  
+</div>

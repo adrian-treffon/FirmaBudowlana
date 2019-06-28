@@ -1,0 +1,28 @@
+<div class="container">
+
+  <br>
+  <div class="col-sm-12">
+      <h1 class="d-inline-block text-secondary">Twoje zlecenia:</h1>
+      <button type="button" [routerLink]="['/newOrder']" class="btn pull-right btn-info btn-lg text-center">Nowe zlecenie</button>
+  </div>
+  
+  <br><br>
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">ID:</th>
+        <th scope="col">Opis:</th>
+        <th scope="col">Zatwierdzone:</th>
+        <th scope="col">Szczegóły:</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of userOrderList">
+        <td>{{order.orderID}}</td>
+        <td>{{order.description}}</td>
+        <td>{{this.isValidatedText(order.validated)}}</td>
+        <td><button type="button" class="btn btn-secondary" [routerLink]="['/order-details', order.orderID]">Szczegóły</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

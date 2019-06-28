@@ -1,0 +1,64 @@
+<div class="container">
+  <br>
+  <div class="col-sm-12">
+      <h1 class="d-inline-block text-secondary">Zatwierdzone zlecenia:</h1>
+  </div>
+  
+  <br><br>
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">ID zamówienia:</th>
+        <th scope="col">Data rozpoczęcia:</th>
+        <th scope="col">Data zakończenia:</th>
+        <th scope="col">Koszt:</th>
+        <th scope="col">Opis:</th>
+        <th scope="col">Opłacone:</th>
+        <th scope="col">Klient:</th>
+        <th scope="col">Zespoły:</th>
+        <th scope="col">Edytuj nieopłacone zlecenie:</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of orderList; let i = index">
+        <td>{{order.orderID}}</td>
+        <td>{{order.startDate | date:'dd-MM-yyyy'}}</td>
+        <td>{{this.getEndDate(i)}}</td>
+        <td>{{this.getCost(i)}}</td>
+        <td>{{order.description}}</td>
+        <td>{{this.getPaid(i)}}</td>
+        <td><div class="btn-group" dropdown>
+          <button id="button-basic" dropdownToggle type="button" class="btn btn-outline-secondary dropdown-toggle"
+                  aria-controls="dropdown-basic">
+            Rozwiń <span class="caret"></span>
+          </button>
+          <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu"
+              role="menu" aria-labelledby="button-basic">
+            <li role="menuitem">  <table class="table">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">ID:</th>
+                  <th scope="col">Imię:</th>
+                  <th scope="col">Nazwisko:</th>
+                  <th scope="col">Adres:</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{order.user.userID}}</td>
+                  <td>{{order.user.firstName}}</td>
+                  <td>{{order.user.lastName}}</td>
+                  <td>{{order.user.address}}</td>
+                </tr>
+              </tbody>
+            </table></li>
+          </ul>
+        </div></td>
+        <td>
+            <span *ngFor="let team of order.teams; let j = index">{{team.description}}, </span>
+        </td>
+        <td><button type="button" [disabled]="isPaid(order)" class="btn btn-dark" (click)="editOrder(order)" >{{this.getButtonText(i)}}</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

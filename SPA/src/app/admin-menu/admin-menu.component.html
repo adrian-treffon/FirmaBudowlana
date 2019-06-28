@@ -1,0 +1,93 @@
+<body>
+  <div class="album py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card mb-3 box-shadow">
+            <img class="card-img-top p-4" alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;"
+              src="../../assets/worker.png" data-holder-rendered="true">
+            <div class="card-body">
+              <h3 class="text-center">Pracownicy</h3>
+              <div class="justify-content-between align-items-center text-center">
+                <div class="btn-group mt-3">
+                  <button type="button" [routerLink]="['/worker-list']"
+                    class="btn btn-sm btn-outline-secondary">Lista</button>
+                  <button type="button" [routerLink]="['/new-worker']"
+                    class="btn btn-sm btn-outline-secondary">Dodaj</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card mb-3 box-shadow">
+            <img class="card-img-top p-4" alt="Thumbnail [100%x225]" src="../../assets/team.png"
+              data-holder-rendered="true" style="height: 225px; width: 100%; display: block;">
+            <div class="card-body">
+              <h3 class="text-center">Zespoły</h3>
+              <div class="justify-content-between align-items-center text-center">
+                <div class="btn-group mt-3">
+                  <button type="button" [routerLink]="['/team-list']"
+                    class="btn btn-sm btn-outline-secondary">Lista</button>
+                  <button type="button" [routerLink]="['/new-team']"
+                    class="btn btn-sm btn-outline-secondary">Dodaj</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card mb-3 box-shadow">
+            <img class="card-img-top p-4 ml-2" alt="Thumbnail [90%x225]"
+              style="height: 225px; width: 90%; display: block;" src="../../assets/order.png"
+              data-holder-rendered="true">
+            <div class="card-body">
+              <h3 class="text-center">Zamówienia</h3>
+              <div class="justify-content-between align-items-center text-center">
+                <div class="btn-group mt-3">
+                  <button type="button" [routerLink]="['/order-list']"
+                    class="btn btn-sm btn-outline-secondary">Niezatwierdzone</button>
+                  <button type="button" [routerLink]="['/order-all-list']"
+                    class="btn btn-sm btn-outline-secondary">Zatwierdzone</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card mb-3 box-shadow">
+            <img class="card-img-top p-4" alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;"
+              src="../../assets/payment.png" data-holder-rendered="true">
+            <div class="card-body">
+              <h3 class="text-center">Wypłaty:</h3>
+              <div class="justify-content-between align-items-center text-center">
+                <div class="btn-group mt-3">
+                  <button type="button" [routerLink]="['/payment-unpaid-list']"
+                    class="btn btn-sm btn-outline-secondary">Nieopłacone</button>
+                  <button type="button" [routerLink]="['/payment-paid-list']"
+                    class="btn btn-sm btn-outline-secondary">Lista wypłat</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card mb-3 box-shadow">
+            <img class="card-img-top p-3 ml-5" alt="Thumbnail [80%x50]" src="../../assets/report.png"
+              data-holder-rendered="true" style="height: 50; width: 80%; display: block;">
+            <div class="card-body">
+              <h3 class="text-center">Raporty</h3>
+              <div class="justify-content-between align-items-center text-center">
+                <div class="btn-group mt-3">
+                  <button type="button" [routerLink]="['/report-input']"
+                    class="btn btn-sm btn-outline-secondary">Wygeneruj</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>

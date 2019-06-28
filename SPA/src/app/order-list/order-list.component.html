@@ -1,0 +1,57 @@
+<div class="container" *ngIf="!editMode">
+
+  <br>
+  <div class="col-sm-12">
+      <h1 class="d-inline-block text-secondary">Lista niezatwierdzonych zleceń:</h1>
+  </div>
+  
+  <br><br>
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">ID:</th>
+        <th scope="col">Data rozpoczęcia:</th>
+        <th scope="col">Opis:</th>
+        <th scope="col">Klient:</th>
+        <th scope="col">Zatwierdź zlecenie:</th>
+        <th scope="col">Anuluj zlecenie:</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of orderList">
+        <td>{{order.orderID}}</td>
+        <td>{{order.startDate | date:'dd/MM/yyyy'}}</td>
+        <td>{{order.description}}</td>
+        <td><div class="btn-group" dropdown>
+          <button id="button-basic" dropdownToggle type="button" class="btn btn-outline-secondary dropdown-toggle"
+                  aria-controls="dropdown-basic">
+            Rozwiń <span class="caret"></span>
+          </button>
+          <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu"
+              role="menu" aria-labelledby="button-basic">
+            <li role="menuitem">  <table class="table">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">ID:</th>
+                  <th scope="col">Imię:</th>
+                  <th scope="col">Nazwisko:</th>
+                  <th scope="col">Adres:</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{order.user.userID}}</td>
+                  <td>{{order.user.firstName}}</td>
+                  <td>{{order.user.lastName}}</td>
+                  <td>{{order.user.address}}</td>
+                </tr>
+              </tbody>
+            </table></li>
+          </ul>
+        </div></td>
+        <td><button type="button" class="btn btn-secondary ml-4" [routerLink]="['/validate-order', order.orderID]">Zatwierdź</button></td>
+        <td><button type="button" class="btn btn-outline-danger ml-4" (click)="deleteOrder(order.orderID)">Anuluj</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

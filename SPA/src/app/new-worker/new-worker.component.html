@@ -1,0 +1,40 @@
+
+<br><br>
+<div class="container col-sm-5">
+    <form [formGroup]="newWorkerForm" (ngSubmit)="addWorker()" >
+        <h2 class="text-center text-secondary">Nowy pracownik</h2>
+        <hr>
+        
+        <div class="form-group">
+          <input [ngClass]="{'is-invalid': newWorkerForm.get('firstName').errors && newWorkerForm.get('firstName').touched}" class="form-control"
+            placeholder="Imię" formControlName="firstName">
+          <div class="invalid-feedback" *ngIf="newWorkerForm.get('firstName').touched && newWorkerForm.get('firstName').hasError('required')">Imię jest wymagane</div>
+        </div>
+    
+        <div class="form-group">
+          <input [ngClass]="{'is-invalid': newWorkerForm.get('lastName').errors && newWorkerForm.get('lastName').touched}" class="form-control"
+            placeholder="Nazwisko" formControlName="lastName">
+          <div class="invalid-feedback" *ngIf="newWorkerForm.get('lastName').touched && newWorkerForm.get('lastName').hasError('required')">Nazwisko jest wymagane</div>
+        </div>
+    
+        <div class="form-group">
+          <input [ngClass]="{'is-invalid': newWorkerForm.get('specialization').errors && newWorkerForm.get('specialization').touched}" class="form-control"
+            placeholder="Specjalizacja" formControlName="specialization">
+          <div class="invalid-feedback" *ngIf="newWorkerForm.get('specialization').touched && newWorkerForm.get('specialization').hasError('required')">Specjalizacja jest wymagana</div>
+        </div>
+
+        <div class="form-group">
+            <input type="number" [ngClass]="{'is-invalid': newWorkerForm.get('manHour').errors && newWorkerForm.get('manHour').touched}" class="form-control"
+              placeholder="Stawka za roboczogodzinę" formControlName="manHour">
+            <div class="invalid-feedback" *ngIf="newWorkerForm.get('manHour').touched && newWorkerForm.get('manHour').hasError('required')">Stawka za roboczogodzinę jest wymagana</div>
+        </div>
+    
+        <br>
+    
+        <div class="form-group text-center">
+          <button [disabled]="!newWorkerForm.valid" class="btn btn-outline-dark mr-2" type="submit">Dodaj</button>
+          <button class="btn btn-default ml-2" [routerLink]="['/worker-list']" type="button">Anuluj</button>
+        </div>
+        
+      </form> 
+</div>
