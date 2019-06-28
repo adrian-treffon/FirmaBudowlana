@@ -22,6 +22,10 @@ export class EditWorkerComponent implements OnInit {
   ngOnInit() {
     this.route.data.subscribe(data => {
       this.worker = data.worker;
+<<<<<<< HEAD
+=======
+      console.log(this.worker);
+>>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
     });
 
     this.createEditWorkerForm();
@@ -39,6 +43,10 @@ export class EditWorkerComponent implements OnInit {
   editWorker() {
     if (this.editWorkerForm.valid) {
       this.workerToSend = Object.assign({}, this.worker, this.editWorkerForm.value);
+<<<<<<< HEAD
+=======
+      console.log(this.workerToSend);
+>>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
       this.adminService.editWorker(this.workerToSend).subscribe(() => {
       this.alertify.success('Edytowano pracownika!');
       }, error => {

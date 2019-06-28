@@ -86,6 +86,10 @@ export class ValidateOrderComponent implements OnInit {
       const tempOrderPart = Object.assign({}, this.validateOrderForm.value);
       this.order = Object.assign(this.order, tempOrderPart);
       this.order.teams = this.teamsToAllocate;
+<<<<<<< HEAD
+=======
+      console.log(this.order);
+>>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
 
       this.adminService.validateOrder(this.order).subscribe(()  => {
         this.alertify.success('Zatwierdzono zamówienie');

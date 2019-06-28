@@ -12,7 +12,10 @@
         <th scope="col">ID:</th>
         <th scope="col">Data rozpoczęcia:</th>
         <th scope="col">Opis:</th>
+<<<<<<< HEAD
         <th scope="col">Klient:</th>
+=======
+>>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
         <th scope="col">Zatwierdź zlecenie:</th>
         <th scope="col">Anuluj zlecenie:</th>
       </tr>
@@ -22,6 +25,7 @@
         <td>{{order.orderID}}</td>
         <td>{{order.startDate | date:'dd/MM/yyyy'}}</td>
         <td>{{order.description}}</td>
+<<<<<<< HEAD
         <td><div class="btn-group" dropdown>
           <button id="button-basic" dropdownToggle type="button" class="btn btn-outline-secondary dropdown-toggle"
                   aria-controls="dropdown-basic">
@@ -49,6 +53,8 @@
             </table></li>
           </ul>
         </div></td>
+=======
+>>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
         <td><button type="button" class="btn btn-secondary ml-4" [routerLink]="['/validate-order', order.orderID]">Zatwierdź</button></td>
         <td><button type="button" class="btn btn-outline-danger ml-4" (click)="deleteOrder(order.orderID)">Anuluj</button></td>
       </tr>

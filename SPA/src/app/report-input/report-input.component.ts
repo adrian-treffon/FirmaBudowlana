@@ -6,8 +6,13 @@ import { AlertifyService } from '../_services/alertify.service';
 import { Team } from '../_models/team';
 import { Worker } from '../_models/worker';
 import { FormBuilder, FormGroup } from '@angular/forms';
+<<<<<<< HEAD
 import { DatePipe } from '@angular/common';
 import { OrderWithUser } from '../_models/orderWithUser';
+=======
+import { Order } from '../_models/order';
+import { DatePipe } from '@angular/common';
+>>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
 
 @Component({
   selector: 'app-report-input',
@@ -20,7 +25,11 @@ export class ReportInputComponent implements OnInit {
   reportInputOrderForm: FormGroup;
   teams: Team[] = new Array();
   workers: Worker[] = new Array();
+<<<<<<< HEAD
   ordersReport: OrderWithUser[];
+=======
+  ordersReport: Order[];
+>>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
   rangeStartDate: Date;
   rangeEndDate: Date;
   firstAvaliableDate: Date;
@@ -106,6 +115,10 @@ export class ReportInputComponent implements OnInit {
         this.adminService.getReport(this.reportParams).subscribe((data: any) => {
           this.isListMode = true;
           this.ordersReport = data;
+<<<<<<< HEAD
+=======
+          console.log(data);
+>>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
         }, error => {
           this.alertify.error('Bład: ' + error);
         });
@@ -163,7 +176,11 @@ export class ReportInputComponent implements OnInit {
       }
   }
 
+<<<<<<< HEAD
   editOrder(order: OrderWithUser) {
+=======
+  editOrder(order: Order) {
+>>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
     const navigationExtras: NavigationExtras = {
       queryParams: {
         order: JSON.stringify(order)
@@ -172,6 +189,7 @@ export class ReportInputComponent implements OnInit {
 
     this.router.navigate(['edit-validated-order'], navigationExtras);
   }
+<<<<<<< HEAD
 
   isPaid(i: number) {
     if (this.ordersReport[i].paid === true) {
@@ -188,4 +206,6 @@ export class ReportInputComponent implements OnInit {
       return 'Edytuj';
     }
   }
+=======
+>>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
 }

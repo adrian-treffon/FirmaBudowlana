@@ -34,6 +34,10 @@ export class NewOrderComponent implements OnInit {
   }
 
   reloadEverything() {
+<<<<<<< HEAD
+=======
+    console.log('Hello from reloadEverything');
+>>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
     this.isSubmited = false;
     this.newOrderForm.reset();
   }
