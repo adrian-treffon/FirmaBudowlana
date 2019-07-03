@@ -35,11 +35,7 @@ export class WorkerListComponent implements OnInit {
         this.alertify.success('Pracownik został zwolniony');
         this.ngOnInit();
       }, error => {
-<<<<<<< HEAD
         this.alertify.error(error);
-=======
-        this.alertify.error('Błąd podczas zwalniania pracownika!');
->>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
       });
     });
   }

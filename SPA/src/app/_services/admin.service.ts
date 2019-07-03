@@ -7,10 +7,7 @@ import { Team } from '../_models/team';
 import { Order } from '../_models/order';
 import { Payment } from '../_models/payment';
 import { ReportParams } from '../_models/report-params';
-<<<<<<< HEAD
 import { OrderWithUser } from '../_models/orderWithUser';
-=======
->>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
 
 
 
@@ -26,13 +23,10 @@ export class AdminService {
     return this.httpClient.get<Worker[]>(this.baseUrl + 'comparison/workers');
   }
 
-<<<<<<< HEAD
   getAllWorkers(): Observable<Worker[]> {
     return this.httpClient.get<Worker[]>(this.baseUrl + 'comparison/AllWorkers');
   }
 
-=======
->>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
   getUnpaidPayments(): Observable<Order[]> {
     return this.httpClient.get<Order[]>(this.baseUrl + 'add/payment');
   }
@@ -73,13 +67,10 @@ export class AdminService {
     return this.httpClient.post(this.baseUrl + 'comparison/report', reportParams);
   }
 
-<<<<<<< HEAD
   getAllTeams(): Observable<Team[]> {
     return this.httpClient.get<Team[]>(this.baseUrl + 'comparison/AllTeams');
   }
 
-=======
->>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
   getTeams(): Observable<Team[]> {
     return this.httpClient.get<Team[]>(this.baseUrl + 'comparison/teams');
   }
@@ -88,24 +79,18 @@ export class AdminService {
     return this.httpClient.get<Order[]>(this.baseUrl + 'order/showInvalidated');
   }
 
-<<<<<<< HEAD
   getUnvalidatedOrdersWithUser(): Observable<OrderWithUser[]> {
     return this.httpClient.get<OrderWithUser[]>(this.baseUrl + 'order/showInvalidated');
   }
 
-=======
->>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
   getAllOrders(): Observable<Order[]> {
     return this.httpClient.get<Order[]>(this.baseUrl + 'comparison/orders');
   }
 
-<<<<<<< HEAD
   getAllOrdersWithUser(): Observable<OrderWithUser[]> {
     return this.httpClient.get<OrderWithUser[]>(this.baseUrl + 'comparison/orders');
   }
 
-=======
->>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
   getOrder(id: string): Observable<Order> {
     return this.httpClient.get<Order>(this.baseUrl + 'order/validate/' + id);
   }

@@ -11,10 +11,6 @@ export class WorkerEditResolver implements Resolve<Worker> {
     constructor(private adminService: AdminService, private router: Router, private alertify: AlertifyService) {}
 
     resolve(route: ActivatedRouteSnapshot): Observable<Worker> {
-<<<<<<< HEAD
-=======
-        // console.log('From worker-edit resolver, route.data.id = ' + route.params.id);
->>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
         return this.adminService.getWorker(route.params.id).pipe(
             catchError(error => {
                 this.alertify.error('Problem z uzyskiwaniem danych');

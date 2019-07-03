@@ -100,11 +100,7 @@ export class EditTeamComponent implements OnInit {
       this.adminService.editTeam(this.teamToSend).subscribe(() => {
       this.alertify.success('Edytowano zespół');
       }, error => {
-<<<<<<< HEAD
         this.alertify.error(error);
-=======
-        this.alertify.error('Błąd podczas edytowania zespołu' + error);
->>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
       }, () => {
           this.router.navigate(['/team-list']);
       });

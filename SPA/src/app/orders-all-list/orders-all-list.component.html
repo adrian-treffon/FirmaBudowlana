@@ -14,15 +14,9 @@
         <th scope="col">Koszt:</th>
         <th scope="col">Opis:</th>
         <th scope="col">Opłacone:</th>
-<<<<<<< HEAD
         <th scope="col">Klient:</th>
         <th scope="col">Zespoły:</th>
         <th scope="col">Edytuj nieopłacone zlecenie:</th>
-=======
-        <th scope="col">ID użytkownika:</th>
-        <th scope="col">Zespoły:</th>
-        <th scope="col">Edytuj zlecenie:</th>
->>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
       </tr>
     </thead>
     <tbody>
@@ -33,7 +27,6 @@
         <td>{{this.getCost(i)}}</td>
         <td>{{order.description}}</td>
         <td>{{this.getPaid(i)}}</td>
-<<<<<<< HEAD
         <td><div class="btn-group" dropdown>
           <button id="button-basic" dropdownToggle type="button" class="btn btn-outline-secondary dropdown-toggle"
                   aria-controls="dropdown-basic">
@@ -65,13 +58,6 @@
             <span *ngFor="let team of order.teams; let j = index">{{team.description}}, </span>
         </td>
         <td><button type="button" [disabled]="isPaid(order)" class="btn btn-dark" (click)="editOrder(order)" >{{this.getButtonText(i)}}</button></td>
-=======
-        <td>{{order.userID}}</td>
-        <td>
-            <span *ngFor="let team of order.teams; let j = index">{{team.description}}, </span>
-        </td>
-        <td><button type="button" class="btn btn-dark" (click)="editOrder(order)" >Edytuj</button></td>
->>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
       </tr>
     </tbody>
   </table>

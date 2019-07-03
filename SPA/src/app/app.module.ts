@@ -46,10 +46,7 @@ import { EditTeamResolver } from './resolvers/edit-team.resolver';
 import { EditValidatedOrderComponent } from './edit-validated-order/edit-validated-order.component';
 import { ReportInputComponent } from './report-input/report-input.component';
 import { ReportInputResolver } from './resolvers/report-input.resolver';
-<<<<<<< HEAD
 import { ErrorInterceptorProvider } from './_services/error.interceptor';
-=======
->>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -109,12 +106,8 @@ export function tokenGetter() {
       OrdersAllResolver,
       WorkerEditResolver,
       EditTeamResolver,
-<<<<<<< HEAD
       DatePipe,
       ErrorInterceptorProvider
-=======
-      DatePipe
->>>>>>> adcae90761bb37eeb6e22c490764c1fd90e6ae80
    ],
    bootstrap: [
       AppComponent
