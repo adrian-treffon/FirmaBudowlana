@@ -32,7 +32,7 @@ This application allows you to manage your construction company conveniently and
 -	.NET CORE 2.1
 -	Entity Framework Core
 -	LINQ
--	Microsoft SQL Server 17
+-	JWT
 -	AutoMapper
 -	AutoFac
 
